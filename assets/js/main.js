@@ -151,6 +151,33 @@
         sortBy: sort
       });
     });
+    document.querySelector('.php-email-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = this;
+      
+      fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+      })
+      .then(response => {
+          if (response.ok) {
+              form.querySelector('.sent-message').style.display = 'block';
+              form.querySelector('.error-message').style.display = 'none';
+              form.reset();
+              window.location.href = '/thanks?language=en';
+          } else {
+              response.json().then(data => {
+                  form.querySelector('.error-message').innerHTML = data.error;
+                  form.querySelector('.error-message').style.display = 'block';
+              });
+          }
+      })
+      .catch(error => {
+          form.querySelector('.error-message').innerHTML = 'An error occurred!';
+          form.querySelector('.error-message').style.display = 'block';
+      });
+  });
 
     isotopeItem.querySelectorAll('.isotope-filters li').forEach(function(filters) {
       filters.addEventListener('click', function() {
