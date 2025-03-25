@@ -605,40 +605,35 @@
           </div>
 
           <div class="col-lg-7">
-            <form action="https://formspree.io/f/maneodyg?next=/thanks?language=en" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
-              <div class="row gy-4">
-
-                <div class="col-md-6">
-                  <label for="name-field" class="pb-2">Your Name</label>
-                  <input type="text" name="name" id="name-field" class="form-control" required="">
+            <form action="https://api.web3forms.com/submit" method="POST" class="php-email-form">
+                <div class="row gy-4">
+                    <input type="hidden" name="access_key" value="38d6ef26-89ec-4dfd-8186-2af1b65e053c">
+                    <div class="col-md-6">
+                        <label for="name-field" class="pb-2">Your Name</label>
+                        <input type="text" name="name" id="name-field" class="form-control" required="">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="email-field" class="pb-2">Your Email</label>
+                        <input type="email" class="form-control" name="email" id="email-field" required="">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="subject-field" class="pb-2">Subject</label>
+                        <input type="text" class="form-control" name="subject" id="subject-field" required="">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="message-field" class="pb-2">Message</label>
+                        <textarea class="form-control" name="message" rows="10" id="message-field" required=""></textarea>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <div class="loading" style="display: none;">Loading...</div>
+                        <div class="error-message" style="display: none;">An error occurred. Please try again.</div>
+                        <div class="sent-message" style="display: none;">Your message has been sent. Thank you!</div>
+                        <button type="submit">Send Message</button>
+                    </div>
                 </div>
-
-                <div class="col-md-6">
-                  <label for="email-field" class="pb-2">Your Email</label>
-                  <input type="email" class="form-control" name="email" id="email-field" required="">
-                </div>
-
-                <div class="col-md-12">
-                  <label for="subject-field" class="pb-2">Subject</label>
-                  <input type="text" class="form-control" name="subject" id="subject-field" required="">
-                </div>
-
-                <div class="col-md-12">
-                  <label for="message-field" class="pb-2">Message</label>
-                  <textarea class="form-control" name="message" rows="10" id="message-field" required=""></textarea>
-                </div>
-
-                <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                  <button type="submit">Send Message</button>
-                </div>
-
-              </div>
             </form>
-          </div><!-- End Contact Form -->
+            </div>
+            <!-- End Contact Form -->
 
         </div>
 
@@ -653,6 +648,8 @@
    <div class="copyright text-center ">
         <p>© <span>Copyright</span> <strong class="px-1 sitename">Sandesh Chhetri </strong> <span>All Rights Reserved</span></p>
       </div>
+    </div>
+   
     </div>
 
   </footer>
@@ -677,7 +674,5 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
-
 </body>
-
 </html>

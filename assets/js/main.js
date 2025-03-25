@@ -134,69 +134,7 @@
     selector: '.glightbox'
   });
 
-  /**
-   * Init isotope layout and filters
-   */
-  document.querySelectorAll('.isotope-layout').forEach(function(isotopeItem) {
-    let layout = isotopeItem.getAttribute('data-layout') ?? 'masonry';
-    let filter = isotopeItem.getAttribute('data-default-filter') ?? '*';
-    let sort = isotopeItem.getAttribute('data-sort') ?? 'original-order';
-
-    let initIsotope;
-    imagesLoaded(isotopeItem.querySelector('.isotope-container'), function() {
-      initIsotope = new Isotope(isotopeItem.querySelector('.isotope-container'), {
-        itemSelector: '.isotope-item',
-        layoutMode: layout,
-        filter: filter,
-        sortBy: sort
-      });
-    });
-    document.querySelector('.php-email-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const form = this;
-      
-      fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { 'Accept': 'application/json' }
-      })
-      .then(response => {
-          if (response.ok) {
-              form.querySelector('.sent-message').style.display = 'block';
-              form.querySelector('.error-message').style.display = 'none';
-              form.reset();
-              window.location.href = '/thanks?language=en';
-          } else {
-              response.json().then(data => {
-                  form.querySelector('.error-message').innerHTML = data.error;
-                  form.querySelector('.error-message').style.display = 'block';
-              });
-          }
-      })
-      .catch(error => {
-          form.querySelector('.error-message').innerHTML = 'An error occurred!';
-          form.querySelector('.error-message').style.display = 'block';
-      });
-  });
-
-    isotopeItem.querySelectorAll('.isotope-filters li').forEach(function(filters) {
-      filters.addEventListener('click', function() {
-        isotopeItem.querySelector('.isotope-filters .filter-active').classList.remove('filter-active');
-        this.classList.add('filter-active');
-        initIsotope.arrange({
-          filter: this.getAttribute('data-filter')
-        });
-        if (typeof aosInit === 'function') {
-          aosInit();
-        }
-      }, false);
-    });
-
-  });
-
-  /**
-   * Init swiper sliders
-   */
+  
   function initSwiper() {
     document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
       let config = JSON.parse(
