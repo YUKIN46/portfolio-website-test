@@ -148,8 +148,33 @@
       }
     });
   }
+  function initIsotope() {
+    const portfolioContainer = document.querySelector('.isotope-container');
+    
+    if (portfolioContainer) {
+      imagesLoaded(portfolioContainer, function() {
+        const iso = new Isotope(portfolioContainer, {
+          itemSelector: '.portfolio-item',
+          layoutMode: 'masonry',
+          masonry: {
+            columnWidth: '.portfolio-item'
+          }
+        });
+  
+        // Filter items on button click
+        document.querySelectorAll('.isotope-filters li').forEach(filterButton => {
+          filterButton.addEventListener('click', function() {
+            document.querySelector('.isotope-filters .filter-active').classList.remove('filter-active');
+            this.classList.add('filter-active');
+            iso.arrange({ filter: this.getAttribute('data-filter') });
+          });
+        });
+      });
+    }
+  }
 
   window.addEventListener("load", initSwiper);
+  window.addEventListener("load", initIsotope); 
 
   /**
    * Correct scrolling position upon page load for URLs containing hash links.
