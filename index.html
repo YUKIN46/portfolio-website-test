@@ -1,1065 +1,678 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sandesh Chhetri | Cyber Rider & Digital Creator</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Oxanium:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --neon-blue: #05f2f2;
-            --neon-pink: #ff2a6d;
-            --neon-purple: #d300c5;
-            --neon-green: #39ff14;
-            --neon-yellow: #f2f20d;
-            --dark: #01012b;
-            --darker: #000117;
-            --darkest: #00000e;
-            --light: #e2f1f8;
-            --body-bg: #0a0a2a;
-            --card-bg: rgba(5, 5, 45, 0.7);
-            --border-radius: 8px;
-            --box-shadow: 0 0 20px rgba(5, 242, 242, 0.2);
-            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            --glow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
-            --text-glow: 0 0 5px rgba(5, 242, 242, 0.7);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--darker);
-            color: var(--light);
-            font-family: 'Rajdhani', sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(5, 242, 242, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 80% 70%, rgba(255, 42, 109, 0.05) 0%, transparent 20%);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        section {
-            padding: 4rem 0;
-            position: relative;
-        }
-
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 2.5rem;
-            position: relative;
-            display: inline-block;
-            letter-spacing: 2px;
-            text-shadow: var(--text-glow);
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
-            border-radius: 3px;
-            box-shadow: var(--glow);
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.7rem 1.8rem;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            text-align: center;
-            font-size: 1rem;
-            margin-right: 0.5rem;
-            text-decoration: none;
-            font-family: 'Oxanium', sans-serif;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .btn-primary {
-            background-color: var(--neon-blue);
-            color: var(--darkest);
-            box-shadow: 0 0 15px rgba(5, 242, 242, 0.5);
-            font-weight: 700;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 25px rgba(5, 242, 242, 0.8);
-            color: var(--darkest);
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-            z-index: -1;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--neon-blue);
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 10px rgba(5, 242, 242, 0.3);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--neon-blue);
-            color: var(--darkest);
-            box-shadow: 0 0 20px rgba(5, 242, 242, 0.6);
-        }
-
-        /* Header */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 1.2rem 0;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-            background-color: rgba(1, 1, 43, 0.7);
-            border-bottom: 1px solid rgba(5, 242, 242, 0.1);
-        }
-
-        header.scrolled {
-            background-color: rgba(1, 1, 43, 0.95);
-            box-shadow: 0 5px 30px rgba(5, 242, 242, 0.1);
-            padding: 0.8rem 0;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: var(--neon-blue);
-            text-decoration: none;
-            letter-spacing: 1px;
-            text-shadow: var(--text-glow);
-        }
-
-        .logo span {
-            color: var(--neon-pink);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            position: relative;
-            font-family: 'Oxanium', sans-serif;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-        }
-
-        .nav-links a:hover {
-            color: var(--neon-blue);
-            text-shadow: var(--text-glow);
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--neon-blue);
-            transition: var(--transition);
-            box-shadow: var(--glow);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: var(--light);
-            transition: var(--transition);
-        }
-
-        .hamburger:hover {
-            color: var(--neon-blue);
-            text-shadow: var(--text-glow);
-        }
-
-        /* Hero Section */
-        #hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, var(--darker) 0%, var(--darkest) 100%);
-        }
-
-        .hero-content {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-text {
-            flex: 1;
-        }
-
-        .hero-image {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            position: relative;
-        }
-
-        .hero-image::before {
-            content: '';
-            position: absolute;
-            width: 120%;
-            height: 120%;
-            background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
-            opacity: 0.3;
-            border-radius: 50%;
-            animation: pulse 6s infinite alternate;
-            z-index: -1;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.3; }
-            100% { transform: scale(1.05); opacity: 0.5; }
-        }
-
-        .hero-image img {
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--neon-blue);
-            box-shadow: var(--glow);
-            filter: saturate(1.2);
-            transition: var(--transition);
-        }
-
-        .hero-image:hover img {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px var(--neon-blue);
-        }
-
-        .hero-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(5, 242, 242, 0.5);
-        }
-
-        .hero-title span {
-            color: var(--neon-blue);
-            text-shadow: var(--text-glow);
-        }
-
-        .hero-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            color: rgba(226, 241, 248, 0.8);
-            font-family: 'Oxanium', sans-serif;
-            max-width: 90%;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            overflow: hidden;
-            opacity: 0.7;
-        }
-
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(5, 242, 242, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 70% 70%, rgba(255, 42, 109, 0.1) 0%, transparent 20%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* About Section */
-        #about {
-            background-color: var(--body-bg);
-            color: var(--light);
-            position: relative;
-            overflow: hidden;
-        }
-
-        #about::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(45deg, transparent 65%, rgba(5, 242, 242, 0.03) 65%),
-                linear-gradient(-45deg, transparent 65%, rgba(255, 42, 109, 0.03) 65%);
-            background-size: 30px 30px;
-            z-index: 0;
-        }
-
-        .about-content {
-            display: flex;
-            gap: 3rem;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .about-text {
-            flex: 1;
-            font-size: 1.1rem;
-            line-height: 1.7;
-        }
-
-        .about-text p {
-            margin-bottom: 1.5rem;
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        .about-image {
-            flex: 1;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .about-image:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(5, 242, 242, 0.3);
-        }
-
-        .about-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(5, 242, 242, 0.2) 0%, rgba(255, 42, 109, 0.2) 100%);
-            opacity: 0;
-            transition: var(--transition);
-            z-index: 1;
-        }
-
-        .about-image:hover::before {
-            opacity: 1;
-        }
-
-        .about-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: var(--transition);
-        }
-
-        .about-image:hover img {
-            transform: scale(1.03);
-        }
-
-        /* Projects Section */
-        #projects {
-            position: relative;
-            background-color: var(--darker);
-        }
-
-        #projects::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-            box-shadow: var(--glow);
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .project-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            color: var(--light);
-            border: 1px solid rgba(5, 242, 242, 0.1);
-            backdrop-filter: blur(5px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(5, 242, 242, 0.1) 0%, rgba(255, 42, 109, 0.1) 100%);
-            opacity: 0;
-            transition: var(--transition);
-            z-index: 1;
-        }
-
-        .project-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(5, 242, 242, 0.2);
-            border-color: rgba(5, 242, 242, 0.3);
-        }
-
-        .project-card:hover::before {
-            opacity: 1;
-        }
-
-        .project-image {
-            height: 200px;
-            width: 100%;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            transition: var(--transition);
-        }
-
-        .project-card:hover .project-image {
-            transform: scale(1.03);
-        }
-
-        .project-info {
-            padding: 1.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .project-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
-            color: var(--neon-blue);
-            letter-spacing: 1px;
-        }
-
-        .project-description {
-            margin-bottom: 1.2rem;
-            color: rgba(226, 241, 248, 0.8);
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        .project-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--neon-blue);
-            font-weight: 600;
-            text-decoration: none;
-            transition: var(--transition);
-            font-family: 'Oxanium', sans-serif;
-        }
-
-        .project-link:hover {
-            color: var(--neon-pink);
-            text-shadow: 0 0 5px rgba(255, 42, 109, 0.7);
-        }
-
-        /* Rides Section */
-        #rides {
-            background-color: var(--body-bg);
-        }
-
-        .rides-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .ride-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            color: var(--light);
-            border: 1px solid rgba(5, 242, 242, 0.1);
-            backdrop-filter: blur(5px);
-        }
-
-        .ride-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(5, 242, 242, 0.2);
-            border-color: rgba(5, 242, 242, 0.3);
-        }
-
-        .ride-image {
-            height: 200px;
-            width: 100%;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-
-        .ride-card:hover .ride-image {
-            transform: scale(1.03);
-        }
-
-        .ride-info {
-            padding: 1.5rem;
-        }
-
-        .ride-date {
-            color: var(--neon-blue);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-family: 'Oxanium', sans-serif;
-            letter-spacing: 1px;
-        }
-
-        .ride-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            letter-spacing: 1px;
-        }
-
-        .ride-description {
-            color: rgba(226, 241, 248, 0.8);
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        /* Contact Section */
-        #contact {
-            background-color: var(--darker);
-            position: relative;
-        }
-
-        #contact::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(45deg, transparent 65%, rgba(5, 242, 242, 0.03) 65%),
-                linear-gradient(-45deg, transparent 65%, rgba(255, 42, 109, 0.03) 65%);
-            background-size: 30px 30px;
-            z-index: 0;
-        }
-
-        .contact-container {
-            display: flex;
-            gap: 3rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .contact-info {
-            flex: 1;
-        }
-
-        .contact-info h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--neon-blue);
-            letter-spacing: 1px;
-        }
-
-        .contact-info p {
-            margin-bottom: 1.5rem;
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        .contact-info strong {
-            color: var(--neon-blue);
-            font-family: 'Oxanium', sans-serif;
-        }
-
-        .contact-form {
-            flex: 1;
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(5, 242, 242, 0.1);
-            backdrop-filter: blur(5px);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            font-family: 'Oxanium', sans-serif;
-            color: var(--neon-blue);
-            letter-spacing: 1px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid rgba(5, 242, 242, 0.3);
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            font-size: 1rem;
-            background-color: rgba(5, 5, 45, 0.5);
-            color: var(--light);
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        .form-control:focus {
-            border-color: var(--neon-blue);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(5, 242, 242, 0.2);
-            background-color: rgba(5, 5, 45, 0.8);
-        }
-
-        textarea.form-control {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .social-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--card-bg);
-            color: var(--neon-blue);
-            transition: var(--transition);
-            text-decoration: none;
-            border: 1px solid rgba(5, 242, 242, 0.3);
-            font-size: 1.2rem;
-            box-shadow: 0 0 10px rgba(5, 242, 242, 0.1);
-        }
-
-        .social-link:hover {
-            transform: translateY(-5px);
-            background-color: var(--neon-blue);
-            color: var(--darkest);
-            box-shadow: 0 5px 20px rgba(5, 242, 242, 0.5);
-            border-color: var(--neon-blue);
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--darkest);
-            color: var(--light);
-            padding: 3rem 0;
-            text-align: center;
-            position: relative;
-        }
-
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-            box-shadow: var(--glow);
-        }
-
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .footer-logo {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: var(--neon-blue);
-            margin-bottom: 1.5rem;
-            letter-spacing: 1px;
-            text-shadow: var(--text-glow);
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .footer-links a {
-            color: var(--light);
-            text-decoration: none;
-            transition: var(--transition);
-            font-family: 'Oxanium', sans-serif;
-            letter-spacing: 1px;
-        }
-
-        .footer-links a:hover {
-            color: var(--neon-blue);
-            text-shadow: var(--text-glow);
-        }
-
-        .copyright {
-            color: rgba(226, 241, 248, 0.7);
-            font-size: 0.9rem;
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        /* Admin Button */
-        .admin-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background-color: var(--neon-blue);
-            color: var(--darkest);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            box-shadow: 0 5px 20px rgba(5, 242, 242, 0.4);
-            z-index: 999;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            border: none;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-        }
-
-        .admin-btn:hover {
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 0 25px rgba(5, 242, 242, 0.8);
-            animation: pulse 1s infinite alternate;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .fade-in {
-            animation: fadeIn 1s ease forwards;
-        }
-
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-        .delay-4 { animation-delay: 0.8s; }
-
-        /* Responsive Styles */
-        @media (max-width: 992px) {
-            .hero-content, .about-content, .contact-container {
-                flex-direction: column;
-                gap: 2rem;
-            }
-            
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .hero-image img {
-                width: 280px;
-                height: 280px;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                position: fixed;
-                top: 70px;
-                left: -100%;
-                width: 100%;
-                height: calc(100vh - 70px);
-                background-color: rgba(1, 1, 43, 0.95);
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 1.5rem;
-                transition: var(--transition);
-                backdrop-filter: blur(10px);
-            }
-            
-            .nav-links.active {
-                left: 0;
-            }
-            
-            .hamburger {
-                display: block;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-                margin-bottom: 1rem;
-                margin-right: 0;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-            
-            .projects-grid, .rides-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .contact-container {
-                flex-direction: column;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Sandesh Chhetri</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/yukin.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
 </head>
-<body>
-    <!-- Header -->
-    <header id="header">
-        <div class="container">
-            <nav class="navbar">
-                <a href="#hero" class="logo">YUKIN<span>.</span></a>
-                <div class="hamburger" id="hamburger">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <ul class="nav-links" id="navLinks">
-                    <li><a href="#hero">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#rides">Rides</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Hero Section -->
-    <section id="hero">
-        <div class="hero-bg"></div>
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text fade-in">
-                    <h1 class="hero-title" id="heroTitle">CYBER RIDER <span>//</span><br>DIGITAL CREATOR</h1>
-                    <p class="hero-subtitle fade-in delay-1" id="heroSubtitle">Blending high-speed thrills with cutting-edge design. Specializing in adrenaline-fueled content creation and futuristic digital experiences.</p>
-                    <div class="hero-buttons fade-in delay-2">
-                        <a href="#projects" class="btn btn-primary" id="primaryBtn">VIEW WORK</a>
-                        <a href="#contact" class="btn btn-outline" id="secondaryBtn">CONNECT</a>
-                    </div>
-                </div>
-                <div class="hero-image fade-in delay-3">
-                    <img src="my-profile-img.jpg" alt="Profile Image" id="heroImage">
-                </div>
-            </div>
-        </div>
-    </section>
+<body class="index-page">
 
-    <!-- About Section -->
-    <section id="about">
-        <div class="container">
-            <h2 class="section-title fade-in">ABOUT ME</h2>
-            <div class="about-content">
-                <div class="about-text fade-in delay-1">
-                    <p id="aboutText">I'm Sandesh Chhetri, a digital nomad who lives at the intersection of technology and adrenaline. By day, I craft immersive digital experiences; by sunset, I'm chasing horizons on two wheels. My work is fueled by the same passion that drives my rides—boundless creativity, precision execution, and the relentless pursuit of what's next. Whether it's coding a sleek interface or carving mountain roads, I approach every challenge with the same intensity. My content captures the raw energy of the ride, translating speed and freedom into visual storytelling that resonates with fellow thrill-seekers and tech enthusiasts alike.</p>
-                </div>
-                <div class="about-image fade-in delay-2">
-                    <img src="biking-photo.jpg" alt="About Image" id="aboutImage">
-                </div>
-            </div>
-        </div>
-    </section>
+  <header id="header" class="header dark-background d-flex flex-column">
+    <i class="header-toggle d-xl-none bi bi-list"></i>
 
-    <!-- Projects Section -->
-    <section id="projects">
-        <div class="container">
-            <h2 class="section-title fade-in">PROJECTS</h2>
-            <div class="projects-grid" id="projectsGrid">
-                <!-- Projects will be dynamically inserted here -->
-            </div>
-        </div>
-    </section>
+    <div class="profile-img">
+      <img src="assets/img/my-profile-img.jpg" alt="" class="img-fluid rounded-circle">
+    </div>
 
-    <!-- Rides Section -->
-    <section id="rides">
-        <div class="container">
-            <h2 class="section-title fade-in">RIDE LOG</h2>
-            <div class="rides-container" id="ridesContainer">
-                <!-- Rides will be dynamically inserted here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact">
-        <div class="container">
-            <h2 class="section-title fade-in">CONNECT</h2>
-            <div class="contact-container">
-                <div class="contact-info fade-in delay-1">
-                    <h3>RIDE WITH ME</h3>
-                    <p>Whether you want to collaborate on a project or plan the next epic ride, I'm always up for adventure.</p>
-                    <p><strong>EMAIL:</strong> <span id="contactEmail">thesandeshchhetri@gmail.com</span></p>
-                    <div class="social-links" id="socialLinks">
-                        <!-- Social links will be dynamically inserted here -->
-                    </div>
-                    <br><h3>My Location</h3>
-                    <div class="message" id="message">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7069.760965452993!2d85.290226!3d27.628218!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb175aba3925eb%3A0xa528cd00a0cf66a7!2z4KSF4KSu4KWD4KSkIOCkp-CkvuCksOCkvg!5e0!3m2!1sen!2snp!4v1742911584983!5m2!1sen!2snp" width="300" height="300" style="border:0; margin-left: 10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>    
-                </div>
-               
-                <div class="contact-form fade-in delay-2">
-                    <form id="contactForm">
-                       <h1>Heyy</h1>
-                        <div class="form-group">
-                            <label for="name">YOUR NAME</label>
-                            <input type="text" id="name" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">YOUR EMAIL</label>
-                            <input type="email" id="email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">YOUR MESSAGE</label>
-                            <textarea id="message" class="form-control" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">SEND MESSAGE</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <a href="#hero" class="footer-logo">YUKIN.</a>
-                <div class="footer-links">
-                    <a href="#hero">HOME</a>
-                    <a href="#about">ABOUT</a>
-                    <a href="#projects">PROJECTS</a>
-                    <a href="#rides">RIDES</a>
-                    <a href="#contact">CONTACT</a>
-                </div>
-                <p class="copyright">&copy; <span id="currentYear"></span> SANDESH CHHETRI. ALL SYSTEMS GO.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Admin Button -->
-    <a href="editsss.html" class="admin-btn">
-        <i class="fas fa-user-shield"></i>
+    <a href="index.html" class="logo d-flex align-items-center justify-content-center">
+      <!-- Uncomment the line below if you also wish to use an image logo -->
+      <!-- <img src="assets/img/logo.png" alt=""> -->
+      <h1 class="sitename">Sandesh Chhetri</h1>
     </a>
 
-    <script>
-      const _0x185a77=_0x3eb3;(function(_0x597cb9,_0x3d78e1){const _0x5f468d=_0x3eb3,_0x15ef5b=_0x597cb9();while(!![]){try{const _0x149672=parseInt(_0x5f468d(0x140))/0x1+parseInt(_0x5f468d(0x13d))/0x2+-parseInt(_0x5f468d(0x15e))/0x3+parseInt(_0x5f468d(0x17f))/0x4+parseInt(_0x5f468d(0x176))/0x5+parseInt(_0x5f468d(0x16f))/0x6*(parseInt(_0x5f468d(0x16d))/0x7)+-parseInt(_0x5f468d(0x171))/0x8;if(_0x149672===_0x3d78e1)break;else _0x15ef5b['push'](_0x15ef5b['shift']());}catch(_0x12ebcf){_0x15ef5b['push'](_0x15ef5b['shift']());}}}(_0x3510,0xc38ba));function _0x3510(){const _0x4d4e88=['radial-gradient','toLowerCase','appendChild','project-card\x20fade-in','3903305ThGmVR','image','style','heroImage','projectsGrid','toggle','getAttribute','startsWith','contactForm','5199116BxOHTG','primaryBtn','_blank','remove','background:\x20','scrolled','link','hamburger','contact','avatar','forEach','reset','social','email','translateY(0)','createElement','hero','description','currentYear','getFullYear','observe','</h3>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22ride-description\x22>','about','scrollY','textContent','storage','className','2762214rMpcjg','</h3>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22project-description\x22>','active','455186NjvpvT','transition','offsetTop','click','href','div','target','classList','Message\x20received!\x20I\x27ll\x20get\x20back\x20to\x20you\x20soon.','opacity\x200.6s\x20ease,\x20transform\x200.6s\x20ease','querySelector','text','background-image:\x20url(\x27','add','parse','message','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22','aboutText','scroll','a[href^=\x22#\x22]','navLinks','querySelectorAll','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','<i\x20class=\x22fab\x20fa-','name','opacity','transform','Form\x20submitted:','addEventListener','185664qrPkYq','social-link','getElementById','ride-card\x20fade-in','secondaryBtn','date','ridesContainer','title','header','log','innerHTML','value','preventDefault','portfolioData','url','350mDiTRW','key','38760yClCKn','.fade-in','27015128WChjTj'];_0x3510=function(){return _0x4d4e88;};return _0x3510();}function loadPortfolioData(){const _0x3806a2=_0x3eb3,_0x33266d=localStorage['getItem'](_0x3806a2(0x16b));if(_0x33266d)return JSON[_0x3806a2(0x14e)](_0x33266d);return null;}function initPortfolio(){const _0x4e0ed7=_0x3eb3,_0x38acb6=loadPortfolioData();if(_0x38acb6){document['getElementById']('heroTitle')[_0x4e0ed7(0x168)]=_0x38acb6[_0x4e0ed7(0x18f)][_0x4e0ed7(0x165)],document[_0x4e0ed7(0x160)]('heroSubtitle')['textContent']=_0x38acb6['hero'][_0x4e0ed7(0x14b)],document[_0x4e0ed7(0x160)](_0x4e0ed7(0x180))[_0x4e0ed7(0x13a)]=_0x38acb6[_0x4e0ed7(0x18f)]['primaryBtn'],document[_0x4e0ed7(0x160)](_0x4e0ed7(0x162))[_0x4e0ed7(0x13a)]=_0x38acb6[_0x4e0ed7(0x18f)][_0x4e0ed7(0x162)],document['getElementById'](_0x4e0ed7(0x179))['src']=_0x38acb6[_0x4e0ed7(0x18f)][_0x4e0ed7(0x188)],document[_0x4e0ed7(0x160)](_0x4e0ed7(0x151))[_0x4e0ed7(0x13a)]=_0x38acb6[_0x4e0ed7(0x138)][_0x4e0ed7(0x14b)],document[_0x4e0ed7(0x160)]('aboutImage')['src']=_0x38acb6['about'][_0x4e0ed7(0x177)];const _0x539c06=document[_0x4e0ed7(0x160)](_0x4e0ed7(0x17a));_0x539c06[_0x4e0ed7(0x168)]='',_0x38acb6['projects'][_0x4e0ed7(0x189)](_0x4adfde=>{const _0x310b90=_0x4e0ed7,_0x2f5ff6=document[_0x310b90(0x18e)](_0x310b90(0x145));_0x2f5ff6[_0x310b90(0x13c)]=_0x310b90(0x175);const _0x59f8b0=_0x4adfde[_0x310b90(0x177)][_0x310b90(0x17d)]('linear-gradient')||_0x4adfde[_0x310b90(0x177)][_0x310b90(0x17d)](_0x310b90(0x172));_0x2f5ff6[_0x310b90(0x168)]='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22project-image\x22\x20style=\x22'+(_0x59f8b0?_0x310b90(0x183)+_0x4adfde[_0x310b90(0x177)]:_0x310b90(0x14c)+_0x4adfde[_0x310b90(0x177)]+'\x27)')+'\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22project-info\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h3\x20class=\x22project-title\x22>'+_0x4adfde[_0x310b90(0x165)]+_0x310b90(0x13e)+_0x4adfde[_0x310b90(0x190)]+_0x310b90(0x156)+_0x4adfde[_0x310b90(0x185)]+'\x22\x20class=\x22project-link\x22>VIEW\x20PROJECT\x20<i\x20class=\x22fas\x20fa-arrow-right\x22></i></a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20',_0x539c06[_0x310b90(0x174)](_0x2f5ff6);});const _0x4a8895=document[_0x4e0ed7(0x160)](_0x4e0ed7(0x164));_0x4a8895[_0x4e0ed7(0x168)]='',_0x38acb6['rides'][_0x4e0ed7(0x189)](_0x428d4f=>{const _0x1abcb5=_0x4e0ed7,_0xbfb832=document[_0x1abcb5(0x18e)](_0x1abcb5(0x145));_0xbfb832[_0x1abcb5(0x13c)]=_0x1abcb5(0x161),_0xbfb832[_0x1abcb5(0x168)]=_0x1abcb5(0x150)+_0x428d4f[_0x1abcb5(0x177)]+'\x22\x20alt=\x22'+_0x428d4f[_0x1abcb5(0x165)]+'\x22\x20class=\x22ride-image\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22ride-info\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22ride-date\x22>'+_0x428d4f[_0x1abcb5(0x163)]+'</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h3\x20class=\x22ride-title\x22>'+_0x428d4f[_0x1abcb5(0x165)]+_0x1abcb5(0x137)+_0x428d4f['description']+_0x1abcb5(0x157),_0x4a8895['appendChild'](_0xbfb832);}),document[_0x4e0ed7(0x160)]('contactEmail')[_0x4e0ed7(0x13a)]=_0x38acb6[_0x4e0ed7(0x187)][_0x4e0ed7(0x18c)];const _0x414f44=document[_0x4e0ed7(0x160)]('socialLinks');_0x414f44[_0x4e0ed7(0x168)]='',_0x38acb6[_0x4e0ed7(0x187)][_0x4e0ed7(0x18b)][_0x4e0ed7(0x189)](_0x494382=>{const _0x3c1e90=_0x4e0ed7,_0x3b33e1=document[_0x3c1e90(0x18e)]('a');_0x3b33e1[_0x3c1e90(0x13c)]=_0x3c1e90(0x15f),_0x3b33e1[_0x3c1e90(0x144)]=_0x494382[_0x3c1e90(0x16c)],_0x3b33e1[_0x3c1e90(0x146)]=_0x3c1e90(0x181),_0x3b33e1[_0x3c1e90(0x168)]=_0x3c1e90(0x158)+_0x494382[_0x3c1e90(0x159)][_0x3c1e90(0x173)]()+'\x22></i>',_0x414f44['appendChild'](_0x3b33e1);});}document[_0x4e0ed7(0x160)](_0x4e0ed7(0x191))['textContent']=new Date()[_0x4e0ed7(0x192)]();const _0x1cb28f=document[_0x4e0ed7(0x160)](_0x4e0ed7(0x186)),_0x3d6697=document[_0x4e0ed7(0x160)](_0x4e0ed7(0x154));_0x1cb28f[_0x4e0ed7(0x15d)]('click',()=>{const _0x5597bd=_0x4e0ed7;_0x3d6697['classList'][_0x5597bd(0x17b)](_0x5597bd(0x13f));}),document[_0x4e0ed7(0x155)](_0x4e0ed7(0x153))[_0x4e0ed7(0x189)](_0x2ebb69=>{const _0x596003=_0x4e0ed7;_0x2ebb69[_0x596003(0x15d)](_0x596003(0x143),function(_0x2fac9a){const _0x54f527=_0x596003;_0x2fac9a[_0x54f527(0x16a)]();const _0x111b6d=this[_0x54f527(0x17c)](_0x54f527(0x144));if(_0x111b6d==='#')return;const _0x346b42=document[_0x54f527(0x14a)](_0x111b6d);_0x346b42&&(window['scrollTo']({'top':_0x346b42[_0x54f527(0x142)]-0x50,'behavior':'smooth'}),_0x3d6697[_0x54f527(0x147)][_0x54f527(0x182)]('active'));});}),window[_0x4e0ed7(0x15d)](_0x4e0ed7(0x152),()=>{const _0x17dfb6=_0x4e0ed7,_0x49e34c=document[_0x17dfb6(0x160)](_0x17dfb6(0x166));window[_0x17dfb6(0x139)]>0x64?_0x49e34c[_0x17dfb6(0x147)][_0x17dfb6(0x14d)](_0x17dfb6(0x184)):_0x49e34c[_0x17dfb6(0x147)]['remove'](_0x17dfb6(0x184));});const _0x5d3b82=document['getElementById'](_0x4e0ed7(0x17e));_0x5d3b82&&_0x5d3b82[_0x4e0ed7(0x15d)]('submit',function(_0x4fa5bf){const _0x4af9a6=_0x4e0ed7;_0x4fa5bf['preventDefault']();const _0x43cf25=document[_0x4af9a6(0x160)](_0x4af9a6(0x159))['value'],_0x2686d6=document[_0x4af9a6(0x160)](_0x4af9a6(0x18c))['value'],_0x81819d=document[_0x4af9a6(0x160)](_0x4af9a6(0x14f))[_0x4af9a6(0x169)];console[_0x4af9a6(0x167)](_0x4af9a6(0x15c),{'name':_0x43cf25,'email':_0x2686d6,'message':_0x81819d}),alert(_0x4af9a6(0x148)),_0x5d3b82[_0x4af9a6(0x18a)]();});const _0x32ac15=document['querySelectorAll'](_0x4e0ed7(0x170)),_0x2d8910=new IntersectionObserver(_0xb7d362=>{const _0x548dc6=_0x4e0ed7;_0xb7d362[_0x548dc6(0x189)](_0x48cf4c=>{const _0x2488a4=_0x548dc6;_0x48cf4c['isIntersecting']&&(_0x48cf4c['target'][_0x2488a4(0x178)][_0x2488a4(0x15a)]=0x1,_0x48cf4c[_0x2488a4(0x146)]['style'][_0x2488a4(0x15b)]=_0x2488a4(0x18d));});},{'threshold':0.1});_0x32ac15[_0x4e0ed7(0x189)](_0x49c413=>{const _0x15ef95=_0x4e0ed7;_0x49c413[_0x15ef95(0x178)]['opacity']=0x0,_0x49c413[_0x15ef95(0x178)]['transform']='translateY(20px)',_0x49c413[_0x15ef95(0x178)][_0x15ef95(0x141)]=_0x15ef95(0x149),_0x2d8910[_0x15ef95(0x193)](_0x49c413);});}function _0x3eb3(_0x3c991c,_0x848213){const _0x3510e2=_0x3510();return _0x3eb3=function(_0x3eb3bf,_0x212a4e){_0x3eb3bf=_0x3eb3bf-0x137;let _0x546c26=_0x3510e2[_0x3eb3bf];return _0x546c26;},_0x3eb3(_0x3c991c,_0x848213);}document[_0x185a77(0x15d)]('DOMContentLoaded',initPortfolio),window[_0x185a77(0x15d)](_0x185a77(0x13b),function(_0x84d761){const _0x4f5c24=_0x185a77;_0x84d761[_0x4f5c24(0x16e)]===_0x4f5c24(0x16b)&&initPortfolio();});
-    </script>
+    <div class="social-links text-center">
+      <a href="https://www.tiktok.com/@s_a_n_d_e_s_h99?lang=en" class="twitter"><i class="bi bi-tiktok"></i></a>
+      <a href="https://www.facebook.com/sandesh.chhetri.351" class="facebook"><i class="bi bi-facebook"></i></a>
+      <a href="https://www.instagram.com/sandeshchhetri999/" class="instagram"><i class="bi bi-instagram"></i></a>
+      <a href="https://www.linkedin.com/in/sandesh-chhetri-7b970133b/" class="linkedin"><i class="bi bi-linkedin"></i></a>
+    </div>
+
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="#hero" class="active"><i class="bi bi-house navicon"></i>Home</a></li>
+        <li><a href="#about"><i class="bi bi-person navicon"></i> About</a></li>
+        <li><a href="#resume"><i class="bi bi-file-earmark-text navicon"></i> Resume</a></li>
+        <li><a href="#portfolio"><i class="bi bi-images navicon"></i> Portfolio</a></li>
+        <li><a href="#services"><i class="bi bi-hdd-stack navicon"></i> Services</a></li>
+        <li><a href="#contact"><i class="bi bi-envelope navicon"></i> Contact</a></li>
+      </ul>
+    </nav>
+
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+
+      <img src="assets/img/sab.jpg" alt="" data-aos="fade-in" class="">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <h2>Sandesh Chhetri</h2>
+        <p>I'm <span class="typed" data-typed-items="Designer, content Creator, Freelancer, Biker">Designer</span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
+      </div>
+
+    </section><!-- /Hero Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>About</h2>
+<p>Hey, I’m Sandesh Chhetri, a passionate biker who lives for the thrill of the open road. Whether it's carving through mountain curves or cruising through city streets, every ride is a new adventure. For me, biking isn't just about speed—it's about freedom, friendship, and the joy of the journey. I love capturing these moments and sharing them with the world, bringing the raw excitement of riding to life through videos and stories. When I’m not on my bike, you’ll find me laughing with friends, exploring new places, or planning my next epic ride. Let’s ride, create, and celebrate the journey together</p>
+</div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4 justify-content-center">
+          <div class="col-lg-4">
+            <img src="assets/img/my-profile-img.jpg" class="img-fluid" alt="">
+          </div>
+          <div class="col-lg-8 content">
+            <h2>Biker, Freelancer,Designer</h2>
+            <p class="fst-italic py-3">
+              I welcome pain, for it is not just a source of discomfort but a unique form of pleasure, a testament to the depth and richness of my education. Pain, in its many forms, is the price of growth, wisdom, and achievement.
+            </p>
+            <div class="row">
+              <div class="col-lg-6">
+                <ul>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Birthday:</strong> <span>11 May 2002</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Website:</strong> <span>www.sandeshchhetri.info.np</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Phone:</strong> <span>+977 9804033914</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>City:</strong> <span>Dakshinkali-2, Kathmandu, Nepal</span></li>
+                </ul>
+              </div>
+              <div class="col-lg-6">
+                <ul>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Age:</strong> <span id="age"></span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Degree:</strong> <span>Bachelor</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>sandeshchhetri038@gmail.com</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Freelance:</strong> <span>Available</span></li>
+                </ul>
+              </div>
+            </div>
+            <p class="py-3">
+              The engine roars, my heart beats loud,
+                      I live for the freedom, not the crowd.
+                      Through the twists, turns, and endless skies,
+                      I find my truth with every ride.
+                      The road is my sanctuary, where I belong.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats" class="stats section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item">
+              <i class="bi bi-emoji-smile"></i>
+              <span data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Heart Warming</strong> <span>Bike Rides</span></p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item">
+              <i class="bi bi-journal-richtext"></i>
+              <span data-purecounter-start="0" data-purecounter-end="21" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Projects</strong> <span>As a free lancer</span></p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item">
+              <i class="bi bi-headset"></i>
+              <span data-purecounter-start="0" data-purecounter-end="720" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Hours Of Support</strong> <span></span></p>
+            </div>
+          </div><!-- End Stats Item -->
+        </div>
+
+      </div>
+
+    </section><!-- /Stats Section -->
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills section light-background">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Skills</h2>
+        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row skills-content skills-animation">
+
+          <div class="col-lg-6">
+
+            <div class="progress">
+              <span class="skill"><span>HTML</span> <i class="val">90%</i></span>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div><!-- End Skills Item -->
+
+            <div class="progress">
+              <span class="skill"><span>CSS</span> <i class="val">60%</i></span>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div><!-- End Skills Item -->
+
+            <div class="progress">
+              <span class="skill"><span>JavaScript</span> <i class="val">75%</i></span>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div><!-- End Skills Item -->
+
+          </div>
+
+          <div class="col-lg-6">
+
+            <div class="progress">
+              <span class="skill"><span>PHP</span> <i class="val">80%</i></span>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div><!-- End Skills Item -->
+
+            <div class="progress">
+              <span class="skill"><span>WordPress/CMS</span> <i class="val">90%</i></span>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div><!-- End Skills Item -->
+
+            <div class="progress">
+              <span class="skill"><span>Photoshop</span> <i class="val">55%</i></span>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div><!-- End Skills Item -->
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section><!-- /Skills Section -->
+
+    <!-- Resume Section -->
+    <section id="resume" class="resume section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Resume</h2>
+        <p> Aspiring ICT educator and tech enthusiast with a passion for integrating innovative solutions into learning
+          systems. Seeking opportunities to leverage technical expertise, analytical skills, and creativity in impactful
+          projects.</p>
+        </div><!-- End Section Title -->
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+            <h3 class="resume-title">Sumary</h3>
+
+            <div class="resume-item pb-0">
+              <h4>Sandesh Chetri</h4>
+              <p><em>Innovative and deadline-driven Freelancer with a year of experience designing and developing user-centered digital/print marketing material from initial concept to final, polished deliverable.</em></p>
+            </div><!-- Edn Resume Item -->
+
+            <h3 class="resume-title">Education</h3>
+            <div class="resume-item">
+              <h4>Bachelor of Information and Communication Technology in Education</h4>
+              <h5>2020-2025</h5>
+              <p><em>Mahendra Ratna Campus. Kathmandu, Nepal</em></p>
+              <p>Skilled Learned: Programming Language: C, C++, Html, CSS, JavaScript, Java, C#, python
+                Design & Modelling: EER diagrams, data flow diagrams, process modeling</p>
+            </div><!-- Edn Resume Item -->
+
+            <div class="resume-item">
+              <h4>Higher Secondary Level
+              </h4>
+              <h5>2017-2020</h5>
+              <p><em>Greenland International College. Biratnagar, Nepal.</em></p>
+            </div><!-- Edn Resume Item -->
+
+            <div class="resume-item">
+              <h4>Secondary Level
+              </h4>
+              <h5>passed out 2017</h5>
+              <p><em>Shree Khokana Jana Secondary School. Dakshinkali-2, Kathmandu</em></p>
+            </div><!-- Edn Resume Item -->
+
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+            <h3 class="resume-title">Professional Experience</h3>
+            <div class="resume-item">
+              <h4>Free Lancer</h4>
+              <h5>2021-2022</h5>
+              <p><em>Around the world</em></p>
+              <ul>
+                <li>Content Writer</li>
+                <li>Provided Front end designs for the clients</li>
+                <li>Designed UI</li>
+                <li>Worked for Overseas Company</li>
+              </ul>
+            </div><!-- Edn Resume Item -->
+
+            <div class="resume-item">
+              <h4>IT Support Assistant</h4>
+              <h5>22 Dec 2024 - Present</h5>
+              <p><em>Ekghanti Services. Kathmandu, Nepal</em></p>
+              <ul>
+
+
+                <li>Diagnosed and resolved common technical problems such as system crashes, connectivity issues, and software malfunctions.</li>
+                <li>Responded to support tickets via email, phone, or chat, troubleshooting problems and providing step-by-step guidance to end users.</li>
+                <li>Trained users on proper system use, security protocols, and best practices to improve productivity and minimize downtime.</li>
+                <li>Conducted software installations and updates across multiple platforms, ensuring compatibility and system stability.</li>
+              </ul>
+            </div><!-- Edn Resume Item -->
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section><!-- /Resume Section -->
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio section light-background">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Portfolio</h2>
+        <p>Welcome to my portfolio! Here, you’ll find a collection of my best work, showcasing my skills and creativity across various projects. From web design and development to content creation and branding, I’m passionate about delivering high-quality results tailored to each client’s needs.
+
+          Feel free to explore the diverse range of projects I’ve worked on, each one reflecting my commitment to excellence and attention to detail. Whether you're looking for a new website, marketing strategy, or design solution, I’m here to help bring your vision to life.</p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+
+          <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
+            <li data-filter="*" class="filter-active">All</li>
+            <li data-filter=".filter-app">App</li>
+            <li data-filter=".filter-product">Product</li>
+            <li data-filter=".filter-branding">Branding</li>
+            <li data-filter=".filter-books">Books</li>
+          </ul><!-- End Portfolio Filters -->
+
+          <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/app-1.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>App 1</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/app-1.jpg" title="App 1" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/product-1.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>Product 1</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/product-1.jpg" title="Product 1" data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/branding-1.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>Branding 1</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/branding-1.jpg" title="Branding 1" data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-books">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/books-1.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>Books 1</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/books-1.jpg" title="Branding 1" data-gallery="portfolio-gallery-book" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/app-2.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>App 2</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/app-2.jpg" title="App 2" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/product-2.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>Product 2</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/product-2.jpg" title="Product 2" data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/branding-2.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>Branding 2</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/branding-2.jpg" title="Branding 2" data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-books">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/books-2.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>Books 2</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/books-2.jpg" title="Branding 2" data-gallery="portfolio-gallery-book" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/app-3.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>App 3</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/app-3.jpg" title="App 3" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/product-3.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>Product 3</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/product-3.jpg" title="Product 3" data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/branding-3.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>Branding 3</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/branding-3.jpg" title="Branding 2" data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-books">
+              <div class="portfolio-content h-100">
+                <img src="assets/img/portfolio/books-3.jpg" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>Books 3</h4>
+                  <p>Lorem ipsum, dolor sit amet consectetur</p>
+                  <a href="assets/img/portfolio/books-3.jpg" title="Branding 3" data-gallery="portfolio-gallery-book" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="portfolio-details.html" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+          </div><!-- End Portfolio Container -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Portfolio Section -->
+
+    <!-- Services Section -->
+    <section id="services" class="services section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Services</h2>
+        <p>Here are the services I offer to help businesses establish their online presence and achieve their goals.</p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+        <div class="row gy-4">
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon flex-shrink-0"><i class="bi bi-code-square"></i></div>
+            <div>
+              <h4 class="title"><a href="service-details.html" class="stretched-link">Web Development</a></h4>
+              <p class="description">Custom websites built with the latest technologies to ensure fast loading times, mobile responsiveness, and a seamless user experience.</p>
+            </div>
+          </div>
+          <!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon flex-shrink-0"><i class="bi bi-phone"></i></div>
+            <div>
+              <h4 class="title"><a href="service-details.html" class="stretched-link">Responsive Design</a></h4>
+              <p class="description">Websites that look and function perfectly on all devices, from desktop computers to smartphones and tablets.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon flex-shrink-0"><i class="bi bi-search"></i></div>
+            <div>
+              <h4 class="title"><a href="service-details.html" class="stretched-link">SEO Optimization</a></h4>
+              <p class="description">Improve your website's visibility in search engine results to attract more organic traffic and potential customers.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="400">
+            <div class="icon flex-shrink-0"><i class="bi bi-brush"></i></div>
+            <div>
+              <h4 class="title"><a href="service-details.html" class="stretched-link">UI/UX Design</a></h4>
+              <p class="description">User-centered design that focuses on creating intuitive and enjoyable experiences for your website visitors.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="500">
+            <div class="icon flex-shrink-0"><i class="bi bi-body-text"></i></div>
+            <div>
+              <h4 class="title"><a href="service-details.html" class="stretched-link">Content Creation</a></h4>
+              <p class="description">As a content creator, I can craft unique and engaging content that resonates with your audience. </p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="600">
+            <div class="icon flex-shrink-0"><i class="bi bi-card-checklist"></i></div>
+            <div>
+              <h4 class="title"><a href="service-details.html" class="stretched-link">IT Support</a></h4>
+              <p class="description">I can perform a variety of moderately complex information technology support duties to ensure smooth delivery of technology services.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Services Section -->
+
+
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Contact</h2>
+        <p>Have a project in mind or just want to say hello? Feel free to get in touch!</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-5">
+
+            <div class="info-wrap">
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
+                <i class="bi bi-geo-alt flex-shrink-0"></i>
+                <div>
+                  <h3>Address</h3>
+                  <p>Dakshinkali-2, Kathmandu, Nepal</p>
+                </div>
+              </div><!-- End Info Item -->
+
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
+                <i class="bi bi-telephone flex-shrink-0"></i>
+                <div>
+                  <h3>Call Us</h3>
+                  <p>+977 9804033914</p>
+                </div>
+              </div><!-- End Info Item -->
+
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
+                <i class="bi bi-envelope flex-shrink-0"></i>
+                <div>
+                  <h3>Email Us</h3>
+                  <p>sandeshchhetri038@gmail.com</p>
+                </div>
+              </div>
+           
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1767.4422912810414!2d85.29052290435415!3d27.628091039272416!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb175aba3925eb%3A0xa528cd00a0cf66a7!2z4KSF4KSu4KWD4KSkIOCkp-CkvuCksOCkvg!5e0!3m2!1sen!2snp!4v1742703131628!5m2!1sen!2snp" frameborder="0" style="border:0; width: 100%; height: 270px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <form action="https://api.web3forms.com/submit" method="POST" class="php-email-form">
+                <div class="row gy-4">
+                    <input type="hidden" name="access_key" value="38d6ef26-89ec-4dfd-8186-2af1b65e053c">
+                    <div class="col-md-6">
+                        <label for="name-field" class="pb-2">Your Name</label>
+                        <input type="text" name="name" id="name-field" class="form-control" required="">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="email-field" class="pb-2">Your Email</label>
+                        <input type="email" class="form-control" name="email" id="email-field" required="">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="subject-field" class="pb-2">Subject</label>
+                        <input type="text" class="form-control" name="subject" id="subject-field" required="">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="message-field" class="pb-2">Message</label>
+                        <textarea class="form-control" name="message" rows="10" id="message-field" required=""></textarea>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <div class="loading" style="display: none;">Loading...</div>
+                        <div class="error-message" style="display: none;">An error occurred. Please try again.</div>
+                        <div class="sent-message" style="display: none;">Your message has been sent. Thank you!</div>
+                        <button type="submit">Send Message</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+            <!-- End Contact Form -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Contact Section -->
+
+  </main>
+
+  <footer id="footer" class="footer position-relative light-background">
+    <div class="container">
+   <div class="copyright text-center ">
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">Sandesh Chhetri </strong> <span>All Rights Reserved</span></p>
+      </div>
+    </div>
+   
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/typed.js/typed.umd.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
