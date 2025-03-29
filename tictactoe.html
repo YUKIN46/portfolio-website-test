@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cyberpunk Tic-Tac-Toe</title>
+    <style>
+        /* Cyberpunk color palette */
+        :root {
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d65bca;
+            --neon-green: #39ff14;
+            --dark-bg: #01012b;
+            --darker-bg: #0d0b30;
+            --grid-line: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Segoe UI', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+            color: white;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Glowing text effect */
+        @keyframes text-glow {
+            0% { text-shadow: 0 0 5px var(--neon-blue); }
+            50% { text-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-purple); }
+            100% { text-shadow: 0 0 5px var(--neon-blue); }
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 8vw, 3rem);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: text-glow 3s infinite;
+            position: relative;
+            text-align: center;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        /* Game container */
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+        }
+
+        /* Status display */
+        .status {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+            height: 40px;
+            transition: all 0.3s ease;
+        }
+
+        /* Game board */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px;
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 1/1;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            touch-action: manipulation;
+        }
+
+        .board::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid var(--grid-line);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        /* Board cells */
+        .cell {
+            aspect-ratio: 1/1;
+            background: rgba(1, 1, 43, 0.5);
+            border: 1px solid var(--grid-line);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        .cell:hover {
+            background: rgba(5, 217, 232, 0.1);
+            box-shadow: 0 0 15px rgba(5, 217, 232, 0.3);
+        }
+
+        /* X and O styles */
+        .cell.x::before, .cell.x::after,
+        .cell.o::before {
+            content: '';
+            position: absolute;
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .cell.o::before {
+            width: 60%;
+            height: 60%;
+            border-radius: 50%;
+            border: 5px solid var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
+            background: transparent;
+        }
+
+        .cell.x::before, .cell.x::after {
+            width: 5px;
+            height: 70%;
+            top: 15%;
+        }
+
+        .cell.x::before {
+            transform: rotate(45deg);
+        }
+
+        .cell.x::after {
+            transform: rotate(-45deg);
+        }
+
+        /* Win animation */
+        @keyframes win-flash {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        .cell.win {
+            animation: win-flash 1s infinite;
+        }
+
+        .cell.x.win::before, .cell.x.win::after {
+            background: var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        .cell.o.win::before {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        /* Button container */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        /* Game buttons */
+        .game-btn {
+            padding: 12px 25px;
+            background: transparent;
+            color: white;
+            border: 2px solid var(--neon-purple);
+            border-radius: 30px;
+            font-size: clamp(0.9rem, 4vw, 1rem);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            min-width: 120px;
+        }
+
+        .game-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: var(--neon-purple);
+            z-index: -1;
+            transition: width 0.3s ease;
+        }
+
+        .game-btn:hover {
+            color: #111;
+            box-shadow: 0 0 20px var(--neon-purple);
+        }
+
+        .game-btn:hover::before {
+            width: 100%;
+        }
+
+        .restart-btn {
+            border-color: var(--neon-pink);
+            display: none; /* Hidden by default */
+        }
+
+        .restart-btn::before {
+            background: var(--neon-pink);
+        }
+
+        .restart-btn:hover {
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        /* Floating particles background */
+        .particle {
+            position: absolute;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        /* Game mode selector */
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            gap: 10px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: clamp(0.8rem, 3.5vw, 0.9rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .mode-btn.active {
+            background: var(--neon-blue);
+            color: #111;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        /* Score board */
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--grid-line);
+            flex-wrap: wrap;
+        }
+
+        .score {
+            text-align: center;
+            padding: 8px;
+            min-width: 80px;
+        }
+
+        .score-title {
+            font-size: clamp(0.7rem, 3vw, 0.9rem);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: clamp(1rem, 5vw, 1.5rem);
+            font-weight: bold;
+        }
+
+        .x-score .score-value {
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .o-score .score-value {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .ties .score-value {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        /* Turn indicator */
+        .turn-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .turn {
+            width: clamp(30px, 8vw, 40px);
+            height: clamp(30px, 8vw, 40px);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .turn::before {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 70%;
+        }
+
+        .turn.x::before {
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+            clip-path: polygon(
+                20% 0%, 80% 0%, 
+                100% 20%, 100% 80%, 
+                80% 100%, 20% 100%, 
+                0% 80%, 0% 20%
+            );
+        }
+
+        .turn.o::before {
+            width: 60%;
+            height: 60%;
+            border-radius: 50%;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .turn-text {
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            font-size: clamp(0.9rem, 4vw, 1.2rem);
+        }
+
+        /* Game over overlay */
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(1, 1, 43, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            padding: 20px;
+        }
+
+        .game-over.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .game-over-message {
+            font-size: clamp(1.5rem, 8vw, 2.5rem);
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 15px currentColor;
+            line-height: 1.3;
+        }
+
+        .game-over-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Prevent zooming on mobile devices */
+        @media (max-width: 768px) {
+            input, textarea, select {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Very small devices */
+        @media (max-width: 350px) {
+            .button-container, .game-over-buttons {
+                gap: 10px;
+            }
+            
+            .game-btn {
+                padding: 10px 15px;
+                min-width: 100px;
+            }
+            
+            .mode-btn {
+                min-width: 100px;
+                padding: 8px 15px;
+            }
+            
+            .score {
+                min-width: 70px;
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Cyber<span style="color: var(--neon-pink);">Tac</span><span style="color: var(--neon-blue);">Toe</span></h1>
+    
+    <div class="mode-selector">
+        <button class="mode-btn active" id="singlePlayerBtn">Single Player</button>
+        <button class="mode-btn" id="twoPlayerBtn">Two Players</button>
+    </div>
+    
+    <div class="score-board">
+        <div class="score x-score">
+            <div class="score-title">X (Player)</div>
+            <div class="score-value" id="x-score">0</div>
+        </div>
+        <div class="score ties">
+            <div class="score-title">Ties</div>
+            <div class="score-value" id="ties-score">0</div>
+        </div>
+        <div class="score o-score">
+            <div class="score-title">O (Computer)</div>
+            <div class="score-value" id="o-score">0</div>
+        </div>
+    </div>
+    
+    <div class="turn-indicator">
+        <div class="turn x"></div>
+        <div class="turn-text">Your Turn</div>
+    </div>
+    
+    <div class="status" id="status">Make your move</div>
+    
+    <div class="game-container">
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+    </div>
+    
+    <div class="button-container">
+        <button class="game-btn" id="resetBtn">New Game</button>
+        <button class="game-btn restart-btn" id="restartBtn">Play Again</button>
+    </div>
+
+    <div class="game-over" id="gameOver">
+        <div class="game-over-message" id="gameOverMessage">You Win!</div>
+        <div class="game-over-buttons">
+            <button class="game-btn" id="playAgainBtn">Play Again</button>
+            <button class="game-btn" id="newGameBtn">New Game</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Game state
+            let board = ['', '', '', '', '', '', '', '', ''];
+            let currentPlayer = 'x';
+            let gameActive = true;
+            let scores = { x: 0, o: 0, ties: 0 };
+            let isSinglePlayer = true;
+            let isComputerTurn = false;
+            
+            // DOM elements
+            const cells = document.querySelectorAll('.cell');
+            const statusDisplay = document.getElementById('status');
+            const resetButton = document.getElementById('resetBtn');
+            const restartButton = document.getElementById('restartBtn');
+            const xScoreDisplay = document.getElementById('x-score');
+            const oScoreDisplay = document.getElementById('o-score');
+            const tiesScoreDisplay = document.getElementById('ties-score');
+            const turnIndicator = document.querySelector('.turn');
+            const turnText = document.querySelector('.turn-text');
+            const singlePlayerBtn = document.getElementById('singlePlayerBtn');
+            const twoPlayerBtn = document.getElementById('twoPlayerBtn');
+            const gameOverScreen = document.getElementById('gameOver');
+            const gameOverMessage = document.getElementById('gameOverMessage');
+            const playAgainBtn = document.getElementById('playAgainBtn');
+            const newGameBtn = document.getElementById('newGameBtn');
+            
+            // Winning conditions
+            const winningConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+                [0, 4, 8], [2, 4, 6]             // diagonals
+            ];
+            
+            // Create particles
+            createParticles();
+            
+            // Event listeners
+            cells.forEach(cell => {
+                cell.addEventListener('click', handleCellClick);
+                cell.addEventListener('mouseenter', handleCellHover);
+                cell.addEventListener('mouseleave', handleCellHoverOut);
+            });
+            
+            resetButton.addEventListener('click', resetGame);
+            restartButton.addEventListener('click', restartGame);
+            singlePlayerBtn.addEventListener('click', () => setGameMode(true));
+            twoPlayerBtn.addEventListener('click', () => setGameMode(false));
+            playAgainBtn.addEventListener('click', restartGame);
+            newGameBtn.addEventListener('click', resetGame);
+            
+            // Initialize game
+            updateTurnIndicator();
+            
+            // Functions
+            function handleCellClick(e) {
+                if (isComputerTurn) return;
+                
+                const cell = e.target;
+                const cellIndex = parseInt(cell.getAttribute('data-index'));
+                
+                // If cell already taken or game not active, ignore
+                if (board[cellIndex] !== '' || !gameActive) return;
+                
+                // Make move
+                makeMove(cell, cellIndex);
+                
+                // Check for win or draw
+                const result = checkResult();
+                
+                // If single player mode and game is still active, computer makes move
+                if (isSinglePlayer && gameActive && !result) {
+                    isComputerTurn = true;
+                    statusDisplay.textContent = "Computer is thinking...";
+                    
+                    // Add slight delay for better UX
+                    setTimeout(() => {
+                        makeComputerMove();
+                        checkResult();
+                        isComputerTurn = false;
+                    }, 800);
+                }
+            }
+            
+            function makeMove(cell, cellIndex) {
+                // Update board state
+                board[cellIndex] = currentPlayer;
+                
+                // Add X or O class to cell
+                cell.classList.add(currentPlayer);
+                
+                // Add animation class
+                cell.classList.add('animated');
+                
+                // Remove hover effects
+                cell.classList.remove('hover-x', 'hover-o');
+            }
+            
+            function makeComputerMove() {
+                // Simple AI - first checks for winning move, then blocking move, then random
+                let move = findWinningMove('o') || findWinningMove('x') || findRandomMove();
+                
+                if (move !== null) {
+                    const cell = document.querySelector(`.cell[data-index="${move}"]`);
+                    makeMove(cell, move);
+                }
+            }
+            
+            function findWinningMove(player) {
+                for (let condition of winningConditions) {
+                    const [a, b, c] = condition;
+                    
+                    // Check if two in a row with one empty
+                    if (board[a] === player && board[b] === player && board[c] === '') return c;
+                    if (board[a] === player && board[c] === player && board[b] === '') return b;
+                    if (board[b] === player && board[c] === player && board[a] === '') return a;
+                }
+                return null;
+            }
+            
+            function findRandomMove() {
+                // Find all empty cells
+                const emptyCells = board
+                    .map((cell, index) => cell === '' ? index : null)
+                    .filter(val => val !== null);
+                
+                // Return random empty cell or null if no moves left
+                return emptyCells.length > 0 
+                    ? emptyCells[Math.floor(Math.random() * emptyCells.length)] 
+                    : null;
+            }
+            
+            function checkResult() {
+                let roundWon = false;
+                
+                // Check all winning conditions
+                for (let i = 0; i < winningConditions.length; i++) {
+                    const [a, b, c] = winningConditions[i];
+                    
+                    if (board[a] === '' || board[b] === '' || board[c] === '') continue;
+                    
+                    if (board[a] === board[b] && board[b] === board[c]) {
+                        roundWon = true;
+                        
+                        // Highlight winning cells
+                        document.querySelector(`.cell[data-index="${a}"]`).classList.add('win');
+                        document.querySelector(`.cell[data-index="${b}"]`).classList.add('win');
+                        document.querySelector(`.cell[data-index="${c}"]`).classList.add('win');
+                        break;
+                    }
+                }
+                
+                // If won
+                if (roundWon) {
+                    endGame(`${isSinglePlayer && currentPlayer === 'x' ? 'You win!' : `Player ${currentPlayer.toUpperCase()} wins!`}`);
+                    scores[currentPlayer]++;
+                    updateScores();
+                    return true;
+                }
+                
+                // If draw
+                if (!board.includes('')) {
+                    endGame('Game ended in a draw!');
+                    scores.ties++;
+                    updateScores();
+                    return true;
+                }
+                
+                // Switch player
+                currentPlayer = currentPlayer === 'x' ? 'o' : 'x';
+                updateTurnIndicator();
+                
+                // Update status message
+                if (isSinglePlayer) {
+                    statusDisplay.textContent = currentPlayer === 'x' ? 'Your turn' : 'Computer is thinking...';
+                } else {
+                    statusDisplay.textContent = `Player ${currentPlayer.toUpperCase()}'s turn`;
+                }
+                
+                statusDisplay.style.color = currentPlayer === 'x' ? 'var(--neon-pink)' : 'var(--neon-blue)';
+                
+                return false;
+            }
+            
+            function endGame(message) {
+                gameActive = false;
+                
+                // Show game over screen
+                gameOverMessage.textContent = message;
+                gameOverMessage.style.color = message.includes('win') 
+                    ? (message.includes('You') ? 'var(--neon-pink)' : 'var(--neon-blue)')
+                    : 'var(--neon-green)';
+                
+                gameOverScreen.classList.add('active');
+                
+                // Show restart button
+                restartButton.style.display = 'block';
+            }
+            
+            function updateTurnIndicator() {
+                // Update turn indicator
+                turnIndicator.classList.remove('x', 'o');
+                turnIndicator.classList.add(currentPlayer);
+                
+                // Update turn text
+                if (isSinglePlayer) {
+                    turnText.textContent = currentPlayer === 'x' ? 'Your Turn' : 'Computer\'s Turn';
+                } else {
+                    turnText.textContent = `Player ${currentPlayer === 'x' ? '1' : '2'}'s Turn`;
+                }
+            }
+            
+            function updateScores() {
+                xScoreDisplay.textContent = scores.x;
+                oScoreDisplay.textContent = scores.o;
+                tiesScoreDisplay.textContent = scores.ties;
+            }
+            
+            function resetGame() {
+                // Reset scores
+                scores = { x: 0, o: 0, ties: 0 };
+                updateScores();
+                
+                // Start new game
+                restartGame();
+                
+                // Hide game over screen if shown
+                gameOverScreen.classList.remove('active');
+            }
+            
+            function restartGame() {
+                // Reset board state
+                board = ['', '', '', '', '', '', '', '', ''];
+                gameActive = true;
+                currentPlayer = 'x';
+                
+                // Reset UI
+                cells.forEach(cell => {
+                    cell.classList.remove('x', 'o', 'win', 'animated');
+                });
+                
+                // Reset status
+                if (isSinglePlayer) {
+                    statusDisplay.textContent = 'Your turn';
+                } else {
+                    statusDisplay.textContent = 'Player X\'s turn';
+                }
+                statusDisplay.style.color = 'var(--neon-pink)';
+                
+                // Reset turn indicator
+                updateTurnIndicator();
+                
+                // Hide restart button
+                restartButton.style.display = 'none';
+                
+                // Hide game over screen
+                gameOverScreen.classList.remove('active');
+            }
+            
+            function setGameMode(singlePlayer) {
+                isSinglePlayer = singlePlayer;
+                
+                // Update UI
+                singlePlayerBtn.classList.toggle('active', singlePlayer);
+                twoPlayerBtn.classList.toggle('active', !singlePlayer);
+                
+                // Update score titles
+                document.querySelector('.o-score .score-title').textContent = 
+                    singlePlayer ? 'O (Computer)' : 'O (Player 2)';
+                
+                // Reset game
+                resetGame();
+            }
+            
+            function handleCellHover(e) {
+                if (isComputerTurn) return;
+                
+                const cell = e.target;
+                const cellIndex = parseInt(cell.getAttribute('data-index'));
+                
+                // If cell already taken or game not active, ignore
+                if (board[cellIndex] !== '' || !gameActive) return;
+                
+                // Add hover class
+                cell.classList.add(`hover-${currentPlayer}`);
+            }
+            
+            function handleCellHoverOut(e) {
+                const cell = e.target;
+                cell.classList.remove('hover-x', 'hover-o');
+            }
+            
+            function createParticles() {
+                const particleCount = 30;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // Random size between 2px and 5px
+                    const size = Math.random() * 3 + 2;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    // Random position
+                    particle.style.left = `${Math.random() * 100}vw`;
+                    particle.style.top = `${Math.random() * 100}vh`;
+                    
+                    // Random animation
+                    const duration = Math.random() * 20 + 10;
+                    particle.style.animation = `float ${duration}s linear infinite`;
+                    
+                    document.body.appendChild(particle);
+                    
+                    // Add floating animation
+                    animateParticle(particle);
+                }
+            }
+            
+            function animateParticle(particle) {
+                // Random movement
+                const startX = Math.random() * 100;
+                const startY = Math.random() * 100;
+                const endX = startX + (Math.random() * 20 - 10);
+                const endY = startY + (Math.random() * 20 - 10);
+                const duration = Math.random() * 20 + 10;
+                
+                particle.style.left = `${startX}vw`;
+                particle.style.top = `${startY}vh`;
+                
+                const keyframes = [
+                    { 
+                        transform: `translate(0, 0)`,
+                        left: `${startX}vw`,
+                        top: `${startY}vh`
+                    },
+                    { 
+                        transform: `translate(${endX - startX}vw, ${endY - startY}vh)`,
+                        left: `${endX}vw`,
+                        top: `${endY}vh`
+                    }
+                ];
+                
+                const options = {
+                    duration: duration * 1000,
+                    iterations: Infinity,
+                    direction: 'alternate',
+                    easing: 'ease-in-out'
+                };
+                
+                particle.animate(keyframes, options);
+            }
+        });
+    </script>
+</body>
+</html>
