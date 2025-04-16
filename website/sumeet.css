@@ -44,14 +44,14 @@ body, html {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
     font-size: 1.5rem;
-    color: #2f2b2b;
+    color: #040000;
     margin-top: 10px;
   }
   .hero2 h1 {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     font-size: 2rem;
-    color: #073735;
+    color: #49140c;
     margin: 0;
   }
   
@@ -162,31 +162,6 @@ h1, h2, h3 {
     gap: 1rem;
 }
 
-.cta-button {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    background: linear-gradient(135deg, #ec3622 0%, #ec3838 100%); /* Matches the orange tones */
-    color: rgb(255, 255, 255);
-    border: #1e293b 2px solid; 
-    padding: 1rem 2.5rem;
-    font-size: 1.125rem;
-    font-weight: 500;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255, 126, 95, 0.3);
-}
-
-.cta-subtext {
-    font-size: 1rem;
-    color: #332323; /* Adjusted for contrast */
-}
-
 /* Use Case Section */
 .use-case {
     padding: 3rem 0;
@@ -199,7 +174,7 @@ h1, h2, h3 {
     letter-spacing: -0.15px;
     font-size: 2rem;
     font-weight: 600;
-    color: #6b21a8; /* Deep purple to match the scheme */
+    color: rgb(37, 129, 129); /* Deep purple to match the scheme */
     margin-bottom: 2rem;
     text-align: center;
 }
@@ -247,7 +222,7 @@ h1, h2, h3 {
     letter-spacing: -0.5px;
     font-size: 2rem;
     font-weight: 600;
-    color: #6b21a8;
+    color: rgb(37, 129, 129);
     margin-bottom: 2rem;
     text-align: center;
     
@@ -296,7 +271,7 @@ h1, h2, h3 {
     letter-spacing: -0.5px;
     font-size: 2rem;
     font-weight: 600;
-    color: #6b21a8;
+    color: rgb(37, 129, 129);
     margin-bottom: 2rem;
     text-align: center;
 }
@@ -380,35 +355,6 @@ h1, h2, h3 {
     font-weight: 500;
 }
 
-/* Responsive Design */
-@media (min-width: 768px) {
-    .header-container {
-        grid-template-columns: 1fr 1fr;
-    }
-    
-    .header-content {
-        text-align: left;
-    }
-    
-    .cta-container {
-        align-items: flex-start;
-    }
-}
-
-@media (max-width: 767px) {
-    .footer-content {
-        justify-content: space-between;
-    }
-    
-    .footer-right {
-        margin-left: auto; /* Push to the right on mobile */
-    }
-    
-    .footer-stack {
-        align-items: flex-end; /* Keep aligned to the right on mobile */
-    }
-}
-
 video::-webkit-media-controls {
     display: none !important;
 }
@@ -472,5 +418,67 @@ video {
     height: 40px; /* Adjust as needed */
   }
   
+@media (max-width: 480px) {
+    .hero {
+        height: 40vh; /* Even shorter on very small screens */
+    }
+    
+    .brands-logos img {
+        max-width: 70px;
+        max-height: 60px;
+    }
+    
+    .demo-button {
+        padding: 0.5rem 1.5rem;
+        border-width: 3px; /* Thinner border on mobile */
+    }
+    
+    .tailored-items {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Very small on tiny screens */
+    }
+}
+
+/* For larger screens */
+@media (min-width: 1200px) {
+    .hero {
+        height: 80vh; /* Taller on desktop */
+    }
+    
+    .hero2 h1 {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    
+    .hero2 p {
+        max-width: 70%;
+        margin: 10px auto 0;
+    }
+    
+    .use-case-items {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+    .volume-control {
+        opacity: 0.7;
+    }
+    
+    .volume-control:active .volume-slider {
+        width: 60px;
+        opacity: 1;
+    }
+    
+    .use-case-item:active,
+    .tailored-item:active {
+        transform: translateY(-3px);
+    }
+    
+    .demo-button:active {
+        transform: translateY(-1px);
+    }
+}
 
 
