@@ -422,6 +422,18 @@ video {
     .hero {
         height: 40vh; /* Even shorter on very small screens */
     }
+    .hero2 {
+        width: 100%;
+        max-width: 480px;
+    }
+    .hero2 h1 {
+        margin-top: 100 px;
+        font-size: 1rem; /* Smaller font size on mobile */
+    }
+    .hero2 p {
+        font-size: 0.8rem; /* Smaller font size on mobile */
+        margin: 5px auto 0;
+    }
     
     .brands-logos img {
         max-width: 70px;
