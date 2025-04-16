@@ -16,10 +16,9 @@
 </div>
  
     <section class="hero">
-        <video class="hero-video" autoplay loop>
-          <source src="Awaj_Video2_004567.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
+        <video class="hero-video" autoplay loop playsinline preload="auto" id="heroVideo">
+            <source src="Awaj_Video2_004567.mp4" type="video/mp4">
+          </video>
         <div class="volume-control">
             <button class="mute-btn"><i class="fas fa-volume-up"></i></button>
             <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="1">
@@ -73,8 +72,11 @@
             <img src="dishhome.png" alt="Dishhome Logo">
             <img src="NIC.png" alt="NIC Logo">
             <img src="Nabil.png" alt="Nabil Logo">
-            <img src="kumari1.jpg" alt="Kumari Logo">
-            
+            <img src="kumari.png" alt="Kumari Logo">
+            <img src="unilever.png" alt="Unilever Logo">
+            <img src="global.png" alt="Global Logo">
+            <img src="CG.png" alt="CG Logo">
+            <img src="Adbl.png" alt="ADBL Logo">
         </div>
     </div>
 </section>
@@ -95,7 +97,50 @@
 </footer>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const video = document.querySelector('.hero-video');
+        const video = document.getElementById('heroVideo');
+    
+    // Attempt unmuted autoplay
+    const playVideo = () => {
+        video.play().then(() => {
+            // Unmute only if autoplay succeeded
+            video.muted = false;
+        }).catch(error => {
+            // Show fallback button if autoplay blocked
+            const playButton = document.createElement('button');
+            playButton.innerHTML = '▶ Play Video';
+            playButton.style.cssText = `
+                position: absolute;
+                z-index: 1000;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 12px 24px;
+                background: #6b21a8;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+            `;
+            playButton.onclick = () => {
+                video.play().then(() => {
+                    video.muted = false;
+                    playButton.remove();
+                });
+            };
+            document.querySelector('.hero').appendChild(playButton);
+        });
+    };
+
+    // Try autoplay when page becomes visible
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            playVideo();
+        }
+    });
+
+    // Initial attempt
+    playVideo();
+
         const muteBtn = document.querySelector('.mute-btn');
         const volumeSlider = document.querySelector('.volume-slider');
         const volumeIcon = document.querySelector('.fa-volume-up');
