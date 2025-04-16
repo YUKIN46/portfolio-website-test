@@ -16,7 +16,7 @@
 </div>
  
     <section class="hero">
-        <video class="hero-video" autoplay loop>
+        <video class="hero-video" autoplay loop playsinline preload="auto">
           <source src="Awaj_Video2_004567.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
@@ -74,6 +74,7 @@
             <img src="NIC.png" alt="NIC Logo">
             <img src="Nabil.png" alt="Nabil Logo">
             <img src="kumari1.jpg" alt="Kumari Logo">
+            
         </div>
     </div>
 </section>
@@ -95,9 +96,19 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const video = document.querySelector('.hero-video');
+    // Explicitly play the video (handle browser restrictions)
+        const playVideo = () => {
+            video.play().catch(error => {
+                // Handle error if autoplay is blocked
+                console.log('Autoplay prevented:', error);
+            });
+        };
+    playVideo();
         const muteBtn = document.querySelector('.mute-btn');
         const volumeSlider = document.querySelector('.volume-slider');
         const volumeIcon = document.querySelector('.fa-volume-up');
+
+        
     
         // Volume slider functionality
         volumeSlider.addEventListener('input', (e) => {
