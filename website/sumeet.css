@@ -285,8 +285,9 @@ h1, h2, h3 {
 }
 
 .brands-logos img {
-    max-width: 70px;
-    height: auto;
+    max-height: 70px;
+    width: auto;
+    max-width: 185px;
     filter: grayscale(0%);
     transition: filter 0.3s ease;
 }
@@ -298,7 +299,7 @@ h1, h2, h3 {
 .footer {
     font-family: 'Inter', sans-serif;
     padding: 2rem 0;
-    background: linear-gradient(135deg, #6f98e4 0%, #f37353 50%, #ffa5df 100%); 
+    background: linear-gradient(135deg, #5481d5 25%, #f37353 50%, #ffa5df 100%); 
     /* background: linear-gradient(135deg, #4a4a4a 0%, #f37353 50%, #ffa5df 100%); */
     color: rgb(33, 26, 26);
 }
