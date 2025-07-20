@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWAJ AI| Ekghanti Services</title>
+  <link rel="stylesheet" href="awaj.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="fixed-logo">
+  <img src="awaj logo.png" alt="Awaj Logo">
+</div>
+ 
+    <section class="hero">
+        <video class="hero-video" autoplay loop playsinline preload="auto" id="heroVideo">
+            <source src="Awaj_Video2_004567.mp4" type="video/mp4">
+          </video>
+        <div class="volume-control">
+            <button class="mute-btn"><i class="fas fa-volume-up"></i></button>
+            <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="1">
+          </div>
+      </section>
+      <section class="hero2">
+        <div class="hero-content">
+          <h1>Say hello to our AI agents that handle calls just like humans—sometimes even better.</h1>
+          <p>Let our AI Agents take care of the conversations while you focus on growing your business.</p>
+        </div>
+      </section>
+  <section class="use-case">
+    <div class="container">
+        <h2>Use Case</h2>
+        <div class="use-case-items">
+            <div class="use-case-item">
+                <img src="time.png" alt="Clock Icon">
+                <p>Serve your customer round the clock</p>
+            </div>
+            <div class="use-case-item">
+                <img src="ser.png" alt="Calendar Icon">
+                <p>Book appointments, process queries instantly</p>
+            </div>
+            <div class="use-case-item">
+                <img src="handshake.png" alt="Handshake Icon">
+                <p>Make every interaction personalized</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tailored">
+    <div class="container">
+        <h2>Tailored for any business</h2>
+        <div class="tailored-items">
+            <div class="tailored-item"><img src="Ecommerce.png" alt="E-commerce Icon"><p>E-commerce</p></div>
+            <div class="tailored-item"><img src="SME.png" alt="SME Icon"><p>SME</p></div>
+            <div class="tailored-item"><img src="telecom.png" alt="Telecom Icon"><p>Telecom</p></div>
+            <div class="tailored-item"><img src="Isp.png" alt="ISP Icon"><p>ISP</p></div>
+            <div class="tailored-item"><img src="Enterprise.png" alt="Enterprise Icon"><p>Enterprise</p></div>
+            <div class="tailored-item"><img src="Hospital.png" alt="Hospital Icon"><p>Hospital</p></div>
+            <div class="tailored-item"><img src="Fintech.png" alt="Fintech Icons"><p>Fintech</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="brands">
+    <div class="container">
+        <h2>Brands that Support Us</h2>
+        <div class="brands-logos">
+            <img src="dishhome.png" alt="Dishhome Logo">
+            <img src="NIC.png" alt="NIC Logo">
+            <img src="Nabil.png" alt="Nabil Logo">
+            <img src="KumariBankLogo-1.png" alt="Kumari Bank Logo">
+            <img src="unilever.png" alt="Unilever Logo">
+            <img src="global.png" alt="Global Logo">
+            <img src="CG.png" alt="CG Logo">
+            <img src="Adbl.png" alt="ADBL Logo">
+           
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-content container">
+        <img src="awaj logo.png" alt="awajai" width="100" ; >
+        <div class="footer-right">
+            <div class="footer-stack">
+                <button class="demo-button" onclick="window.open('https://ekghanti.com.np/contact-us/', '_blank')">Book a Demo</button>
+                <p>Available with  
+                    <img src="orbit360.png" alt="Orbit360Logo" width="100">
+                    - Get it Now.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('heroVideo');
+    
+    // Attempt unmuted autoplay
+    const playVideo = () => {
+        video.play().then(() => {
+            // Unmute only if autoplay succeeded
+            video.muted = false;
+        }).catch(error => {
+            // Show fallback button if autoplay blocked
+            const playButton = document.createElement('button');
+            playButton.innerHTML = '▶ Play Video';
+            playButton.style.cssText = `
+                position: absolute;
+                z-index: 1000;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 12px 24px;
+                background: #6b21a8;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+            `;
+            playButton.onclick = () => {
+                video.play().then(() => {
+                    video.muted = false;
+                    playButton.remove();
+                });
+            };
+            document.querySelector('.hero').appendChild(playButton);
+        });
+    };
+
+    // Try autoplay when page becomes visible
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            playVideo();
+        }
+    });
+
+    // Initial attempt
+    playVideo();
+
+        const muteBtn = document.querySelector('.mute-btn');
+        const volumeSlider = document.querySelector('.volume-slider');
+        const volumeIcon = document.querySelector('.fa-volume-up');
+    
+        // Volume slider functionality
+        volumeSlider.addEventListener('input', (e) => {
+            video.volume = e.target.value;
+            video.muted = false;
+            volumeIcon.className = video.volume === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+        });
+    
+        // Mute button functionality
+        muteBtn.addEventListener('click', () => {
+            video.muted = !video.muted;
+            if(video.muted) {
+                volumeIcon.className = 'fas fa-volume-mute';
+                volumeSlider.value = 0;
+            } else {
+                volumeIcon.className = 'fas fa-volume-up';
+                volumeSlider.value = video.volume;
+            }
+        });
+    
+        // Sync volume on video change
+        video.addEventListener('volumechange', () => {
+            if(!video.muted) volumeSlider.value = video.volume;
+        });
+    });
+    </script>
+</body>
+</html>
