@@ -280,8 +280,7 @@
             button.style.transform = 'scale(0.95)';
             
             setTimeout(() => {
-                button.style.transform = 'scale(1)';
-                // Go back to previous page, or home if no history
+                window.location.href = 'https://www.sandeshchhetri.info.np';
                 if (window.history.length > 1) {
                     window.history.back();
                 } else {
