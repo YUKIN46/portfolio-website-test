@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YUKIN | The Ultimate Biker Experience</title>
+    <link rel="icon" href="/logo/yukin.png"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="yukin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="logo"><img src="/logo/yukin.png" alt="YUKIN Logo"> YUKIN</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#memories">Ride Memories</a></li>
+            <li><a href="#events">Events</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="burger" id="burger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>RIDE FREE</h1>
+            <h2>Live to Ride • Ride to Live</h2>
+            <h2>Ride Hard • Ride Safe</h2>
+            <a href="#" class="cta-btn" id="joinBtn">JOIN THE BROTHERHOOD</a>
+        </div>
+    </section>
+
+    <!-- Join Modal -->
+    <div class="modal" id="joinModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <h2>Join The Brotherhood</h2>
+            <p>Scan the QR code or use the link below to join our community</p>
+            
+            <div class="qr-container">
+                <img src="/images/Groupqr.jpeg" alt="QR Code">
+            </div>
+            
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            
+            <a href="https://chat.whatsapp.com/HMlCePGJwMG3wPziZHpL69?mode=ems_copy_c" target="_blank" class="join-link">
+                <i class="fas fa-link"></i> Use This Link
+            </a>
+        </div>
+    </div>
+
+    <!-- Event Registration Modal -->
+    <div class="modal" id="registrationModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeRegistration()">&times;</button>
+            <h2>Register for Event</h2>
+            <p id="eventTitle" style="color: var(--primary); font-weight: 600; margin-bottom: 25px;"></p>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="userName">Full Name *</label>
+                    <input type="text" id="userName" name="user_name" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="userEmail">Email Address *</label>
+                    <input type="email" id="userEmail" name="user_email" required placeholder="youremail@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="userPhone">Contact Number *</label>
+                    <input type="tel" id="userPhone" name="user_phone" required placeholder="+977 9XXXXXXXXX">
+                </div>
+                
+                <div class="form-group">
+                    <label for="userAddress">Address *</label>
+                    <textarea id="userAddress" name="user_address" required placeholder="Enter your complete address"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bikeBrand">Bike Brand *</label>
+                    <input type="text" id="bikeBrand" name="bike_brand" required placeholder="e.g., Yamaha, Honda, Crossfire, KTM, Bajaj, TVS, Suzuki, Royal Enfield, etc.">
+                </div>
+                
+                <div class="form-group">
+                    <label for="bikeModel">Bike Model *</label>
+                    <input type="text" id="bikeModel" name="bike_model" required placeholder="e.g., R15, CBR, Pulsar, Duke, Apache, Gixxer, Bullet, etc.">
+                </div>
+                
+                <div class="form-group">
+                    <label for="ridingExperience">Riding Experience *</label>
+                    <select id="ridingExperience" name="riding_experience" required>
+                        <option value="">Select your experience level</option>
+                        <option value="Beginner (0-1 years)">Beginner (0-1 years)</option>
+                        <option value="Intermediate (1-3 years)">Intermediate (1-3 years)</option>
+                        <option value="Advanced (3-5 years)">Advanced (3-5 years)</option>
+                        <option value="Expert (5+ years)">Expert (5+ years)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="additionalInfo">Additional Information</label>
+                    <textarea id="additionalInfo" name="additional_info" placeholder="Any special requirements or questions?"></textarea>
+                </div>
+                
+                <input type="hidden" id="eventName" name="event_name">
+                <input type="hidden" id="eventDate" name="event_date">
+                
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Register Now
+                </button>
+                
+                <div id="formMessage"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section class="info-section" id="about">
+        <h2 class="section-title">The Biker Lifestyle</h2>
+        <div class="cards">
+            <div class="card fade-in">
+                <div class="card-icon">🏍️</div>
+                <h3>Freedom</h3>
+                <p>There's nothing like the feeling of the open road. Two wheels, endless possibilities, and the wind as your only companion. Riding isn't just transportation—it's a way of life.</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🤝</div>
+                <h3>Brotherhood</h3>
+                <p>Bikers share an unbreakable bond. We look out for each other on the road and off. When you're part of the community, you're never riding alone.</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">⚡</div>
+                <h3>Adventure</h3>
+                <p>Every ride is a new adventure. From mountain passes to coastal highways, bikers seek out the roads less traveled and the experiences that define us.</p>
+            </div>
+        </div>
+
+        <div class="cards">
+            <div class="card fade-in">
+                <div class="card-icon">🛠️</div>
+                <h3>Custom Culture</h3>
+                <p>Your bike is an extension of yourself. From choppers to cruisers, café racers to touring bikes—we celebrate the art of customization and mechanical mastery.</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🌍</div>
+                <h3>Global Community</h3>
+                <p>Bikers span every continent and culture. From Sturgis to the Isle of Man, we gather to celebrate our shared passion for the ride.</p>
+            </div>
+            <div class="card fade-in">
+                <div class="card-icon">🔥</div>
+                <h3>Passion</h3>
+                <p>It's not just about the destination—it's about the journey. The rumble of the engine, the lean into a curve, the satisfaction of a perfect ride.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="info-section" id="gallery">
+        <h2 class="section-title">Gallery</h2>
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="/images/r15.jpg" alt="My Bike">
+                <div class="gallery-overlay">
+                    <h4>My Bike <br>V3 The Doraemon</h4>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="/images/nuwakot.png" alt="Road Trip">
+                <div class="gallery-overlay">
+                    <h4>Nuwakot <br> The Road Trip </h4>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="/images/Sunset Ride.png" alt="Sunset Ride">
+                <div class="gallery-overlay">
+                    <h4>Sunset<br>Kalu Pandey</h4>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="/images/brotherhood.jpeg" alt="Brotherhood">
+                <div class="gallery-overlay">
+                    <h4>Brotherhood</h4>
+                </div>
+            </div>
+            <!-- <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1595838962737-71bb9c90f28c?w=600" alt="Sunset Ride">
+                <div class="gallery-overlay">
+                    <h4>Sunset Cruise</h4>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1558980664-769d59546b3d?w=600" alt="Mountain Road">
+                <div class="gallery-overlay">
+                    <h4>Mountain Pass</h4>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1558980664-769d59546b3d?w=600" alt="Mountain Road">
+                <div class="gallery-overlay">
+                    <h4>Mountain Pass</h4>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=600" alt="Desert Ride">
+                <div class="gallery-overlay">
+                    <h4>Desert Ride</h4>
+                </div> -->
+        </div>
+    </section>
+    
+
+    <section class="info-section" id="memories">
+  <h2 class="section-title">Ride Memories</h2>
+  <div class="memories-grid" id="memoriesGrid">
+    
+    <!-- Example Ride Memory -->
+    <div class="memory-card">
+      <div class="memory-image">
+        <img src="/images/mailung.png" alt="Mailung Ride">
+        <div class="memory-badge">
+          <i class="fas fa-users"></i> 5 Riders
+        </div>
+      </div>
+      <div class="memory-content">
+        <h3>Mailung Ride</h3>
+        <p class="memory-location">
+          <i class="fas fa-map-marker-alt"></i> Chovar,Kathmandu → Mailung, Nuwakot
+        </p>
+        <div class="memory-date">
+          <i class="far fa-calendar"></i>
+          <span>September 15, 2024</span>
+        </div>
+        <p class="memory-description">
+          "Our ride to Mailung was more than just a trip — it was an adventure that none of us will forget. The winding mountain roads kept us on our toes, each turn revealing views more stunning than the last. With the wind in our faces and the roar of the engines beneath us, we felt free, alive, and far from the chaos of everyday life. We stopped along the way for quick laughs, roadside tea, and to take in the beauty around us. But what made the journey truly unforgettable wasn’t just the scenery — it was the brotherhood. Every shared moment, every challenge on the road, brought us closer. By the time we reached Mailung, it wasn’t just the destination that mattered — it was the memories we made getting there."
+        </p>
+        <div class="memory-stats">
+          <div class="stat"><i class="fas fa-motorcycle"></i> 3 Bikes</div>
+          <div class="stat"><i class="fas fa-users"></i> 5 People</div>
+        </div>
+        <button class="view-memory-btn" onclick="viewMemory(0)">
+          <i class="fas fa-images"></i> View Photos
+        </button>
+      </div>
+    </div>
+
+    <!-- Add more .memory-card for each ride -->
+
+  </div>
+</section>
+    <!-- Memory Photos Modal -->
+<div class="modal" id="memoryModal">
+  <div class="modal-content" style="max-width:900px;">
+    <button class="close-modal" onclick="closeMemory()">&times;</button>
+    <h2 id="memoryTitle">Ride Photos</h2>
+    <div id="memoryPhotos" class="memory-photos-grid"></div>
+  </div>
+</div>
+
+
+
+    <!-- Events -->
+    <section class="events" id="events">
+        <div class="info-section">
+            <h2 class="section-title">Upcoming Rides & Events</h2>
+             <div id="eventsContainer">
+                <div class="event-card">
+                    <div class="event-date">
+                        <div>OCT<br>15</div>
+                        <small>2025</small>
+                    </div>
+                    <div class="event-info">
+                        <h3>The short Ride - Nagarkot</h3>
+                        <p>Join us for a scenic coastal ride </p>
+                        <div class="event-details">
+                            <div class="event-detail-item">
+                                <i class="far fa-clock"></i>
+                                <span>2:00 PM - 6:00 PM</span>
+                            </div>
+                            <div class="event-detail-item">
+                                <i class="far fa-calendar"></i>
+                                <span>4 hour Event</span>
+                            </div>
+                            <div class="event-detail-item">
+                                <i class="fas fa-route"></i>
+                                <span>Short and Sweet Tea Ride</span>
+                            </div>
+                        </div>
+                        <p class="event-location">📍 View Tower, Nagarkot</p>
+                    </div>
+                    <button class="event-join-btn" onclick="openRegistration('The Short Ride Nagarkot', 'OCT 15, 2025')">Join Now</button>
+                </div>
+
+                <!-- <div class="event-card">
+                    <div class="event-date">
+                        <div>OCT<br>28-30</div>
+                        <small>2025</small>
+                    </div>
+                    <div class="event-info">
+                        <h3>Mountain Run Weekend</h3>
+                        <p>Three days of twisty mountain roads, camping, and bonfire stories</p>
+                        <div class="event-details">
+                            <div class="event-detail-item">
+                                <i class="far fa-clock"></i>
+                                <span>Friday 3:00 PM - Sunday 5:00 PM</span>
+                            </div>
+                            <div class="event-detail-item">
+                                <i class="far fa-calendar"></i>
+                                <span>3 Days Riding</span>
+                            </div>
+                            <div class="event-detail-item">
+                                <i class="fas fa-route"></i>
+                                <span>450+ Miles</span>
+                            </div>
+                        </div>
+                        <p class="event-location">📍 Blue Ridge Parkway, North Carolina</p>
+                    </div>
+                    <button class="event-join-btn" onclick="openRegistration('Mountain Run Weekend', 'OCT 28-30, 2025')">Join Now</button>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">
+                        <div>NOV<br>12</div>
+                        <small>2025</small>
+                    </div>
+                    <div class="event-info">
+                        <h3>Custom Bike Show</h3>
+                        <p>Showcase your custom builds and vote for the best in show</p>
+                        <div class="event-details">
+                            <div class="event-detail-item">
+                                <i class="far fa-clock"></i>
+                                <span>10:00 AM - 8:00 PM</span>
+                            </div>
+                            <div class="event-detail-item">
+                                <i class="far fa-calendar"></i>
+                                <span>1 Day Event</span>
+                            </div>
+                            <div class="event-detail-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>Prizes & Awards</span>
+                            </div>
+                        </div>
+                        <p class="event-location">📍 Downtown Convention Center</p>
+                    </div>
+                    <button class="event-join-btn" onclick="openRegistration('Custom Bike Show', 'NOV 12, 2025')">Join Now</button>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">
+                        <div>DEC<br>05</div>
+                        <small>2025</small>
+                    </div>
+                    <div class="event-info">
+                        <h3>Holiday Toy Run</h3>
+                        <p>Annual charity ride collecting toys for children in need</p>
+                        <div class="event-details">
+                            <div class="event-detail-item">
+                                <i class="far fa-clock"></i>
+                                <span>9:00 AM - 2:00 PM</span>
+                            </div>
+                            <div class="event-detail-item">
+                                <i class="far fa-calendar"></i>
+                                <span>1 Day Event</span>
+                            </div>
+                            <div class="event-detail-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Charity Event</span>
+                            </div>
+                        </div>
+                        <p class="event-location">📍 City Square to Children's Hospital</p>
+                    </div>
+                    <button class="event-join-btn" onclick="openRegistration('Holiday Toy Run', 'DEC 05, 2025')">Join Now</button>
+                </div> -->
+            </div>
+           
+            
+            <!-- No Events Message (Hidden by default) -->
+            <div class="no-events" id="noEvents" style="display: none;">
+                <i class="fas fa-motorcycle"></i>
+                <h3>Sorry, No Upcoming Rides For Now</h3>
+                <p>Check back soon for exciting new adventures!</p>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Footer -->
+    <footer id="contact">
+        <h3 style="margin-bottom: 20px; font-family: 'Bebas Neue', cursive; font-size: 2rem; letter-spacing: 0.2rem; color: var(--primary);">Stay Connected</h3>
+        <div class="social-links">
+            <a href="https://www.facebook.com/thesandeshchhetri" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/thesandeshchhetri" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@thesandeshchhetri" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.linkedin.com/in/thesandeshchhetri" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://chat.whatsapp.com/HMlCePGJwMG3wPziZHpL69?mode=ems_copy_c" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p style="color: rgba(59, 233, 213, 0.6);"> © 2025 YUKIN. The Ultimate Biker Experience.</p>
+    </footer>
+
+    <script src="yukin.js"></script>
+</body>
+</html>
