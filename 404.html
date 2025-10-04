@@ -281,11 +281,6 @@
             
             setTimeout(() => {
                 window.location.href = 'https://www.sandeshchhetri.info.np';
-                if (window.history.length > 1) {
-                    window.history.back();
-                } else {
-                    window.location.href = 'https://www.sandeshchhetri.info.np'; // Change this to your home page URL
-                }
             }, 150);
         }
 
@@ -346,7 +341,7 @@
         // Add keyboard support
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
-                goBack();
+                goBack('https://www.sandeshchhetri.info.np'); 
             }
         });
     </script>
