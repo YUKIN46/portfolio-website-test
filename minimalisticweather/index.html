@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/logo/yukin.png" type="image/png">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Minimal Weather App | YUKIN</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body{
+    background-color: #37474f;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container{
+    height: 400px;
+    background-color: #232931;
+    color: #fff;
+    border-radius: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+}
+
+.left-info{
+    width: 260px;
+    height: 100%;
+    float: left;
+    display: flex;
+    border-radius: 25px;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-position: center;
+    background-size: cover;
+    transform: scale(1.03) perspective(200px);
+    cursor: pointer;
+    box-shadow: 0 0 20px -10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.left-info:hover{
+    transform: scale(1.1) perspective(2500px) rotateY(5deg);
+}
+
+.pic-gradient{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, #5c6bc0 10%, #0d47a1 100%);
+    border-radius: 25px;
+    opacity: 0.5;
+}
+
+.today-info{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+}
+
+.today-weather{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    bottom: 20px;
+    left: 20px;
+}
+
+.today-weather .bx{
+    font-size: 4.6rem;
+}
+
+.weather-temp{
+    font-weight: 700;
+    font-size: 3.5rem;
+}
+
+.right-info{
+    float: right;
+    position: relative;
+    height: 100%;
+    padding-top: 25px;
+}
+
+.day-info{
+    padding: 25px 35px;
+    display: flex;
+    flex-direction: column;
+}
+
+.day-info div:not(:last-child){
+    margin-bottom: 6px;
+}
+
+.day-info div .title{
+    font-weight: 700;
+}
+
+.day-info div .value{
+    float: right;
+}
+
+.days-list{
+    display: flex;
+    list-style: none;
+    margin: 10px 35px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+}
+
+.days-list li{
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.days-list li .bx{
+    margin-bottom: 5px;
+    font-size: 2rem;
+}
+
+.days-list li:hover{
+    transform: scale(1.1);
+    background: #fff;
+    color: #222831;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+}
+
+.days-list li .day-temp{
+    margin-top: 6px;
+    font-weight: 700;
+}
+
+.btn-container{
+    padding: 25px 35px;
+}
+
+.loc-button{
+    outline: none;
+    width: 100%;
+    border: none;
+    font-weight: 700;
+    border-radius: 25px;
+    padding: 10px;
+    background: #303f9f;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    transition: all 0.3s ease;
+}
+
+.loc-button:hover{
+    background: #1a237e;
+}
+
+/* Modal Styles */
+.modal-overlay{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.active{
+    display: flex;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+.modal-content{
+    background-color: #232931;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    min-width: 400px;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp{
+    from{
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to{
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-content h2{
+    color: #fff;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.modal-content input{
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #303f9f;
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+    background-color: #37474f;
+    color: #fff;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.modal-content input:focus{
+    border-color: #5c6bc0;
+    box-shadow: 0 0 10px rgba(92, 107, 192, 0.3);
+}
+
+.modal-content input::placeholder{
+    color: #999;
+}
+
+.modal-buttons{
+    display: flex;
+    gap: 10px;
+}
+
+.modal-buttons button{
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-btn{
+    background: #303f9f;
+    color: #fff;
+}
+
+.search-btn:hover{
+    background: #1a237e;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(48, 63, 159, 0.4);
+}
+
+.cancel-btn{
+    background: #455a64;
+    color: #fff;
+}
+
+.cancel-btn:hover{
+    background: #37474f;
+}
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="left-info">
+            <div class="pic-gradient"></div>
+            <div class="today-info">
+                <h2>Friday</h2>
+                <span>28 July 2023</span>
+                <div>
+                    <i class='bx bx-current-location'></i>
+                    <span>Paris, FR</span>
+                </div>
+            </div>
+            <div class="today-weather">
+                <i class='bx bx-sun'></i>
+                <h1 class="weather-temp">
+                    25°C
+                </h1>
+                <h3>Sunny</h3>
+            </div>
+        </div>
+
+        <div class="right-info">
+            <div class="day-info">
+                <div>
+                    <span class="title">PRECIPITATION</span>
+                    <span class="value">4 %</span>
+                </div>
+                <div>
+                    <span class="title">HUMIDITY</span>
+                    <span class="value">34 %</span>
+                </div>
+                <div>
+                    <span class="title">WIND SPEED</span>
+                    <span class="value">6 km/h</span>
+                </div>
+            </div>
+
+            <ul class="days-list">
+                <li>
+                    <i class='bx bx-cloud'></i>
+                    <span>Sat</span>
+                    <span class="day-temp">23°C</span>
+                </li>
+                <li>
+                    <i class='bx bx-sun'></i>
+                    <span>Sun</span>
+                    <span class="day-temp">28°C</span>
+                </li>
+                <li>
+                    <i class='bx bx-cloud-rain'></i>
+                    <span>Mon</span>
+                    <span class="day-temp">02°C</span>
+                </li>
+                <li>
+                    <i class='bx bx-cloud-drizzle'></i>
+                    <span>Tue</span>
+                    <span class="day-temp">14°C</span>
+                </li>
+            </ul>
+
+            <div class="btn-container">
+                <button class="loc-button">Search Location</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="locationModal">
+        <div class="modal-content">
+            <h2>Enter Location</h2>
+            <input type="text" id="locationInput" placeholder="e.g., London, Tokyo, New York...">
+            <div class="modal-buttons">
+                <button class="search-btn" id="searchBtn">Search</button>
+                <button class="cancel-btn" id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = '9d4caf93b614369b2c1ecd71b17f41dc';
+const locButton = document.querySelector('.loc-button');
+const todayInfo = document.querySelector('.today-info');
+const todayWeatherIcon = document.querySelector('.today-weather i');
+const todayTemp = document.querySelector('.weather-temp');
+const daysList = document.querySelector('.days-list');
+
+// Modal elements
+const modal = document.getElementById('locationModal');
+const locationInput = document.getElementById('locationInput');
+const searchBtn = document.getElementById('searchBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+
+// Mapping of weather condition codes to icon class names
+const weatherIconMap = {
+    '01d': 'sun',
+    '01n': 'moon',
+    '02d': 'sun',
+    '02n': 'moon',
+    '03d': 'cloud',
+    '03n': 'cloud',
+    '04d': 'cloud',
+    '04n': 'cloud',
+    '09d': 'cloud-rain',
+    '09n': 'cloud-rain',
+    '10d': 'cloud-rain',
+    '10n': 'cloud-rain',
+    '11d': 'cloud-lightning',
+    '11n': 'cloud-lightning',
+    '13d': 'cloud-snow',
+    '13n': 'cloud-snow',
+    '50d': 'water',
+    '50n': 'water'
+};
+
+function fetchWeatherData(location) {
+    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${apiKey}&units=metric`;
+
+    fetch(apiUrl).then(response => response.json()).then(data => {
+        const todayWeather = data.list[0].weather[0].description;
+        const todayTemperature = `${Math.round(data.list[0].main.temp)}°C`;
+        const todayWeatherIconCode = data.list[0].weather[0].icon;
+
+        todayInfo.querySelector('h2').textContent = new Date().toLocaleDateString('en', { weekday: 'long' });
+        todayInfo.querySelector('span').textContent = new Date().toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
+        todayWeatherIcon.className = `bx bx-${weatherIconMap[todayWeatherIconCode]}`;
+        todayTemp.textContent = todayTemperature;
+
+        const locationElement = document.querySelector('.today-info > div > span');
+        locationElement.textContent = `${data.city.name}, ${data.city.country}`;
+
+        const weatherDescriptionElement = document.querySelector('.today-weather > h3');
+        weatherDescriptionElement.textContent = todayWeather;
+
+        const todayPrecipitation = `${data.list[0].pop}%`;
+        const todayHumidity = `${data.list[0].main.humidity}%`;
+        const todayWindSpeed = `${data.list[0].wind.speed} km/h`;
+
+        const dayInfoContainer = document.querySelector('.day-info');
+        dayInfoContainer.innerHTML = `
+            <div>
+                <span class="title">PRECIPITATION</span>
+                <span class="value">${todayPrecipitation}</span>
+            </div>
+            <div>
+                <span class="title">HUMIDITY</span>
+                <span class="value">${todayHumidity}</span>
+            </div>
+            <div>
+                <span class="title">WIND SPEED</span>
+                <span class="value">${todayWindSpeed}</span>
+            </div>
+        `;
+
+        const today = new Date();
+        const nextDaysData = data.list.slice(1);
+
+        const uniqueDays = new Set();
+        let count = 0;
+        daysList.innerHTML = '';
+        for (const dayData of nextDaysData) {
+            const forecastDate = new Date(dayData.dt_txt);
+            const dayAbbreviation = forecastDate.toLocaleDateString('en', { weekday: 'short' });
+            const dayTemp = `${Math.round(dayData.main.temp)}°C`;
+            const iconCode = dayData.weather[0].icon;
+
+            if (!uniqueDays.has(dayAbbreviation) && forecastDate.getDate() !== today.getDate()) {
+                uniqueDays.add(dayAbbreviation);
+                daysList.innerHTML += `
+                    <li>
+                        <i class='bx bx-${weatherIconMap[iconCode]}'></i>
+                        <span>${dayAbbreviation}</span>
+                        <span class="day-temp">${dayTemp}</span>
+                    </li>
+                `;
+                count++;
+            }
+
+            if (count === 4) break;
+        }
+    }).catch(error => {
+        alert(`Error fetching weather data: ${error} (Api Error)`);
+    });
+}
+
+// Load default location on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const defaultLocation = 'Germany';
+    fetchWeatherData(defaultLocation);
+});
+
+// Open modal
+locButton.addEventListener('click', () => {
+    modal.classList.add('active');
+    locationInput.value = '';
+    locationInput.focus();
+});
+
+// Close modal
+cancelBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+});
+
+// Close modal on overlay click
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.classList.remove('active');
+    }
+});
+
+// Search location
+searchBtn.addEventListener('click', () => {
+    const location = locationInput.value.trim();
+    if (location) {
+        fetchWeatherData(location);
+        modal.classList.remove('active');
+    }
+});
+
+// Search on Enter key
+locationInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const location = locationInput.value.trim();
+        if (location) {
+            fetchWeatherData(location);
+            modal.classList.remove('active');
+        }
+    }
+});
+    </script>
+
+</body>
+
+</html>
