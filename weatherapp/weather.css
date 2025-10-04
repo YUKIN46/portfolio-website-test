@@ -1,53 +1,281 @@
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #6dd5ed, #2193b0);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-}
+  *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-.container {
-  text-align: center;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 20px 30px;
-  border-radius: 10px;
-  width: 300px;
-}
+    body {
+      font-family: 'Nunito', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: background 1.5s ease;
+      background: linear-gradient(to top, #1e3c72, #2a5298);
+    }
 
-h1 {
-  margin-bottom: 20px;
-}
+    .background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      top: 0;
+      left: 0;
+      z-index: -2;
+      pointer-events: none;
+    }
 
-.search {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
+    .weather-particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+    }
 
-.search input {
-  flex: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 5px;
-}
+    .rain {
+      width: 2px;
+      height: 15px;
+      background: rgba(174, 194, 224, 0.5);
+      border-radius: 50%;
+      animation: fall linear infinite;
+    }
 
-.search button {
-  padding: 8px 12px;
-  border: none;
-  background: #ff9800;
-  color: white;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-}
+    .snow {
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      animation: snowfall linear infinite;
+    }
 
-.search button:hover {
-  background: #e68900;
-}
+    .cloud {
+      position: absolute;
+      border-radius: 100px;
+      animation: drift linear infinite;
+    }
 
-.weather-info {
-  font-size: 18px;
-}
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0.3;
+      }
+    }
+
+    @keyframes snowfall {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes drift {
+      0% {
+        transform: translateX(-100px);
+      }
+      100% {
+        transform: translateX(120vw);
+      }
+    }
+
+    .sun {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, #ffd700, #ffed4e);
+      border-radius: 50%;
+      top: 10%;
+      right: 15%;
+      box-shadow: 0 0 60px rgba(255, 215, 0, 0.6);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+      }
+    }
+
+    .moon {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, #f4f4f4, #d4d4d4);
+      border-radius: 50%;
+      top: 10%;
+      right: 15%;
+      box-shadow: 0 0 40px rgba(244, 244, 244, 0.5);
+    }
+
+    .stars {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 3px white;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      animation: fadeIn 1.5s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    .time-display {
+      font-size: 18px;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    .search {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .search input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+    }
+
+    .search button {
+      padding: 12px 18px;
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    .search button:hover {
+      transform: scale(1.05);
+    }
+
+    .weather-info {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .forecast {
+      margin-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .day {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 10px;
+      width: 60px;
+      font-size: 14px;
+      text-align: center;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .day img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .loading {
+      font-style: italic;
+    }
+
+    .error {
+      color: #ff6b6b;
+      font-weight: bold;
+    }
+
+    .theme-toggle {
+      margin-top: 15px;
+    }
+
+    .theme-toggle select {
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+    }
+
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 22px;
+      }
+
+      .search {
+        flex-direction: column;
+      }
+
+      .search input,
+      .search button {
+        width: 100%;
+      }
+
+      .forecast {
+        justify-content: center;
+      }
+    }

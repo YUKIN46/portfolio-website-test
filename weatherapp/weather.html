@@ -3,287 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Weather App with Theme & Time</title>
+  <title>Weather App | YUKIN</title>
+  <link rel="icon" type="logo/png" href="/logo/yukin.png" />
+  <meta name="description" content="Check the current weather and 5-day forecast for any city worldwide with our sleek and user-friendly weather app." />
+  <meta name="keywords" content="weather, forecast, city weather, current weather,  weather app, 5-day forecast" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    /* Base Reset and Box Model */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Nunito', sans-serif;
-  height: 100vh;
-  overflow: hidden;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition: background 1s ease;
-  background: linear-gradient(to top, #1e3c72, #2a5298); /* fallback background */
-}
-
-/* Background Container */
-.background {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  top: 0;
-  left: 0;
-  z-index: -2;
-  pointer-events: none;
-}
-
-/* Cloud Styling */
-.cloud {
-  position: absolute;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  opacity: 0.8;
-  animation: moveClouds 60s linear infinite;
-}
-
-.cloud1 {
-  width: 200px;
-  height: 80px;
-  top: 10%;
-  left: -20%;
-  animation-delay: 0s;
-  background-image: url("cloud1.png");
-}
-
-.cloud2 {
-  width: 300px;
-  height: 100px;
-  top: 30%;
-  left: -30%;
-  animation-delay: 15s;
-  background-image: url("cloud1.png");
-}
-
-.cloud3 {
-  width: 250px;
-  height: 90px;
-  top: 60%;
-  left: -25%;
-  animation-delay: 30s;
-  background-image: url("cloud.png");
-}
-
-.cloud4 {
-  width: 180px;
-  height: 70px;
-  top: 80%;
-  left: -15%;
-  animation-delay: 45s;
-  background-image: url("cloud1.png");
-}
-
-.cloud5 {
-  width: 220px;
-  height: 85px;
-  top: 50%;
-  left: -10%;
-  animation-delay: 0s;
-  background-image: url("cloud.png");
-}
-
-/* Cloud Animation */
-@keyframes moveClouds {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(150vw);
-  }
-}
-
-/* Rain Drops */
-.rain {
-  position: absolute;
-  width: 2px;
-  height: 15px;
-  background: rgba(255, 255, 255, 0.3);
-  top: 0;
-  left: 0;
-  animation: fall 1s linear infinite;
-}
-
-@keyframes fall {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100vh);
-  }
-}
-
-/* Main Container */
-.container {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  padding: 30px;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-  animation: fadeIn 1.5s ease;
-  position: relative;
-}
-
-/* Fade-In Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Typography */
-h1 {
-  font-size: 26px;
-  margin-bottom: 10px;
-}
-
-.time-display {
-  font-size: 18px;
-  margin-bottom: 20px;
-}
-
-/* Search Bar */
-.search {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.search input {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  outline: none;
-}
-
-.search button {
-  padding: 12px 18px;
-  background: linear-gradient(to right, #0072ff, #00c6ff);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
-}
-
-.search button:hover {
-  transform: scale(1.05);
-}
-
-/* Weather Info */
-.weather-info {
-  font-size: 18px;
-  line-height: 1.6;
-}
-
-/* Forecast Cards */
-.forecast {
-  margin-top: 25px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.day {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 10px;
-  width: 60px;
-  font-size: 14px;
-  text-align: center;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.day img {
-  width: 40px;
-  height: 40px;
-}
-
-/* Feedback States */
-.loading {
-  font-style: italic;
-}
-
-.error {
-  color: #ff6b6b;
-  font-weight: bold;
-}
-
-/* Theme Toggle */
-.theme-toggle {
-  margin-top: 15px;
-}
-
-.theme-toggle select {
-  padding: 8px;
-  border-radius: 6px;
-  border: none;
-  font-size: 14px;
-}
-
-/* Responsive Design */
-@media (max-width: 500px) {
-  h1 {
-    font-size: 22px;
-  }
-
-  .search {
-    flex-direction: column;
-  }
-
-  .search input,
-  .search button {
-    width: 100%;
-  }
-
-  .forecast {
-    justify-content: center;
-  }
-}
-
-</style>
+  <link rel="stylesheet" href="weather.css" />
 </head>
 <body>
-  <div class="background">
-    <div class="cloud cloud1"></div>
-    <div class="cloud cloud2"></div>
-    <div class="cloud cloud3"></div>
-    <script>
-      // Create rain drops
-      for (let i = 0; i < 100; i++) {
-        const rainDrop = document.createElement('div');
-        rainDrop.classList.add('rain');
-        rainDrop.style.left = Math.random() * 100 + 'vw';
-        rainDrop.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
-        document.querySelector('.background').appendChild(rainDrop);
-      }
-    </script>
-  </div>
+  <body>
+  <div class="background" id="backgroundContainer"></div>
 
   <div class="container">
     <h1>🌤️ Weather App</h1>
@@ -297,16 +26,14 @@ h1 {
     <div class="theme-toggle">
       <label for="themeSelect">Theme: </label>
       <select id="themeSelect">
-        <option value="auto">Auto</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
+        <option value="auto">Auto (Weather Based)</option>
+        <option value="manual">Manual</option>
       </select>
     </div>
   </div>
 
-  <script src="weather.js">
- 
-</script>
+
+  <script src="weather.js"></script>
 
 </body>
 </html>
