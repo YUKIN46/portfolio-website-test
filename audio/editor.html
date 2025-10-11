@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Audio Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 2.8em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .upload-section {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+        }
+
+        .upload-section:hover {
+            background: linear-gradient(135deg, #e8ecff 0%, #d8e0ff 100%);
+            border-color: #764ba2;
+            transform: scale(1.01);
+        }
+
+        .upload-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .editor-grid {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .editor-grid.active {
+            display: grid;
+        }
+
+        .panel {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .panel h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-item {
+            margin-bottom: 25px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .control-value {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn, .tone-btn {
+            padding: 12px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .preset-btn:hover, .tone-btn:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .preset-btn.active, .tone-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .eq-sliders {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .eq-slider {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .eq-slider input[type="range"] {
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+            width: 8px;
+            height: 150px;
+            margin: 10px 0;
+        }
+
+        .eq-label {
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .eq-value {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .waveform-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .waveform-container.active {
+            display: block;
+        }
+
+        .waveform-container canvas {
+            width: 100%;
+            height: 120px;
+            border-radius: 5px;
+        }
+
+        .waveform-title {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .audio-player {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .audio-player.active {
+            display: block;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-apply {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-apply:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-apply:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            display: none;
+        }
+
+        .btn-download.active {
+            display: block;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status.active {
+            display: block;
+        }
+
+        .status.processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .tone-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .editor-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .eq-sliders {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 10px;
+            }
+            
+            .eq-slider input[type="range"] {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎚️ Audio Editor Pro</h1>
+        <p class="subtitle">Professional Audio Editing with EQ, Pitch & Voice Effects</p>
+
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">🎵</div>
+            <h2>Drop Your Audio File Here</h2>
+            <p style="margin-top: 10px; color: #666;">or click to browse • Supports MP3, WAV, OGG, M4A</p>
+            <input type="file" id="fileInput" accept="audio/*">
+        </div>
+
+        <div class="audio-player" id="originalPlayer">
+            <div class="waveform-title">📊 Original Audio</div>
+            <audio controls id="originalAudio"></audio>
+        </div>
+
+        <div class="waveform-container" id="originalWaveform">
+            <div class="waveform-title">Original Waveform</div>
+            <canvas id="originalCanvas"></canvas>
+        </div>
+
+        <div class="editor-grid" id="editorGrid">
+            <!-- Left Panel -->
+            <div class="panel">
+                <h3>🎛️ Basic Controls</h3>
+                
+                <div class="control-item">
+                    <div class="control-label">
+                        <span>Volume</span>
+                        <span class="control-value" id="volumeValue">100%</span>
+                    </div>
+                    <input type="range" id="volumeSlider" min="0" max="200" value="100">
+                </div>
+
+                <div class="control-item">
+                    <div class="control-label">
+                        <span>Pitch</span>
+                        <span class="control-value" id="pitchValue">0</span>
+                    </div>
+                    <input type="range" id="pitchSlider" min="-12" max="12" value="0" step="0.1">
+                </div>
+
+                <h3 style="margin-top: 30px;">🎤 Voice Tone</h3>
+                <div class="tone-grid">
+                    <button class="tone-btn" data-tone="soft">Soft Tone</button>
+                    <button class="tone-btn" data-tone="deep">Deep Tone</button>
+                    <button class="tone-btn" data-tone="heavy">Heavy Tone</button>
+                    <button class="tone-btn" data-tone="child">Child Tone</button>
+                    <button class="tone-btn" data-tone="robot">Robot Tone</button>
+                    <button class="tone-btn" data-tone="warm">Warm Tone</button>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="panel">
+                <h3>🎼 Equalizer Presets</h3>
+                <div class="preset-grid">
+                    <button class="preset-btn" data-preset="flat">Flat</button>
+                    <button class="preset-btn" data-preset="jazz">Jazz</button>
+                    <button class="preset-btn" data-preset="pop">Pop</button>
+                    <button class="preset-btn" data-preset="rock">Rock</button>
+                    <button class="preset-btn" data-preset="metal">Metal</button>
+                    <button class="preset-btn" data-preset="classical">Classical</button>
+                    <button class="preset-btn" data-preset="vocal">Vocal</button>
+                    <button class="preset-btn active" data-preset="manual">Manual</button>
+                </div>
+
+                <h3>Manual EQ (dB)</h3>
+                <div class="eq-sliders">
+                    <div class="eq-slider">
+                        <span class="eq-label">60Hz</span>
+                        <input type="range" id="eq60" min="-12" max="12" value="0" step="0.5" orient="vertical">
+                        <span class="eq-value" id="eq60Value">0dB</span>
+                    </div>
+                    <div class="eq-slider">
+                        <span class="eq-label">250Hz</span>
+                        <input type="range" id="eq250" min="-12" max="12" value="0" step="0.5" orient="vertical">
+                        <span class="eq-value" id="eq250Value">0dB</span>
+                    </div>
+                    <div class="eq-slider">
+                        <span class="eq-label">1kHz</span>
+                        <input type="range" id="eq1k" min="-12" max="12" value="0" step="0.5" orient="vertical">
+                        <span class="eq-value" id="eq1kValue">0dB</span>
+                    </div>
+                    <div class="eq-slider">
+                        <span class="eq-label">4kHz</span>
+                        <input type="range" id="eq4k" min="-12" max="12" value="0" step="0.5" orient="vertical">
+                        <span class="eq-value" id="eq4kValue">0dB</span>
+                    </div>
+                    <div class="eq-slider">
+                        <span class="eq-label">12kHz</span>
+                        <input type="range" id="eq12k" min="-12" max="12" value="0" step="0.5" orient="vertical">
+                        <span class="eq-value" id="eq12kValue">0dB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="waveform-container" id="processedWaveform">
+            <div class="waveform-title">Processed Waveform</div>
+            <canvas id="processedCanvas"></canvas>
+        </div>
+
+        <div class="audio-player" id="processedPlayer">
+            <div class="waveform-title">✨ Processed Audio</div>
+            <audio controls id="processedAudio"></audio>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-apply" id="applyBtn" disabled>Apply Effects</button>
+            <button class="btn btn-reset" id="resetBtn">Reset All</button>
+            <button class="btn btn-download" id="downloadBtn">Download</button>
+        </div>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        let audioContext;
+        let audioBuffer;
+        let processedBuffer;
+        let fileName = '';
+        let currentTone = null;
+
+        const uploadSection = document.getElementById('uploadSection');
+        const fileInput = document.getElementById('fileInput');
+        const editorGrid = document.getElementById('editorGrid');
+        const applyBtn = document.getElementById('applyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const status = document.getElementById('status');
+
+        // Sliders
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeValue = document.getElementById('volumeValue');
+        const pitchSlider = document.getElementById('pitchSlider');
+        const pitchValue = document.getElementById('pitchValue');
+
+        // EQ sliders
+        const eqSliders = {
+            eq60: document.getElementById('eq60'),
+            eq250: document.getElementById('eq250'),
+            eq1k: document.getElementById('eq1k'),
+            eq4k: document.getElementById('eq4k'),
+            eq12k: document.getElementById('eq12k')
+        };
+
+        const eqValues = {
+            eq60: document.getElementById('eq60Value'),
+            eq250: document.getElementById('eq250Value'),
+            eq1k: document.getElementById('eq1kValue'),
+            eq4k: document.getElementById('eq4kValue'),
+            eq12k: document.getElementById('eq12kValue')
+        };
+
+        // EQ Presets
+        const eqPresets = {
+            flat: [0, 0, 0, 0, 0],
+            jazz: [4, 3, 0, 2, 4],
+            pop: [3, 1, 0, 2, 4],
+            rock: [5, 3, 0, 3, 4],
+            metal: [6, 2, -2, 4, 6],
+            classical: [4, 3, 2, 3, 4],
+            vocal: [0, 2, 4, 5, 2],
+            manual: [0, 0, 0, 0, 0]
+        };
+
+        // Upload handlers
+        uploadSection.addEventListener('click', () => fileInput.click());
+
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.style.transform = 'scale(1.02)';
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.style.transform = 'scale(1)';
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.style.transform = 'scale(1)';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('audio/')) {
+                loadAudioFile(file);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) loadAudioFile(file);
+        });
+
+        // Slider updates
+        volumeSlider.addEventListener('input', (e) => {
+            volumeValue.textContent = e.target.value + '%';
+        });
+
+        pitchSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            pitchValue.textContent = val > 0 ? '+' + val : val;
+        });
+
+        Object.keys(eqSliders).forEach(key => {
+            eqSliders[key].addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                eqValues[key].textContent = (val > 0 ? '+' + val : val) + 'dB';
+            });
+        });
+
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const preset = btn.dataset.preset;
+                if (preset !== 'manual') {
+                    applyEQPreset(preset);
+                }
+            });
+        });
+
+        // Tone buttons
+        document.querySelectorAll('.tone-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTone = btn.dataset.tone;
+            });
+        });
+
+        function applyEQPreset(preset) {
+            const values = eqPresets[preset];
+            const sliderKeys = Object.keys(eqSliders);
+            
+            values.forEach((val, i) => {
+                const key = sliderKeys[i];
+                eqSliders[key].value = val;
+                eqValues[key].textContent = (val > 0 ? '+' + val : val) + 'dB';
+            });
+        }
+
+        async function loadAudioFile(file) {
+            try {
+                showStatus('Loading audio...', 'processing');
+                fileName = file.name.replace(/\.[^/.]+$/, '') + '_edited.wav';
+
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                const arrayBuffer = await file.arrayBuffer();
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+                const url = URL.createObjectURL(file);
+                document.getElementById('originalAudio').src = url;
+                document.getElementById('originalPlayer').classList.add('active');
+
+                drawWaveform(audioBuffer, 'originalCanvas');
+                document.getElementById('originalWaveform').classList.add('active');
+
+                editorGrid.classList.add('active');
+                applyBtn.disabled = false;
+                showStatus('Audio loaded! Adjust settings and click Apply Effects.', 'success');
+            } catch (error) {
+                showStatus('Error loading audio: ' + error.message, 'error');
+            }
+        }
+
+        applyBtn.addEventListener('click', async () => {
+            try {
+                applyBtn.disabled = true;
+                showStatus('Processing audio...', 'processing');
+                downloadBtn.classList.remove('active');
+
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                processedBuffer = await processAudio(audioBuffer);
+
+                const wavBlob = bufferToWave(processedBuffer);
+                const url = URL.createObjectURL(wavBlob);
+                document.getElementById('processedAudio').src = url;
+                document.getElementById('processedPlayer').classList.add('active');
+
+                drawWaveform(processedBuffer, 'processedCanvas');
+                document.getElementById('processedWaveform').classList.add('active');
+
+                downloadBtn.classList.add('active');
+                applyBtn.disabled = false;
+                showStatus('Processing complete!', 'success');
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+                applyBtn.disabled = false;
+            }
+        });
+
+        async function processAudio(buffer) {
+            const offlineContext = new OfflineAudioContext(
+                buffer.numberOfChannels,
+                buffer.length,
+                buffer.sampleRate
+            );
+
+            const source = offlineContext.createBufferSource();
+            source.buffer = buffer;
+
+            // Pitch shifting
+            const pitchValue = parseFloat(pitchSlider.value);
+            source.playbackRate.value = Math.pow(2, pitchValue / 12);
+
+            let currentNode = source;
+
+            // Apply voice tone effects
+            if (currentTone) {
+                currentNode = applyVoiceTone(offlineContext, currentNode, currentTone);
+            }
+
+            // EQ filters
+            const eqFreqs = [60, 250, 1000, 4000, 12000];
+            const eqKeys = Object.keys(eqSliders);
+
+            eqKeys.forEach((key, i) => {
+                const gain = parseFloat(eqSliders[key].value);
+                if (gain !== 0) {
+                    const filter = offlineContext.createBiquadFilter();
+                    filter.type = 'peaking';
+                    filter.frequency.value = eqFreqs[i];
+                    filter.Q.value = 1.0;
+                    filter.gain.value = gain;
+                    currentNode.connect(filter);
+                    currentNode = filter;
+                }
+            });
+
+            // Volume control
+            const gainNode = offlineContext.createGain();
+            gainNode.gain.value = volumeSlider.value / 100;
+            currentNode.connect(gainNode);
+            gainNode.connect(offlineContext.destination);
+
+            source.start(0);
+            return await offlineContext.startRendering();
+        }
+
+        function applyVoiceTone(context, node, tone) {
+            switch(tone) {
+                case 'soft':
+                    // Reduce highs, boost mids
+                    const softHigh = context.createBiquadFilter();
+                    softHigh.type = 'lowpass';
+                    softHigh.frequency.value = 8000;
+                    const softMid = context.createBiquadFilter();
+                    softMid.type = 'peaking';
+                    softMid.frequency.value = 1000;
+                    softMid.gain.value = 3;
+                    node.connect(softHigh);
+                    softHigh.connect(softMid);
+                    return softMid;
+
+                case 'deep':
+                    // Boost bass, reduce treble
+                    const deepBass = context.createBiquadFilter();
+                    deepBass.type = 'lowshelf';
+                    deepBass.frequency.value = 200;
+                    deepBass.gain.value = 8;
+                    const deepTreble = context.createBiquadFilter();
+                    deepTreble.type = 'highshelf';
+                    deepTreble.frequency.value = 4000;
+                    deepTreble.gain.value = -4;
+                    node.connect(deepBass);
+                    deepBass.connect(deepTreble);
+                    return deepTreble;
+
+                case 'heavy':
+                    // Heavy compression and bass boost
+                    const heavyBass = context.createBiquadFilter();
+                    heavyBass.type = 'lowshelf';
+                    heavyBass.frequency.value = 150;
+                    heavyBass.gain.value = 10;
+                    const heavyComp = context.createDynamicsCompressor();
+                    heavyComp.threshold.value = -20;
+                    heavyComp.ratio.value = 12;
+                    node.connect(heavyBass);
+                    heavyBass.connect(heavyComp);
+                    return heavyComp;
+
+                case 'child':
+                    // Boost highs significantly
+                    const childHigh = context.createBiquadFilter();
+                    childHigh.type = 'highshelf';
+                    childHigh.frequency.value = 2000;
+                    childHigh.gain.value = 8;
+                    const childPresence = context.createBiquadFilter();
+                    childPresence.type = 'peaking';
+                    childPresence.frequency.value = 4000;
+                    childPresence.gain.value = 6;
+                    node.connect(childHigh);
+                    childHigh.connect(childPresence);
+                    return childPresence;
+
+                case 'robot':
+                    // Metallic, reduced mids
+                    const robotMid = context.createBiquadFilter();
+                    robotMid.type = 'peaking';
+                    robotMid.frequency.value = 1500;
+                    robotMid.gain.value = -8;
+                    robotMid.Q.value = 2;
+                    const robotHigh = context.createBiquadFilter();
+                    robotHigh.type = 'highshelf';
+                    robotHigh.frequency.value = 5000;
+                    robotHigh.gain.value = 6;
+                    node.connect(robotMid);
+                    robotMid.connect(robotHigh);
+                    return robotHigh;
+
+                case 'warm':
+                    // Boost low-mids, slight high reduction
+                    const warmMid = context.createBiquadFilter();
+                    warmMid.type = 'peaking';
+                    warmMid.frequency.value = 400;
+                    warmMid.gain.value = 5;
+                    const warmHigh = context.createBiquadFilter();
+                    warmHigh.type = 'highshelf';
+                    warmHigh.frequency.value = 6000;
+                    warmHigh.gain.value = -2;
+                    node.connect(warmMid);
+                    warmMid.connect(warmHigh);
+                    return warmHigh;
+            }
+            return node;
+        }
+
+        resetBtn.addEventListener('click', () => {
+            volumeSlider.value = 100;
+            volumeValue.textContent = '100%';
+            pitchSlider.value = 0;
+            pitchValue.textContent = '0';
+            
+            Object.keys(eqSliders).forEach(key => {
+                eqSliders[key].value = 0;
+                eqValues[key].textContent = '0dB';
+            });
+
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-preset="manual"]').classList.add('active');
+            
+            document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+            currentTone = null;
+
+            showStatus('All settings reset!', 'success');
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            if (processedBuffer) {
+                const wavBlob = bufferToWave(processedBuffer);
+                const url = URL.createObjectURL(wavBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        });
+
+        function drawWaveform(buffer, canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const data = buffer.getChannelData(0);
+            
+            canvas.width = canvas.offsetWidth * 2;
+            canvas.height = canvas.offsetHeight * 2;
+            ctx.scale(2, 2);
+
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+            const step = Math.ceil(data.length / width);
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            if (canvasId === 'originalCanvas') {
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+            } else {
+                gradient.addColorStop(0, '#4facfe');
+                gradient.addColorStop(1, '#00f2fe');
+            }
+            
+            ctx.fillStyle = gradient;
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < width; i++) {
+                let min = 1.0;
+                let max = -1.0;
+                for (let j = 0; j < step; j++) {
+                    const datum = data[(i * step) + j];
+                    if (datum < min) min = datum;
+                    if (datum > max) max = datum;
+                }
+                const yMin = (1 + min) * height / 2;
+                const yMax = (1 + max) * height / 2;
+                ctx.fillRect(i, yMin, 1, yMax - yMin);
+            }
+        }
+
+        function bufferToWave(buffer) {
+            const length = buffer.length * buffer.numberOfChannels * 2 + 44;
+            const arrayBuffer = new ArrayBuffer(length);
+            const view = new DataView(arrayBuffer);
+            const channels = [];
+            let offset = 0;
+            let pos = 0;
+
+            const setUint16 = (data) => {
+                view.setUint16(pos, data, true);
+                pos += 2;
+            };
+            const setUint32 = (data) => {
+                view.setUint32(pos, data, true);
+                pos += 4;
+            };
+
+            setUint32(0x46464952); // "RIFF"
+            setUint32(length - 8);
+            setUint32(0x45564157); // "WAVE"
+            setUint32(0x20746d66); // "fmt "
+            setUint32(16);
+            setUint16(1); // PCM
+            setUint16(buffer.numberOfChannels);
+            setUint32(buffer.sampleRate);
+            setUint32(buffer.sampleRate * 2 * buffer.numberOfChannels);
+            setUint16(buffer.numberOfChannels * 2);
+            setUint16(16);
+            setUint32(0x61746164); // "data"
+            setUint32(length - pos - 4);
+
+            for (let i = 0; i < buffer.numberOfChannels; i++) {
+                channels.push(buffer.getChannelData(i));
+            }
+
+            while (pos < length) {
+                for (let i = 0; i < buffer.numberOfChannels; i++) {
+                    let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(pos, sample, true);
+                    pos += 2;
+                }
+                offset++;
+            }
+
+            return new Blob([arrayBuffer], { type: 'audio/wav' });
+        }
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = 'status active ' + type;
+        }
+    </script>
+</body>
+</html>

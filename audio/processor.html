@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Audio Processor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            background: #f8f9ff;
+        }
+
+        .upload-area:hover {
+            background: #eef1ff;
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragover {
+            background: #e0e7ff;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .controls {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .controls.active {
+            display: block;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+
+        .control-group label {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .control-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .slider-container {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .slider-container.active {
+            display: block;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #764ba2;
+            transform: scale(1.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-process {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-process:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-process:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            display: none;
+        }
+
+        .btn-download.active {
+            display: block;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .waveform {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .waveform.active {
+            display: block;
+        }
+
+        .waveform canvas {
+            width: 100%;
+            height: 100px;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status.active {
+            display: block;
+        }
+
+        .status.processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .audio-player {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .audio-player.active {
+            display: block;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .info-text {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Audio Processor</h1>
+        <p class="subtitle">Denoise, Enhance, and Isolate Voices from Your Audio</p>
+
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">🎤</div>
+            <h3>Drop your audio file here or click to browse</h3>
+            <p style="margin-top: 10px; color: #666;">Supports MP3, WAV, OGG, M4A</p>
+            <input type="file" id="fileInput" accept="audio/*">
+        </div>
+
+        <div class="audio-player" id="originalPlayer">
+            <h4 style="margin-bottom: 10px; color: #667eea;">Original Audio</h4>
+            <audio controls id="originalAudio"></audio>
+        </div>
+
+        <div class="controls" id="controls">
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="denoiseCheck" checked>
+                    Audio Denoising
+                </label>
+                <p class="info-text">Reduces background noise and static</p>
+                <div class="slider-container active" id="denoiseSlider">
+                    <div class="slider-label">
+                        <span>Intensity:</span>
+                        <span id="denoiseValue">70%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="70" id="denoiseIntensity">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="enhanceCheck" checked>
+                    Speech Enhancement
+                </label>
+                <p class="info-text">Boosts voice clarity and presence</p>
+                <div class="slider-container active" id="enhanceSlider">
+                    <div class="slider-label">
+                        <span>Enhancement:</span>
+                        <span id="enhanceValue">60%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="60" id="enhanceIntensity">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="isolateCheck">
+                    Voice Isolation
+                </label>
+                <p class="info-text">Isolates human voice frequencies</p>
+                <div class="slider-container" id="isolateSlider">
+                    <div class="slider-label">
+                        <span>Isolation:</span>
+                        <span id="isolateValue">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" id="isolateIntensity">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="windCheck" checked>
+                    Wind Noise Removal
+                </label>
+                <p class="info-text">Removes low-frequency wind rumble</p>
+                <div class="slider-container active" id="windSlider">
+                    <div class="slider-label">
+                        <span>Reduction:</span>
+                        <span id="windValue">80%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="80" id="windIntensity">
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn-process" id="processBtn" disabled>Process Audio</button>
+            <button class="btn-download" id="downloadBtn">Download Processed Audio</button>
+        </div>
+
+        <div class="waveform" id="waveform">
+            <h4 style="margin-bottom: 10px; color: #667eea;">Processed Waveform</h4>
+            <canvas id="waveCanvas"></canvas>
+        </div>
+
+        <div class="audio-player" id="processedPlayer">
+            <h4 style="margin-bottom: 10px; color: #11998e;">Processed Audio</h4>
+            <audio controls id="processedAudio"></audio>
+        </div>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        let audioContext;
+        let audioBuffer;
+        let processedBuffer;
+        let fileName = '';
+
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const controls = document.getElementById('controls');
+        const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const status = document.getElementById('status');
+        const waveform = document.getElementById('waveform');
+        const originalPlayer = document.getElementById('originalPlayer');
+        const processedPlayer = document.getElementById('processedPlayer');
+        const originalAudio = document.getElementById('originalAudio');
+        const processedAudio = document.getElementById('processedAudio');
+
+        // Checkbox and slider connections
+        const checks = {
+            denoise: document.getElementById('denoiseCheck'),
+            enhance: document.getElementById('enhanceCheck'),
+            isolate: document.getElementById('isolateCheck'),
+            wind: document.getElementById('windCheck')
+        };
+
+        const sliders = {
+            denoise: document.getElementById('denoiseSlider'),
+            enhance: document.getElementById('enhanceSlider'),
+            isolate: document.getElementById('isolateSlider'),
+            wind: document.getElementById('windSlider')
+        };
+
+        const intensities = {
+            denoise: document.getElementById('denoiseIntensity'),
+            enhance: document.getElementById('enhanceIntensity'),
+            isolate: document.getElementById('isolateIntensity'),
+            wind: document.getElementById('windIntensity')
+        };
+
+        const values = {
+            denoise: document.getElementById('denoiseValue'),
+            enhance: document.getElementById('enhanceValue'),
+            isolate: document.getElementById('isolateValue'),
+            wind: document.getElementById('windValue')
+        };
+
+        // Connect checkboxes to sliders
+        Object.keys(checks).forEach(key => {
+            checks[key].addEventListener('change', (e) => {
+                sliders[key].classList.toggle('active', e.target.checked);
+            });
+
+            intensities[key].addEventListener('input', (e) => {
+                values[key].textContent = e.target.value + '%';
+            });
+        });
+
+        // Upload area events
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('audio/')) {
+                loadAudioFile(file);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) loadAudioFile(file);
+        });
+
+        async function loadAudioFile(file) {
+            try {
+                showStatus('Loading audio file...', 'processing');
+                fileName = file.name.replace(/\.[^/.]+$/, '') + '_processed.wav';
+
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                const arrayBuffer = await file.arrayBuffer();
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+                // Show original audio
+                const url = URL.createObjectURL(file);
+                originalAudio.src = url;
+                originalPlayer.classList.add('active');
+
+                controls.classList.add('active');
+                processBtn.disabled = false;
+                showStatus('Audio loaded! Configure settings and click Process.', 'success');
+            } catch (error) {
+                showStatus('Error loading audio file: ' + error.message, 'error');
+            }
+        }
+
+        processBtn.addEventListener('click', async () => {
+            try {
+                processBtn.disabled = true;
+                showStatus('Processing audio...', 'processing');
+                downloadBtn.classList.remove('active');
+                waveform.classList.remove('active');
+                processedPlayer.classList.remove('active');
+
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                processedBuffer = await processAudio(audioBuffer);
+
+                // Create blob and URL for processed audio
+                const wavBlob = bufferToWave(processedBuffer);
+                const url = URL.createObjectURL(wavBlob);
+                processedAudio.src = url;
+                processedPlayer.classList.add('active');
+
+                drawWaveform(processedBuffer);
+                waveform.classList.add('active');
+
+                downloadBtn.classList.add('active');
+                processBtn.disabled = false;
+                showStatus('Processing complete! Listen to the result below.', 'success');
+            } catch (error) {
+                showStatus('Error processing audio: ' + error.message, 'error');
+                processBtn.disabled = false;
+            }
+        });
+
+        async function processAudio(buffer) {
+            const offlineContext = new OfflineAudioContext(
+                buffer.numberOfChannels,
+                buffer.length,
+                buffer.sampleRate
+            );
+
+            const source = offlineContext.createBufferSource();
+            source.buffer = buffer;
+
+            let currentNode = source;
+
+            // Wind noise removal (high-pass filter)
+            if (checks.wind.checked) {
+                const windFilter = offlineContext.createBiquadFilter();
+                windFilter.type = 'highpass';
+                const intensity = intensities.wind.value / 100;
+                windFilter.frequency.value = 80 + (intensity * 120); // 80-200Hz
+                windFilter.Q.value = 0.7;
+                currentNode.connect(windFilter);
+                currentNode = windFilter;
+            }
+
+            // Voice isolation (band-pass filter)
+            if (checks.isolate.checked) {
+                const lowPass = offlineContext.createBiquadFilter();
+                lowPass.type = 'lowpass';
+                lowPass.frequency.value = 3000;
+                lowPass.Q.value = 0.7;
+
+                const highPass = offlineContext.createBiquadFilter();
+                highPass.type = 'highpass';
+                highPass.frequency.value = 80;
+                highPass.Q.value = 0.7;
+
+                currentNode.connect(highPass);
+                highPass.connect(lowPass);
+                currentNode = lowPass;
+            }
+
+            // Speech enhancement (multi-band EQ)
+            if (checks.enhance.checked) {
+                const intensity = intensities.enhance.value / 100;
+                
+                // Boost presence frequencies (2-5kHz)
+                const presenceFilter = offlineContext.createBiquadFilter();
+                presenceFilter.type = 'peaking';
+                presenceFilter.frequency.value = 3500;
+                presenceFilter.Q.value = 1.0;
+                presenceFilter.gain.value = 3 + (intensity * 6); // 3-9dB boost
+
+                // Boost clarity (5-8kHz)
+                const clarityFilter = offlineContext.createBiquadFilter();
+                clarityFilter.type = 'peaking';
+                clarityFilter.frequency.value = 6000;
+                clarityFilter.Q.value = 1.0;
+                clarityFilter.gain.value = 2 + (intensity * 4); // 2-6dB boost
+
+                currentNode.connect(presenceFilter);
+                presenceFilter.connect(clarityFilter);
+                currentNode = clarityFilter;
+            }
+
+            // Denoising (dynamic compression and gate)
+            if (checks.denoise.checked) {
+                const compressor = offlineContext.createDynamicsCompressor();
+                const intensity = intensities.denoise.value / 100;
+                
+                compressor.threshold.value = -40 + (intensity * 20); // -40 to -20dB
+                compressor.knee.value = 10;
+                compressor.ratio.value = 4 + (intensity * 8); // 4:1 to 12:1
+                compressor.attack.value = 0.003;
+                compressor.release.value = 0.25;
+
+                currentNode.connect(compressor);
+                currentNode = compressor;
+            }
+
+            // Final gain control
+            const gainNode = offlineContext.createGain();
+            gainNode.gain.value = 1.0;
+            currentNode.connect(gainNode);
+            gainNode.connect(offlineContext.destination);
+
+            source.start(0);
+            return await offlineContext.startRendering();
+        }
+
+        function drawWaveform(buffer) {
+            const canvas = document.getElementById('waveCanvas');
+            const ctx = canvas.getContext('2d');
+            const data = buffer.getChannelData(0);
+            
+            canvas.width = canvas.offsetWidth * 2;
+            canvas.height = canvas.offsetHeight * 2;
+            ctx.scale(2, 2);
+
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+            const step = Math.ceil(data.length / width);
+
+            ctx.fillStyle = '#667eea';
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < width; i++) {
+                let min = 1.0;
+                let max = -1.0;
+                for (let j = 0; j < step; j++) {
+                    const datum = data[(i * step) + j];
+                    if (datum < min) min = datum;
+                    if (datum > max) max = datum;
+                }
+                const yMin = (1 + min) * height / 2;
+                const yMax = (1 + max) * height / 2;
+                ctx.fillRect(i, yMin, 1, yMax - yMin);
+            }
+        }
+
+        function bufferToWave(buffer) {
+            const length = buffer.length * buffer.numberOfChannels * 2 + 44;
+            const arrayBuffer = new ArrayBuffer(length);
+            const view = new DataView(arrayBuffer);
+            const channels = [];
+            let offset = 0;
+            let pos = 0;
+
+            // Write WAV header
+            const setUint16 = (data) => {
+                view.setUint16(pos, data, true);
+                pos += 2;
+            };
+            const setUint32 = (data) => {
+                view.setUint32(pos, data, true);
+                pos += 4;
+            };
+
+            setUint32(0x46464952); // "RIFF"
+            setUint32(length - 8); // file length - 8
+            setUint32(0x45564157); // "WAVE"
+            setUint32(0x20746d66); // "fmt " chunk
+            setUint32(16); // length = 16
+            setUint16(1); // PCM (uncompressed)
+            setUint16(buffer.numberOfChannels);
+            setUint32(buffer.sampleRate);
+            setUint32(buffer.sampleRate * 2 * buffer.numberOfChannels); // avg. bytes/sec
+            setUint16(buffer.numberOfChannels * 2); // block-align
+            setUint16(16); // 16-bit
+            setUint32(0x61746164); // "data" - chunk
+            setUint32(length - pos - 4); // chunk length
+
+            // Write interleaved data
+            for (let i = 0; i < buffer.numberOfChannels; i++) {
+                channels.push(buffer.getChannelData(i));
+            }
+
+            while (pos < length) {
+                for (let i = 0; i < buffer.numberOfChannels; i++) {
+                    let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(pos, sample, true);
+                    pos += 2;
+                }
+                offset++;
+            }
+
+            return new Blob([arrayBuffer], { type: 'audio/wav' });
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            if (processedBuffer) {
+                const wavBlob = bufferToWave(processedBuffer);
+                const url = URL.createObjectURL(wavBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        });
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = 'status active ' + type;
+        }
+    </script>
+</body>
+</html>
