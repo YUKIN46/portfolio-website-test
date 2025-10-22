@@ -14,49 +14,78 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 900px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: clamp(20px, 5vw, 50px);
+            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+            max-width: 1000px;
             width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
             text-align: center;
-            color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: clamp(20px, 4vw, 35px);
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
             margin-bottom: 30px;
-            font-size: 2.5em;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-weight: 500;
         }
 
         .upload-area {
             border: 3px dashed #667eea;
-            border-radius: 15px;
-            padding: 40px;
+            border-radius: 20px;
+            padding: clamp(30px, 5vw, 50px);
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
         }
 
         .upload-area:hover {
-            background: #f8f9ff;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
             border-color: #764ba2;
+            transform: translateY(-2px);
         }
 
         .upload-area.dragover {
-            background: #e8ebff;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
             border-color: #764ba2;
+            transform: scale(1.02);
         }
 
         input[type="file"] {
@@ -64,20 +93,42 @@
         }
 
         .upload-icon {
-            font-size: 60px;
+            font-size: clamp(3rem, 8vw, 4.5rem);
             margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .upload-text {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #666;
         }
 
         .video-container {
             display: none;
             margin: 30px 0;
             position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         }
 
         video, canvas {
             max-width: 100%;
-            border-radius: 10px;
             display: block;
+            width: 100%;
+            height: auto;
         }
 
         #originalVideo {
@@ -86,73 +137,56 @@
 
         #outputCanvas {
             width: 100%;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            background: 
+                linear-gradient(45deg, #e0e0e0 25%, transparent 25%),
+                linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
+                linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
 
-        .controls {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-weight: 600;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .status {
+        .section-title {
             text-align: center;
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-        .status.processing {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status.success {
-            background: #d4edda;
-            color: #155724;
+            color: #333;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-weight: 600;
+            margin-bottom: 15px;
         }
 
         .bg-options {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 12px;
+            justify-items: center;
             margin: 20px 0;
-            flex-wrap: wrap;
+            padding: 0 10px;
+            display: none;
         }
 
         .bg-option {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+            width: clamp(50px, 12vw, 70px);
+            height: clamp(50px, 12vw, 70px);
+            border-radius: 16px;
             cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.2s;
+            border: 4px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .bg-option::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 18px;
+            padding: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .bg-option:hover {
@@ -160,8 +194,11 @@
         }
 
         .bg-option.active {
-            border-color: #667eea;
             transform: scale(1.1);
+        }
+
+        .bg-option.active::after {
+            opacity: 1;
         }
 
         .bg-transparent {
@@ -170,60 +207,295 @@
                 linear-gradient(-45deg, #ccc 25%, transparent 25%),
                 linear-gradient(45deg, transparent 75%, #ccc 75%),
                 linear-gradient(-45deg, transparent 75%, #ccc 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-size: 15px 15px;
+            background-position: 0 0, 0 7.5px, 7.5px -7.5px, -7.5px 0px;
+        }
+
+        .bg-label {
+            text-align: center;
+            font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+            color: #666;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .progress-container {
+            display: none;
+            margin: 20px 0;
         }
 
         .progress-bar {
             width: 100%;
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 3px;
+            height: 8px;
+            background: #e8e8e8;
+            border-radius: 10px;
             overflow: hidden;
-            margin: 15px 0;
-            display: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
             width: 0%;
-            transition: width 0.3s;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: clamp(12px, 2vw, 16px) clamp(24px, 4vw, 40px);
+            border-radius: 50px;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+            min-width: clamp(140px, 30vw, 180px);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background: linear-gradient(135deg, #ccc 0%, #999 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        button:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status.processing {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        .status.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .status.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .feature-chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .chip {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+            color: #667eea;
+            font-weight: 600;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .bg-options {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 16px;
+            }
+        }
+
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎬 Video Background Remover</h1>
+        <p class="subtitle">Remove backgrounds from your videos instantly with AI</p>
         
+        <div class="feature-chips">
+            <span class="chip">✨ No API Required</span>
+            <span class="chip">🎨 Multiple Backgrounds</span>
+            <span class="chip">📱 Works on All Devices</span>
+        </div>
+
         <div class="upload-area" id="uploadArea">
             <div class="upload-icon">📹</div>
-            <h3>Click or drag video file here</h3>
-            <p>Supports MP4, WebM, MOV</p>
+            <div class="upload-text">Click or Drag Video Here</div>
+            <p class="upload-subtext">Supports MP4, WebM, MOV • Max 100MB</p>
             <input type="file" id="videoInput" accept="video/*">
         </div>
 
-        <div class="bg-options" style="display: none;" id="bgOptions">
-            <div class="bg-option bg-transparent active" data-color="transparent" title="Transparent"></div>
-            <div class="bg-option" style="background: #00ff00;" data-color="#00ff00" title="Green Screen"></div>
-            <div class="bg-option" style="background: #0000ff;" data-color="#0000ff" title="Blue Screen"></div>
-            <div class="bg-option" style="background: #ffffff;" data-color="#ffffff" title="White"></div>
-            <div class="bg-option" style="background: #000000;" data-color="#000000" title="Black"></div>
-            <div class="bg-option" style="background: #ff69b4;" data-color="#ff69b4" title="Pink"></div>
+        <div id="bgSection" style="display: none;">
+            <div class="section-title">Choose Background Color</div>
+            <div class="bg-options" id="bgOptions">
+                <div>
+                    <div class="bg-option bg-transparent active" data-color="transparent"></div>
+                    <div class="bg-label">Transparent</div>
+                </div>
+                <div>
+                    <div class="bg-option" style="background: #00ff00;" data-color="#00ff00"></div>
+                    <div class="bg-label">Green</div>
+                </div>
+                <div>
+                    <div class="bg-option" style="background: #0000ff;" data-color="#0000ff"></div>
+                    <div class="bg-label">Blue</div>
+                </div>
+                <div>
+                    <div class="bg-option" style="background: #ffffff;" data-color="#ffffff"></div>
+                    <div class="bg-label">White</div>
+                </div>
+                <div>
+                    <div class="bg-option" style="background: #000000;" data-color="#000000"></div>
+                    <div class="bg-label">Black</div>
+                </div>
+                <div>
+                    <div class="bg-option" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" data-color="gradient"></div>
+                    <div class="bg-label">Gradient</div>
+                </div>
+            </div>
         </div>
 
         <div class="video-container" id="videoContainer">
-            <video id="originalVideo" loop muted></video>
+            <video id="originalVideo" loop muted playsinline></video>
             <canvas id="outputCanvas"></canvas>
         </div>
 
-        <div class="progress-bar" id="progressBar">
-            <div class="progress-fill" id="progressFill"></div>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Processing: 0%</div>
         </div>
 
         <div class="controls">
-            <button id="processBtn" disabled>Process Video</button>
-            <button id="downloadBtn" style="display: none;">Download Video</button>
+            <button id="processBtn" disabled>
+                <span id="processBtnText">Process Video</span>
+            </button>
+            <button id="downloadBtn" style="display: none;">
+                💾 Download Video
+            </button>
         </div>
 
         <div id="status"></div>
@@ -236,33 +508,41 @@
         let backgroundColor = 'transparent';
         let processedChunks = [];
         let mediaRecorder;
+        let animationFrameId;
 
         const uploadArea = document.getElementById('uploadArea');
         const videoInput = document.getElementById('videoInput');
         const videoContainer = document.getElementById('videoContainer');
         const processBtn = document.getElementById('processBtn');
+        const processBtnText = document.getElementById('processBtnText');
         const downloadBtn = document.getElementById('downloadBtn');
         const status = document.getElementById('status');
+        const bgSection = document.getElementById('bgSection');
         const bgOptions = document.getElementById('bgOptions');
-        const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.getElementById('progressContainer');
         const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
 
         // Initialize
         async function init() {
             video = document.getElementById('originalVideo');
             canvas = document.getElementById('outputCanvas');
-            ctx = canvas.getContext('2d');
+            ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-            selfieSegmentation = new SelfieSegmentation({
-                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
-            });
+            try {
+                selfieSegmentation = new SelfieSegmentation({
+                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
+                });
 
-            selfieSegmentation.setOptions({
-                modelSelection: 1,
-                selfieMode: false,
-            });
+                selfieSegmentation.setOptions({
+                    modelSelection: 1,
+                    selfieMode: false,
+                });
 
-            selfieSegmentation.onResults(onResults);
+                selfieSegmentation.onResults(onResults);
+            } catch (error) {
+                showStatus('Failed to load AI model. Please refresh the page.', 'error');
+            }
         }
 
         // Upload handlers
@@ -283,6 +563,8 @@
             const file = e.dataTransfer.files[0];
             if (file && file.type.startsWith('video/')) {
                 handleVideoUpload(file);
+            } else {
+                showStatus('Please upload a valid video file.', 'error');
             }
         });
 
@@ -294,17 +576,42 @@
         });
 
         function handleVideoUpload(file) {
+            // Check file size (100MB limit)
+            if (file.size > 100 * 1024 * 1024) {
+                showStatus('File size too large. Please upload a video under 100MB.', 'error');
+                return;
+            }
+
             const url = URL.createObjectURL(file);
             video.src = url;
             video.load();
             
             video.onloadedmetadata = () => {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
+                // Set canvas dimensions
+                const maxWidth = 1280;
+                const maxHeight = 720;
+                let width = video.videoWidth;
+                let height = video.videoHeight;
+
+                // Scale down if too large
+                if (width > maxWidth || height > maxHeight) {
+                    const ratio = Math.min(maxWidth / width, maxHeight / height);
+                    width *= ratio;
+                    height *= ratio;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                
                 videoContainer.style.display = 'block';
+                bgSection.style.display = 'block';
+                bgOptions.style.display = 'grid';
                 processBtn.disabled = false;
-                bgOptions.style.display = 'flex';
-                showStatus('Video loaded! Choose a background color and click Process.', 'success');
+                showStatus('✅ Video loaded successfully! Choose a background and click Process.', 'success');
+            };
+
+            video.onerror = () => {
+                showStatus('Failed to load video. Please try another file.', 'error');
             };
         }
 
@@ -323,12 +630,14 @@
             
             isProcessing = true;
             processBtn.disabled = true;
+            processBtnText.innerHTML = 'Processing <span class="loader"></span>';
             downloadBtn.style.display = 'none';
             processedChunks = [];
             
-            showStatus('Processing video... This may take a moment.', 'processing');
-            progressBar.style.display = 'block';
+            showStatus('🎬 Processing your video... This may take a few moments.', 'processing');
+            progressContainer.style.display = 'block';
             progressFill.style.width = '0%';
+            progressText.textContent = 'Processing: 0%';
 
             await processVideo();
         });
@@ -338,8 +647,12 @@
             await video.play();
 
             const stream = canvas.captureStream(30);
+            const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') 
+                ? 'video/webm;codecs=vp9' 
+                : 'video/webm';
+                
             mediaRecorder = new MediaRecorder(stream, {
-                mimeType: 'video/webm;codecs=vp9',
+                mimeType: mimeType,
                 videoBitsPerSecond: 5000000
             });
 
@@ -356,15 +669,18 @@
                 downloadBtn.onclick = () => {
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'video-no-background.webm';
+                    a.download = `video-no-background-${Date.now()}.webm`;
+                    document.body.appendChild(a);
                     a.click();
+                    document.body.removeChild(a);
                 };
 
-                downloadBtn.style.display = 'block';
+                downloadBtn.style.display = 'inline-block';
                 processBtn.disabled = false;
+                processBtnText.textContent = 'Process Video';
                 isProcessing = false;
-                progressBar.style.display = 'none';
-                showStatus('Processing complete! Click download to save your video.', 'success');
+                progressContainer.style.display = 'none';
+                showStatus('🎉 Processing complete! Your video is ready to download.', 'success');
             };
 
             mediaRecorder.start();
@@ -373,17 +689,25 @@
 
         async function processFrames() {
             if (video.paused || video.ended) {
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
                 mediaRecorder.stop();
                 video.pause();
                 return;
             }
 
-            await selfieSegmentation.send({ image: video });
+            try {
+                await selfieSegmentation.send({ image: video });
+            } catch (error) {
+                console.error('Frame processing error:', error);
+            }
             
-            const progress = (video.currentTime / video.duration) * 100;
+            const progress = Math.round((video.currentTime / video.duration) * 100);
             progressFill.style.width = progress + '%';
+            progressText.textContent = `Processing: ${progress}%`;
 
-            requestAnimationFrame(processFrames);
+            animationFrameId = requestAnimationFrame(processFrames);
         }
 
         function onResults(results) {
@@ -392,17 +716,23 @@
 
             // Draw background
             if (backgroundColor === 'transparent') {
-                // Transparent background - draw nothing
+                // Transparent background
+            } else if (backgroundColor === 'gradient') {
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
             } else {
                 ctx.fillStyle = backgroundColor;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
-            // Draw mask
+            // Draw the segmentation mask
             ctx.globalCompositeOperation = 'destination-atop';
             ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
 
-            // Draw person
+            // Draw the original video
             ctx.globalCompositeOperation = 'destination-over';
             ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
 
@@ -412,7 +742,19 @@
         function showStatus(message, type) {
             status.textContent = message;
             status.className = 'status ' + type;
+            status.style.display = 'block';
         }
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            if (video) {
+                video.pause();
+                video.src = '';
+            }
+        });
 
         init();
     </script>
