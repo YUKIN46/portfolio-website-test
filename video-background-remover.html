@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Background Remover</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            background: #f8f9ff;
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragover {
+            background: #e8ebff;
+            border-color: #764ba2;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .video-container {
+            display: none;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        video, canvas {
+            max-width: 100%;
+            border-radius: 10px;
+            display: block;
+        }
+
+        #originalVideo {
+            display: none;
+        }
+
+        #outputCanvas {
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .status.processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .bg-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .bg-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .bg-option:hover {
+            transform: scale(1.1);
+        }
+
+        .bg-option.active {
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .bg-transparent {
+            background: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%),
+                linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ccc 75%),
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Video Background Remover</h1>
+        
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📹</div>
+            <h3>Click or drag video file here</h3>
+            <p>Supports MP4, WebM, MOV</p>
+            <input type="file" id="videoInput" accept="video/*">
+        </div>
+
+        <div class="bg-options" style="display: none;" id="bgOptions">
+            <div class="bg-option bg-transparent active" data-color="transparent" title="Transparent"></div>
+            <div class="bg-option" style="background: #00ff00;" data-color="#00ff00" title="Green Screen"></div>
+            <div class="bg-option" style="background: #0000ff;" data-color="#0000ff" title="Blue Screen"></div>
+            <div class="bg-option" style="background: #ffffff;" data-color="#ffffff" title="White"></div>
+            <div class="bg-option" style="background: #000000;" data-color="#000000" title="Black"></div>
+            <div class="bg-option" style="background: #ff69b4;" data-color="#ff69b4" title="Pink"></div>
+        </div>
+
+        <div class="video-container" id="videoContainer">
+            <video id="originalVideo" loop muted></video>
+            <canvas id="outputCanvas"></canvas>
+        </div>
+
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="controls">
+            <button id="processBtn" disabled>Process Video</button>
+            <button id="downloadBtn" style="display: none;">Download Video</button>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        let video, canvas, ctx;
+        let selfieSegmentation;
+        let isProcessing = false;
+        let backgroundColor = 'transparent';
+        let processedChunks = [];
+        let mediaRecorder;
+
+        const uploadArea = document.getElementById('uploadArea');
+        const videoInput = document.getElementById('videoInput');
+        const videoContainer = document.getElementById('videoContainer');
+        const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const status = document.getElementById('status');
+        const bgOptions = document.getElementById('bgOptions');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+
+        // Initialize
+        async function init() {
+            video = document.getElementById('originalVideo');
+            canvas = document.getElementById('outputCanvas');
+            ctx = canvas.getContext('2d');
+
+            selfieSegmentation = new SelfieSegmentation({
+                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
+            });
+
+            selfieSegmentation.setOptions({
+                modelSelection: 1,
+                selfieMode: false,
+            });
+
+            selfieSegmentation.onResults(onResults);
+        }
+
+        // Upload handlers
+        uploadArea.addEventListener('click', () => videoInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('video/')) {
+                handleVideoUpload(file);
+            }
+        });
+
+        videoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleVideoUpload(file);
+            }
+        });
+
+        function handleVideoUpload(file) {
+            const url = URL.createObjectURL(file);
+            video.src = url;
+            video.load();
+            
+            video.onloadedmetadata = () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                videoContainer.style.display = 'block';
+                processBtn.disabled = false;
+                bgOptions.style.display = 'flex';
+                showStatus('Video loaded! Choose a background color and click Process.', 'success');
+            };
+        }
+
+        // Background color selection
+        document.querySelectorAll('.bg-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.bg-option').forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                backgroundColor = option.dataset.color;
+            });
+        });
+
+        // Process button
+        processBtn.addEventListener('click', async () => {
+            if (isProcessing) return;
+            
+            isProcessing = true;
+            processBtn.disabled = true;
+            downloadBtn.style.display = 'none';
+            processedChunks = [];
+            
+            showStatus('Processing video... This may take a moment.', 'processing');
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+
+            await processVideo();
+        });
+
+        async function processVideo() {
+            video.currentTime = 0;
+            await video.play();
+
+            const stream = canvas.captureStream(30);
+            mediaRecorder = new MediaRecorder(stream, {
+                mimeType: 'video/webm;codecs=vp9',
+                videoBitsPerSecond: 5000000
+            });
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) {
+                    processedChunks.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(processedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                
+                downloadBtn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'video-no-background.webm';
+                    a.click();
+                };
+
+                downloadBtn.style.display = 'block';
+                processBtn.disabled = false;
+                isProcessing = false;
+                progressBar.style.display = 'none';
+                showStatus('Processing complete! Click download to save your video.', 'success');
+            };
+
+            mediaRecorder.start();
+            processFrames();
+        }
+
+        async function processFrames() {
+            if (video.paused || video.ended) {
+                mediaRecorder.stop();
+                video.pause();
+                return;
+            }
+
+            await selfieSegmentation.send({ image: video });
+            
+            const progress = (video.currentTime / video.duration) * 100;
+            progressFill.style.width = progress + '%';
+
+            requestAnimationFrame(processFrames);
+        }
+
+        function onResults(results) {
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw background
+            if (backgroundColor === 'transparent') {
+                // Transparent background - draw nothing
+            } else {
+                ctx.fillStyle = backgroundColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // Draw mask
+            ctx.globalCompositeOperation = 'destination-atop';
+            ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+
+            // Draw person
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+
+            ctx.restore();
+        }
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = 'status ' + type;
+        }
+
+        init();
+    </script>
+</body>
+</html>
