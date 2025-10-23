@@ -3,760 +3,1581 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Background Remover</title>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
+    <title>AI Video Background Remover - Real Version</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></script>
     <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --primary-dark: #3a56d4;
+            --light-bg: #f8f9fa;
+            --dark-text: #333;
+            --light-text: #fff;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            padding: 20px;
         }
-
+        
         .container {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: clamp(20px, 5vw, 50px);
-            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
-            max-width: 1000px;
-            width: 100%;
-            animation: fadeIn 0.5s ease;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
         }
-
+        
         h1 {
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: clamp(20px, 4vw, 35px);
-            font-size: clamp(1.8rem, 5vw, 3rem);
-            font-weight: 800;
-            letter-spacing: -0.5px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
         }
-
+        
         .subtitle {
-            text-align: center;
             color: #666;
-            margin-bottom: 30px;
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            font-weight: 500;
+            font-size: 1.1rem;
         }
-
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .app-container {
+                flex-direction: row;
+            }
+        }
+        
+        .upload-section, .preview-section {
+            flex: 1;
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
         .upload-area {
-            border: 3px dashed #667eea;
-            border-radius: 20px;
-            padding: clamp(30px, 5vw, 50px);
+            border: 2px dashed #ccc;
+            border-radius: var(--border-radius);
+            padding: 40px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 25px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            margin-bottom: 20px;
         }
-
+        
         .upload-area:hover {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-color: #764ba2;
+            border-color: var(--primary-color);
+            background-color: rgba(74, 108, 247, 0.05);
+        }
+        
+        .upload-area.highlight {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 108, 247, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
             transform: translateY(-2px);
         }
-
-        .upload-area.dragover {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
-            border-color: #764ba2;
-            transform: scale(1.02);
+        
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
         }
-
-        input[type="file"] {
-            display: none;
+        
+        .btn-full {
+            width: 100%;
         }
-
-        .upload-icon {
-            font-size: clamp(3rem, 8vw, 4.5rem);
-            margin-bottom: 15px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .upload-text {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .upload-subtext {
-            font-size: clamp(0.85rem, 2vw, 1rem);
-            color: #666;
-        }
-
+        
         .video-container {
-            display: none;
-            margin: 30px 0;
             position: relative;
-            border-radius: 16px;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            background: #000;
         }
-
+        
         video, canvas {
-            max-width: 100%;
+            width: 100%;
             display: block;
-            width: 100%;
-            height: auto;
         }
-
-        #originalVideo {
-            display: none;
-        }
-
-        #outputCanvas {
-            width: 100%;
-            background: 
-                linear-gradient(45deg, #e0e0e0 25%, transparent 25%),
-                linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
-                linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-        }
-
-        .section-title {
-            text-align: center;
-            color: #333;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .bg-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 12px;
-            justify-items: center;
-            margin: 20px 0;
-            padding: 0 10px;
-            display: none;
-        }
-
-        .bg-option {
-            width: clamp(50px, 12vw, 70px);
-            height: clamp(50px, 12vw, 70px);
-            border-radius: 16px;
-            cursor: pointer;
-            border: 4px solid transparent;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        
+        .canvas-container {
             position: relative;
-        }
-
-        .bg-option::after {
-            content: '';
-            position: absolute;
-            inset: -6px;
-            border-radius: 18px;
-            padding: 2px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .bg-option:hover {
-            transform: scale(1.1);
-        }
-
-        .bg-option.active {
-            transform: scale(1.1);
-        }
-
-        .bg-option.active::after {
-            opacity: 1;
-        }
-
-        .bg-transparent {
-            background: 
-                linear-gradient(45deg, #ccc 25%, transparent 25%),
-                linear-gradient(-45deg, #ccc 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #ccc 75%),
-                linear-gradient(-45deg, transparent 75%, #ccc 75%);
-            background-size: 15px 15px;
-            background-position: 0 0, 0 7.5px, 7.5px -7.5px, -7.5px 0px;
-        }
-
-        .bg-label {
-            text-align: center;
-            font-size: clamp(0.7rem, 1.8vw, 0.85rem);
-            color: #666;
-            margin-top: 8px;
-            font-weight: 500;
-        }
-
-        .progress-container {
-            display: none;
-            margin: 20px 0;
-        }
-
-        .progress-bar {
             width: 100%;
-            height: 8px;
-            background: #e8e8e8;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-fill::after {
-            content: '';
+        
+        .background-canvas {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 2s infinite;
+            z-index: 1;
         }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        
+        .foreground-canvas {
+            position: relative;
+            z-index: 2;
         }
-
-        .progress-text {
-            text-align: center;
-            margin-top: 10px;
-            font-size: clamp(0.85rem, 2vw, 0.95rem);
-            color: #667eea;
-            font-weight: 600;
-        }
-
+        
         .controls {
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 25px;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: clamp(12px, 2vw, 16px) clamp(24px, 4vw, 40px);
-            border-radius: 50px;
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 700;
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-            position: relative;
-            overflow: hidden;
-            min-width: clamp(140px, 30vw, 180px);
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        button:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
-        }
-
-        button:active {
-            transform: translateY(-1px);
-        }
-
-        button:disabled {
-            background: linear-gradient(135deg, #ccc 0%, #999 100%);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        button:disabled:hover {
-            transform: none;
-            box-shadow: none;
-        }
-
-        .status {
-            text-align: center;
-            margin-top: 20px;
-            padding: 16px 20px;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: clamp(0.9rem, 2vw, 1rem);
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .status.processing {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
-            color: #856404;
-            border: 2px solid #ffc107;
-        }
-
-        .status.success {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
-            border: 2px solid #28a745;
-        }
-
-        .status.error {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-            color: #721c24;
-            border: 2px solid #dc3545;
-        }
-
-        .feature-chips {
-            display: flex;
             gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 25px;
+            margin-top: 15px;
         }
-
-        .chip {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: clamp(0.75rem, 1.8vw, 0.9rem);
-            color: #667eea;
-            font-weight: 600;
-            border: 2px solid rgba(102, 126, 234, 0.3);
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
         }
-
-        @media (max-width: 600px) {
-            .bg-options {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            button {
-                width: 100%;
-            }
+        
+        .loading.active {
+            display: block;
         }
-
-        @media (max-width: 400px) {
-            body {
-                padding: 10px;
-            }
-
-            .container {
-                border-radius: 16px;
-            }
-        }
-
-        .loader {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top-color: white;
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
             border-radius: 50%;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            margin-left: 8px;
-            vertical-align: middle;
+            margin: 0 auto 15px;
         }
-
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .result-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .background-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .bg-option {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .bg-option.active {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 108, 247, 0.1);
+        }
+        
+        .bg-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .transparent-bg {
+            background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                              linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                              linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        
+        .download-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .info-text {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            background-color: #fdf0ed;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .error-message.active {
+            display: block;
+        }
+        
+        .performance-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎬 Video Background Remover</h1>
-        <p class="subtitle">Remove backgrounds from your videos instantly with AI</p>
+        <header>
+            <h1>AI Video Background Remover - Real Version</h1>
+            <p class="subtitle">Upload your video and remove the background using TensorFlow.js AI</p>
+        </header>
         
-        <div class="feature-chips">
-            <span class="chip">✨ No API Required</span>
-            <span class="chip">🎨 Multiple Backgrounds</span>
-            <span class="chip">📱 Works on All Devices</span>
+        <div class="performance-warning">
+            <strong>Note:</strong> Background removal happens in real-time using your device's processing power. 
+            For best performance, use short videos and a powerful device.
         </div>
-
-        <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📹</div>
-            <div class="upload-text">Click or Drag Video Here</div>
-            <p class="upload-subtext">Supports MP4, WebM, MOV • Max 100MB</p>
-            <input type="file" id="videoInput" accept="video/*">
-        </div>
-
-        <div id="bgSection" style="display: none;">
-            <div class="section-title">Choose Background Color</div>
-            <div class="bg-options" id="bgOptions">
-                <div>
-                    <div class="bg-option bg-transparent active" data-color="transparent"></div>
-                    <div class="bg-label">Transparent</div>
+        
+        <div class="app-container">
+            <div class="upload-section">
+                <h2>Upload Video</h2>
+                <p class="info-text">Supported formats: MP4, WebM, MOV (Recommended: short videos under 30 seconds)</p>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p>Drag & drop your video here</p>
+                    <p>or</p>
+                    <button class="btn" id="browseBtn">Browse Files</button>
+                    <input type="file" id="fileInput" class="file-input" accept="video/*">
                 </div>
-                <div>
-                    <div class="bg-option" style="background: #00ff00;" data-color="#00ff00"></div>
-                    <div class="bg-label">Green</div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Loading AI Model...</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar"></div>
+                    </div>
+                    <p id="progressText">0%</p>
                 </div>
-                <div>
-                    <div class="bg-option" style="background: #0000ff;" data-color="#0000ff"></div>
-                    <div class="bg-label">Blue</div>
+                
+                <div class="video-info" id="videoInfo" style="display: none;">
+                    <h3>Video Details</h3>
+                    <p id="videoName">Name: </p>
+                    <p id="videoSize">Size: </p>
+                    <p id="videoDuration">Duration: </p>
                 </div>
-                <div>
-                    <div class="bg-option" style="background: #ffffff;" data-color="#ffffff"></div>
-                    <div class="bg-label">White</div>
+                
+                <button class="btn btn-full" id="processBtn" disabled>Start Background Removal</button>
+                <button class="btn btn-full" id="stopBtn" disabled style="margin-top: 10px;">Stop Processing</button>
+            </div>
+            
+            <div class="preview-section">
+                <h2>Preview</h2>
+                
+                <div class="video-container hidden" id="originalVideoContainer">
+                    <h3>Original Video</h3>
+                    <video id="originalVideo" controls></video>
                 </div>
-                <div>
-                    <div class="bg-option" style="background: #000000;" data-color="#000000"></div>
-                    <div class="bg-label">Black</div>
+                
+                <div class="video-container" id="processedVideoContainer">
+                    <h3>Processed Video</h3>
+                    <div class="canvas-container">
+                        <canvas id="backgroundCanvas" class="background-canvas"></canvas>
+                        <canvas id="foregroundCanvas" class="foreground-canvas"></canvas>
+                    </div>
                 </div>
-                <div>
-                    <div class="bg-option" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" data-color="gradient"></div>
-                    <div class="bg-label">Gradient</div>
+                
+                <div class="controls">
+                    <button class="btn" id="playPauseBtn">Play/Pause</button>
+                    <button class="btn" id="restartBtn">Restart</button>
+                </div>
+                
+                <div class="background-options">
+                    <div class="bg-option active" data-bg="transparent">
+                        <div class="bg-preview transparent-bg"></div>
+                        <span>Transparent</span>
+                    </div>
+                    <div class="bg-option" data-bg="white">
+                        <div class="bg-preview" style="background: white;"></div>
+                        <span>White</span>
+                    </div>
+                    <div class="bg-option" data-bg="green">
+                        <div class="bg-preview" style="background: #4CAF50;"></div>
+                        <span>Green</span>
+                    </div>
+                    <div class="bg-option" data-bg="blue">
+                        <div class="bg-preview" style="background: #2196F3;"></div>
+                        <span>Blue</span>
+                    </div>
+                    <div class="bg-option" data-bg="image">
+                        <div class="bg-preview" style="background: linear-gradient(45deg, #ff6b6b, #48dbfb);"></div>
+                        <span>Gradient</span>
+                    </div>
+                </div>
+                
+                <div class="result-info" id="resultInfo" style="display: none;">
+                    <h3>Processing Active</h3>
+                    <p>Background removal is running in real-time.</p>
+                    <p class="info-text">FPS: <span id="fpsCounter">0</span></p>
+                </div>
+                
+                <div class="download-section" id="downloadSection" style="display: none;">
+                    <button class="btn btn-full" id="downloadBtn">Download Processed Video</button>
+                    <p class="info-text">Note: This records the processed output</p>
                 </div>
             </div>
         </div>
-
-        <div class="video-container" id="videoContainer">
-            <video id="originalVideo" loop muted playsinline></video>
-            <canvas id="outputCanvas"></canvas>
-        </div>
-
-        <div class="progress-container" id="progressContainer">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-text" id="progressText">Processing: 0%</div>
-        </div>
-
-        <div class="controls">
-            <button id="processBtn" disabled>
-                <span id="processBtnText">Process Video</span>
-            </button>
-            <button id="downloadBtn" style="display: none;">
-                💾 Download Video
-            </button>
-        </div>
-
-        <div id="status"></div>
     </div>
 
     <script>
-        let video, canvas, ctx;
-        let selfieSegmentation;
-        let isProcessing = false;
-        let backgroundColor = 'transparent';
-        let processedChunks = [];
-        let mediaRecorder;
-        let animationFrameId;
-
-        const uploadArea = document.getElementById('uploadArea');
-        const videoInput = document.getElementById('videoInput');
-        const videoContainer = document.getElementById('videoContainer');
-        const processBtn = document.getElementById('processBtn');
-        const processBtnText = document.getElementById('processBtnText');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const status = document.getElementById('status');
-        const bgSection = document.getElementById('bgSection');
-        const bgOptions = document.getElementById('bgOptions');
-        const progressContainer = document.getElementById('progressContainer');
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-
-        // Initialize
-        async function init() {
-            video = document.getElementById('originalVideo');
-            canvas = document.getElementById('outputCanvas');
-            ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-            try {
-                selfieSegmentation = new SelfieSegmentation({
-                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const browseBtn = document.getElementById('browseBtn');
+            const processBtn = document.getElementById('processBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const originalVideo = document.getElementById('originalVideo');
+            const originalVideoContainer = document.getElementById('originalVideoContainer');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const videoInfo = document.getElementById('videoInfo');
+            const videoName = document.getElementById('videoName');
+            const videoSize = document.getElementById('videoSize');
+            const videoDuration = document.getElementById('videoDuration');
+            const resultInfo = document.getElementById('resultInfo');
+            const downloadSection = document.getElementById('downloadSection');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const bgOptions = document.querySelectorAll('.bg-option');
+            const foregroundCanvas = document.getElementById('foregroundCanvas');
+            const backgroundCanvas = document.getElementById('backgroundCanvas');
+            const fpsCounter = document.getElementById('fpsCounter');
+            const processedVideoContainer = document.getElementById('processedVideoContainer');
+            
+            // Variables
+            let currentVideoFile = null;
+            let net = null;
+            let isProcessing = false;
+            let animationId = null;
+            let mediaRecorder = null;
+            let recordedChunks = [];
+            let currentBackground = 'transparent';
+            let fps = 0;
+            let frameCount = 0;
+            let lastFpsUpdate = 0;
+            
+            // Background options
+            const backgrounds = {
+                transparent: null,
+                white: 'white',
+                green: '#4CAF50',
+                blue: '#2196F3',
+                image: 'gradient'
+            };
+            
+            // Event Listeners
+            browseBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleFileDrop);
+            processBtn.addEventListener('click', startBackgroundRemoval);
+            stopBtn.addEventListener('click', stopBackgroundRemoval);
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            restartBtn.addEventListener('click', restartVideo);
+            downloadBtn.addEventListener('click', downloadVideo);
+            
+            bgOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    bgOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    currentBackground = this.dataset.bg;
+                    drawBackground();
                 });
-
-                selfieSegmentation.setOptions({
-                    modelSelection: 1,
-                    selfieMode: false,
+            });
+            
+            // Initialize TensorFlow.js and BodyPix model
+            initAI();
+            
+            // Functions
+            async function initAI() {
+                try {
+                    loadingIndicator.classList.add('active');
+                    progressText.textContent = 'Loading AI model...';
+                    
+                    // Load the BodyPix model
+                    net = await bodyPix.load({
+                        architecture: 'MobileNetV1',
+                        outputStride: 16,
+                        multiplier: 0.75,
+                        quantBytes: 2
+                    });
+                    
+                    loadingIndicator.classList.remove('active');
+                    console.log('BodyPix model loaded successfully');
+                } catch (error) {
+                    console.error('Error loading BodyPix model:', error);
+                    showError('Failed to load AI model. Please refresh the page and try again.');
+                }
+            }
+            
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('video/')) {
+                    loadVideo(file);
+                } else {
+                    showError('Please select a valid video file.');
+                }
+            }
+            
+            function handleDragOver(e) {
+                e.preventDefault();
+                uploadArea.classList.add('highlight');
+            }
+            
+            function handleDragLeave(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('highlight');
+            }
+            
+            function handleFileDrop(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('highlight');
+                
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('video/')) {
+                    loadVideo(file);
+                } else {
+                    showError('Please drop a valid video file.');
+                }
+            }
+            
+            function loadVideo(file) {
+                // Check file size (limit to 100MB)
+                if (file.size > 100 * 1024 * 1024) {
+                    showError('File size exceeds 100MB limit. Please choose a smaller video.');
+                    return;
+                }
+                
+                currentVideoFile = file;
+                const url = URL.createObjectURL(file);
+                originalVideo.src = url;
+                originalVideoContainer.classList.remove('hidden');
+                
+                // Display video info
+                videoName.textContent = `Name: ${file.name}`;
+                videoSize.textContent = `Size: ${formatFileSize(file.size)}`;
+                
+                originalVideo.addEventListener('loadedmetadata', function() {
+                    videoDuration.textContent = `Duration: ${formatTime(originalVideo.duration)}`;
+                    videoInfo.style.display = 'block';
+                    processBtn.disabled = false;
+                    
+                    // Set canvas dimensions to match video
+                    const width = originalVideo.videoWidth;
+                    const height = originalVideo.videoHeight;
+                    foregroundCanvas.width = width;
+                    foregroundCanvas.height = height;
+                    backgroundCanvas.width = width;
+                    backgroundCanvas.height = height;
+                    
+                    hideError();
                 });
-
-                selfieSegmentation.onResults(onResults);
-            } catch (error) {
-                showStatus('Failed to load AI model. Please refresh the page.', 'error');
+                
+                // Reset UI
+                resultInfo.style.display = 'none';
+                downloadSection.style.display = 'none';
+                stopProcessing();
             }
-        }
-
-        // Upload handlers
-        uploadArea.addEventListener('click', () => videoInput.click());
-        
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('video/')) {
-                handleVideoUpload(file);
-            } else {
-                showStatus('Please upload a valid video file.', 'error');
-            }
-        });
-
-        videoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                handleVideoUpload(file);
-            }
-        });
-
-        function handleVideoUpload(file) {
-            // Check file size (100MB limit)
-            if (file.size > 100 * 1024 * 1024) {
-                showStatus('File size too large. Please upload a video under 100MB.', 'error');
-                return;
-            }
-
-            const url = URL.createObjectURL(file);
-            video.src = url;
-            video.load();
             
-            video.onloadedmetadata = () => {
-                // Set canvas dimensions
-                const maxWidth = 1280;
-                const maxHeight = 720;
-                let width = video.videoWidth;
-                let height = video.videoHeight;
-
-                // Scale down if too large
-                if (width > maxWidth || height > maxHeight) {
-                    const ratio = Math.min(maxWidth / width, maxHeight / height);
-                    width *= ratio;
-                    height *= ratio;
+            async function startBackgroundRemoval() {
+                if (!currentVideoFile || !net) {
+                    showError('Please load a video and wait for AI model to initialize.');
+                    return;
                 }
-
-                canvas.width = width;
-                canvas.height = height;
                 
-                videoContainer.style.display = 'block';
-                bgSection.style.display = 'block';
-                bgOptions.style.display = 'grid';
-                processBtn.disabled = false;
-                showStatus('✅ Video loaded successfully! Choose a background and click Process.', 'success');
-            };
-
-            video.onerror = () => {
-                showStatus('Failed to load video. Please try another file.', 'error');
-            };
-        }
-
-        // Background color selection
-        document.querySelectorAll('.bg-option').forEach(option => {
-            option.addEventListener('click', () => {
-                document.querySelectorAll('.bg-option').forEach(o => o.classList.remove('active'));
-                option.classList.add('active');
-                backgroundColor = option.dataset.color;
-            });
-        });
-
-        // Process button
-        processBtn.addEventListener('click', async () => {
-            if (isProcessing) return;
+                isProcessing = true;
+                processBtn.disabled = true;
+                stopBtn.disabled = false;
+                resultInfo.style.display = 'block';
+                
+                // Start video playback
+                await originalVideo.play();
+                
+                // Start processing frames
+                processVideoFrame();
+                
+                // Start recording if download is requested
+                startRecording();
+            }
             
-            isProcessing = true;
-            processBtn.disabled = true;
-            processBtnText.innerHTML = 'Processing <span class="loader"></span>';
-            downloadBtn.style.display = 'none';
-            processedChunks = [];
-            
-            showStatus('🎬 Processing your video... This may take a few moments.', 'processing');
-            progressContainer.style.display = 'block';
-            progressFill.style.width = '0%';
-            progressText.textContent = 'Processing: 0%';
-
-            await processVideo();
-        });
-
-        async function processVideo() {
-            video.currentTime = 0;
-            await video.play();
-
-            const stream = canvas.captureStream(30);
-            const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') 
-                ? 'video/webm;codecs=vp9' 
-                : 'video/webm';
-                
-            mediaRecorder = new MediaRecorder(stream, {
-                mimeType: mimeType,
-                videoBitsPerSecond: 5000000
-            });
-
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) {
-                    processedChunks.push(e.data);
-                }
-            };
-
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(processedChunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-                
-                downloadBtn.onclick = () => {
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `video-no-background-${Date.now()}.webm`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                };
-
-                downloadBtn.style.display = 'inline-block';
+            function stopBackgroundRemoval() {
+                stopProcessing();
                 processBtn.disabled = false;
-                processBtnText.textContent = 'Process Video';
+                stopBtn.disabled = true;
+                resultInfo.style.display = 'none';
+            }
+            
+            function stopProcessing() {
                 isProcessing = false;
-                progressContainer.style.display = 'none';
-                showStatus('🎉 Processing complete! Your video is ready to download.', 'success');
-            };
-
-            mediaRecorder.start();
-            processFrames();
-        }
-
-        async function processFrames() {
-            if (video.paused || video.ended) {
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
                 }
-                mediaRecorder.stop();
-                video.pause();
-                return;
-            }
-
-            try {
-                await selfieSegmentation.send({ image: video });
-            } catch (error) {
-                console.error('Frame processing error:', error);
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                }
+                originalVideo.pause();
             }
             
-            const progress = Math.round((video.currentTime / video.duration) * 100);
-            progressFill.style.width = progress + '%';
-            progressText.textContent = `Processing: ${progress}%`;
-
-            animationFrameId = requestAnimationFrame(processFrames);
-        }
-
-        function onResults(results) {
-            ctx.save();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw background
-            if (backgroundColor === 'transparent') {
-                // Transparent background
-            } else if (backgroundColor === 'gradient') {
-                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                gradient.addColorStop(0, '#667eea');
-                gradient.addColorStop(1, '#764ba2');
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            } else {
-                ctx.fillStyle = backgroundColor;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            async function processVideoFrame() {
+                if (!isProcessing) return;
+                
+                // Update FPS counter
+                updateFps();
+                
+                // Process current video frame
+                if (originalVideo.readyState >= 2) { // HAVE_CURRENT_DATA
+                    const segmentation = await net.segmentPerson(originalVideo, {
+                        flipHorizontal: false,
+                        internalResolution: 'medium',
+                        segmentationThreshold: 0.7
+                    });
+                    
+                    drawProcessedFrame(segmentation);
+                }
+                
+                // Continue processing
+                animationId = requestAnimationFrame(processVideoFrame);
             }
-
-            // Draw the segmentation mask
-            ctx.globalCompositeOperation = 'destination-atop';
-            ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
-
-            // Draw the original video
-            ctx.globalCompositeOperation = 'destination-over';
-            ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
-
-            ctx.restore();
-        }
-
-        function showStatus(message, type) {
-            status.textContent = message;
-            status.className = 'status ' + type;
-            status.style.display = 'block';
-        }
-
-        // Clean up on page unload
-        window.addEventListener('beforeunload', () => {
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
+            
+            function drawProcessedFrame(segmentation) {
+                const ctx = foregroundCanvas.getContext('2d');
+                const width = foregroundCanvas.width;
+                const height = foregroundCanvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw the original video frame
+                ctx.drawImage(originalVideo, 0, 0, width, height);
+                
+                // Get the image data
+                const imageData = ctx.getImageData(0, 0, width, height);
+                const data = imageData.data;
+                
+                // Apply segmentation mask to remove background
+                for (let i = 0; i < data.length; i += 4) {
+                    const pixelIndex = i / 4;
+                    if (!segmentation.data[pixelIndex]) {
+                        // If not part of person, make transparent
+                        data[i + 3] = 0; // Alpha channel
+                    }
+                }
+                
+                // Put the modified image data back
+                ctx.putImageData(imageData, 0, 0);
+                
+                // Draw background
+                drawBackground();
             }
-            if (video) {
-                video.pause();
-                video.src = '';
+            
+            function drawBackground() {
+                const ctx = backgroundCanvas.getContext('2d');
+                const width = backgroundCanvas.width;
+                const height = backgroundCanvas.height;
+                
+                // Clear background canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw selected background
+                if (currentBackground === 'transparent') {
+                    // For transparent background, we don't draw anything
+                    // The checkerboard pattern is handled by CSS
+                    return;
+                } else if (currentBackground === 'image') {
+                    // Draw gradient background
+                    const gradient = ctx.createLinearGradient(0, 0, width, height);
+                    gradient.addColorStop(0, '#ff6b6b');
+                    gradient.addColorStop(1, '#48dbfb');
+                    ctx.fillStyle = gradient;
+                } else {
+                    // Solid color background
+                    ctx.fillStyle = backgrounds[currentBackground];
+                }
+                
+                ctx.fillRect(0, 0, width, height);
+            }
+            
+            function startRecording() {
+                if (!foregroundCanvas.captureStream) {
+                    console.warn('Canvas capture not supported');
+                    return;
+                }
+                
+                recordedChunks = [];
+                const stream = foregroundCanvas.captureStream(30); // 30 FPS
+                
+                try {
+                    mediaRecorder = new MediaRecorder(stream, {
+                        mimeType: 'video/webm;codecs=vp9'
+                    });
+                    
+                    mediaRecorder.ondataavailable = function(event) {
+                        if (event.data.size > 0) {
+                            recordedChunks.push(event.data);
+                        }
+                    };
+                    
+                    mediaRecorder.onstop = function() {
+                        downloadSection.style.display = 'block';
+                    };
+                    
+                    mediaRecorder.start();
+                } catch (e) {
+                    console.warn('MediaRecorder not supported:', e);
+                }
+            }
+            
+            function updateFps() {
+                frameCount++;
+                const now = performance.now();
+                
+                if (now >= lastFpsUpdate + 1000) {
+                    fps = Math.round((frameCount * 1000) / (now - lastFpsUpdate));
+                    frameCount = 0;
+                    lastFpsUpdate = now;
+                    fpsCounter.textContent = fps;
+                }
+            }
+            
+            function togglePlayPause() {
+                if (originalVideo.paused) {
+                    originalVideo.play();
+                    if (isProcessing) {
+                        processVideoFrame();
+                    }
+                } else {
+                    originalVideo.pause();
+                }
+            }
+            
+            function restartVideo() {
+                originalVideo.currentTime = 0;
+                if (isProcessing) {
+                    originalVideo.play();
+                    processVideoFrame();
+                }
+            }
+            
+            function downloadVideo() {
+                if (recordedChunks.length === 0) {
+                    showError('No video recorded yet. Please process the video first.');
+                    return;
+                }
+                
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `background-removed-${currentVideoFile.name.replace(/\.[^/.]+$/, "")}.webm`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.add('active');
+            }
+            
+            function hideError() {
+                errorMessage.classList.remove('active');
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' bytes';
+                else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                else return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+            
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
             }
         });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Video Background Remover - Real Version</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></script>
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --primary-dark: #3a56d4;
+            --light-bg: #f8f9fa;
+            --dark-text: #333;
+            --light-text: #fff;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .app-container {
+                flex-direction: row;
+            }
+        }
+        
+        .upload-section, .preview-section {
+            flex: 1;
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: var(--border-radius);
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 108, 247, 0.05);
+        }
+        
+        .upload-area.highlight {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 108, 247, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-full {
+            width: 100%;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background: #000;
+        }
+        
+        video, canvas {
+            width: 100%;
+            display: block;
+        }
+        
+        .canvas-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .background-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .foreground-canvas {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .result-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .background-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .bg-option {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .bg-option.active {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 108, 247, 0.1);
+        }
+        
+        .bg-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .transparent-bg {
+            background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                              linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                              linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        
+        .download-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .info-text {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            background-color: #fdf0ed;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .error-message.active {
+            display: block;
+        }
+        
+        .performance-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Video Background Remover - Real Version</h1>
+            <p class="subtitle">Upload your video and remove the background using TensorFlow.js AI</p>
+        </header>
+        
+        <div class="performance-warning">
+            <strong>Note:</strong> Background removal happens in real-time using your device's processing power. 
+            For best performance, use short videos and a powerful device.
+        </div>
+        
+        <div class="app-container">
+            <div class="upload-section">
+                <h2>Upload Video</h2>
+                <p class="info-text">Supported formats: MP4, WebM, MOV (Recommended: short videos under 30 seconds)</p>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p>Drag & drop your video here</p>
+                    <p>or</p>
+                    <button class="btn" id="browseBtn">Browse Files</button>
+                    <input type="file" id="fileInput" class="file-input" accept="video/*">
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Loading AI Model...</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar"></div>
+                    </div>
+                    <p id="progressText">0%</p>
+                </div>
+                
+                <div class="video-info" id="videoInfo" style="display: none;">
+                    <h3>Video Details</h3>
+                    <p id="videoName">Name: </p>
+                    <p id="videoSize">Size: </p>
+                    <p id="videoDuration">Duration: </p>
+                </div>
+                
+                <button class="btn btn-full" id="processBtn" disabled>Start Background Removal</button>
+                <button class="btn btn-full" id="stopBtn" disabled style="margin-top: 10px;">Stop Processing</button>
+            </div>
+            
+            <div class="preview-section">
+                <h2>Preview</h2>
+                
+                <div class="video-container hidden" id="originalVideoContainer">
+                    <h3>Original Video</h3>
+                    <video id="originalVideo" controls></video>
+                </div>
+                
+                <div class="video-container" id="processedVideoContainer">
+                    <h3>Processed Video</h3>
+                    <div class="canvas-container">
+                        <canvas id="backgroundCanvas" class="background-canvas"></canvas>
+                        <canvas id="foregroundCanvas" class="foreground-canvas"></canvas>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" id="playPauseBtn">Play/Pause</button>
+                    <button class="btn" id="restartBtn">Restart</button>
+                </div>
+                
+                <div class="background-options">
+                    <div class="bg-option active" data-bg="transparent">
+                        <div class="bg-preview transparent-bg"></div>
+                        <span>Transparent</span>
+                    </div>
+                    <div class="bg-option" data-bg="white">
+                        <div class="bg-preview" style="background: white;"></div>
+                        <span>White</span>
+                    </div>
+                    <div class="bg-option" data-bg="green">
+                        <div class="bg-preview" style="background: #4CAF50;"></div>
+                        <span>Green</span>
+                    </div>
+                    <div class="bg-option" data-bg="blue">
+                        <div class="bg-preview" style="background: #2196F3;"></div>
+                        <span>Blue</span>
+                    </div>
+                    <div class="bg-option" data-bg="image">
+                        <div class="bg-preview" style="background: linear-gradient(45deg, #ff6b6b, #48dbfb);"></div>
+                        <span>Gradient</span>
+                    </div>
+                </div>
+                
+                <div class="result-info" id="resultInfo" style="display: none;">
+                    <h3>Processing Active</h3>
+                    <p>Background removal is running in real-time.</p>
+                    <p class="info-text">FPS: <span id="fpsCounter">0</span></p>
+                </div>
+                
+                <div class="download-section" id="downloadSection" style="display: none;">
+                    <button class="btn btn-full" id="downloadBtn">Download Processed Video</button>
+                    <p class="info-text">Note: This records the processed output</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        init();
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const browseBtn = document.getElementById('browseBtn');
+            const processBtn = document.getElementById('processBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const originalVideo = document.getElementById('originalVideo');
+            const originalVideoContainer = document.getElementById('originalVideoContainer');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const videoInfo = document.getElementById('videoInfo');
+            const videoName = document.getElementById('videoName');
+            const videoSize = document.getElementById('videoSize');
+            const videoDuration = document.getElementById('videoDuration');
+            const resultInfo = document.getElementById('resultInfo');
+            const downloadSection = document.getElementById('downloadSection');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const bgOptions = document.querySelectorAll('.bg-option');
+            const foregroundCanvas = document.getElementById('foregroundCanvas');
+            const backgroundCanvas = document.getElementById('backgroundCanvas');
+            const fpsCounter = document.getElementById('fpsCounter');
+            const processedVideoContainer = document.getElementById('processedVideoContainer');
+            
+            // Variables
+            let currentVideoFile = null;
+            let net = null;
+            let isProcessing = false;
+            let animationId = null;
+            let mediaRecorder = null;
+            let recordedChunks = [];
+            let currentBackground = 'transparent';
+            let fps = 0;
+            let frameCount = 0;
+            let lastFpsUpdate = 0;
+            
+            // Background options
+            const backgrounds = {
+                transparent: null,
+                white: 'white',
+                green: '#4CAF50',
+                blue: '#2196F3',
+                image: 'gradient'
+            };
+            
+            // Event Listeners
+            browseBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleFileDrop);
+            processBtn.addEventListener('click', startBackgroundRemoval);
+            stopBtn.addEventListener('click', stopBackgroundRemoval);
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            restartBtn.addEventListener('click', restartVideo);
+            downloadBtn.addEventListener('click', downloadVideo);
+            
+            bgOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    bgOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    currentBackground = this.dataset.bg;
+                    drawBackground();
+                });
+            });
+            
+            // Initialize TensorFlow.js and BodyPix model
+            initAI();
+            
+            // Functions
+            async function initAI() {
+                try {
+                    loadingIndicator.classList.add('active');
+                    progressText.textContent = 'Loading AI model...';
+                    
+                    // Load the BodyPix model
+                    net = await bodyPix.load({
+                        architecture: 'MobileNetV1',
+                        outputStride: 16,
+                        multiplier: 0.75,
+                        quantBytes: 2
+                    });
+                    
+                    loadingIndicator.classList.remove('active');
+                    console.log('BodyPix model loaded successfully');
+                } catch (error) {
+                    console.error('Error loading BodyPix model:', error);
+                    showError('Failed to load AI model. Please refresh the page and try again.');
+                }
+            }
+            
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('video/')) {
+                    loadVideo(file);
+                } else {
+                    showError('Please select a valid video file.');
+                }
+            }
+            
+            function handleDragOver(e) {
+                e.preventDefault();
+                uploadArea.classList.add('highlight');
+            }
+            
+            function handleDragLeave(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('highlight');
+            }
+            
+            function handleFileDrop(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('highlight');
+                
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('video/')) {
+                    loadVideo(file);
+                } else {
+                    showError('Please drop a valid video file.');
+                }
+            }
+            
+            function loadVideo(file) {
+                // Check file size (limit to 100MB)
+                if (file.size > 100 * 1024 * 1024) {
+                    showError('File size exceeds 100MB limit. Please choose a smaller video.');
+                    return;
+                }
+                
+                currentVideoFile = file;
+                const url = URL.createObjectURL(file);
+                originalVideo.src = url;
+                originalVideoContainer.classList.remove('hidden');
+                
+                // Display video info
+                videoName.textContent = `Name: ${file.name}`;
+                videoSize.textContent = `Size: ${formatFileSize(file.size)}`;
+                
+                originalVideo.addEventListener('loadedmetadata', function() {
+                    videoDuration.textContent = `Duration: ${formatTime(originalVideo.duration)}`;
+                    videoInfo.style.display = 'block';
+                    processBtn.disabled = false;
+                    
+                    // Set canvas dimensions to match video
+                    const width = originalVideo.videoWidth;
+                    const height = originalVideo.videoHeight;
+                    foregroundCanvas.width = width;
+                    foregroundCanvas.height = height;
+                    backgroundCanvas.width = width;
+                    backgroundCanvas.height = height;
+                    
+                    hideError();
+                });
+                
+                // Reset UI
+                resultInfo.style.display = 'none';
+                downloadSection.style.display = 'none';
+                stopProcessing();
+            }
+            
+            async function startBackgroundRemoval() {
+                if (!currentVideoFile || !net) {
+                    showError('Please load a video and wait for AI model to initialize.');
+                    return;
+                }
+                
+                isProcessing = true;
+                processBtn.disabled = true;
+                stopBtn.disabled = false;
+                resultInfo.style.display = 'block';
+                
+                // Start video playback
+                await originalVideo.play();
+                
+                // Start processing frames
+                processVideoFrame();
+                
+                // Start recording if download is requested
+                startRecording();
+            }
+            
+            function stopBackgroundRemoval() {
+                stopProcessing();
+                processBtn.disabled = false;
+                stopBtn.disabled = true;
+                resultInfo.style.display = 'none';
+            }
+            
+            function stopProcessing() {
+                isProcessing = false;
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                }
+                originalVideo.pause();
+            }
+            
+            async function processVideoFrame() {
+                if (!isProcessing) return;
+                
+                // Update FPS counter
+                updateFps();
+                
+                // Process current video frame
+                if (originalVideo.readyState >= 2) { // HAVE_CURRENT_DATA
+                    const segmentation = await net.segmentPerson(originalVideo, {
+                        flipHorizontal: false,
+                        internalResolution: 'medium',
+                        segmentationThreshold: 0.7
+                    });
+                    
+                    drawProcessedFrame(segmentation);
+                }
+                
+                // Continue processing
+                animationId = requestAnimationFrame(processVideoFrame);
+            }
+            
+            function drawProcessedFrame(segmentation) {
+                const ctx = foregroundCanvas.getContext('2d');
+                const width = foregroundCanvas.width;
+                const height = foregroundCanvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw the original video frame
+                ctx.drawImage(originalVideo, 0, 0, width, height);
+                
+                // Get the image data
+                const imageData = ctx.getImageData(0, 0, width, height);
+                const data = imageData.data;
+                
+                // Apply segmentation mask to remove background
+                for (let i = 0; i < data.length; i += 4) {
+                    const pixelIndex = i / 4;
+                    if (!segmentation.data[pixelIndex]) {
+                        // If not part of person, make transparent
+                        data[i + 3] = 0; // Alpha channel
+                    }
+                }
+                
+                // Put the modified image data back
+                ctx.putImageData(imageData, 0, 0);
+                
+                // Draw background
+                drawBackground();
+            }
+            
+            function drawBackground() {
+                const ctx = backgroundCanvas.getContext('2d');
+                const width = backgroundCanvas.width;
+                const height = backgroundCanvas.height;
+                
+                // Clear background canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw selected background
+                if (currentBackground === 'transparent') {
+                    // For transparent background, we don't draw anything
+                    // The checkerboard pattern is handled by CSS
+                    return;
+                } else if (currentBackground === 'image') {
+                    // Draw gradient background
+                    const gradient = ctx.createLinearGradient(0, 0, width, height);
+                    gradient.addColorStop(0, '#ff6b6b');
+                    gradient.addColorStop(1, '#48dbfb');
+                    ctx.fillStyle = gradient;
+                } else {
+                    // Solid color background
+                    ctx.fillStyle = backgrounds[currentBackground];
+                }
+                
+                ctx.fillRect(0, 0, width, height);
+            }
+            
+            function startRecording() {
+                if (!foregroundCanvas.captureStream) {
+                    console.warn('Canvas capture not supported');
+                    return;
+                }
+                
+                recordedChunks = [];
+                const stream = foregroundCanvas.captureStream(30); // 30 FPS
+                
+                try {
+                    mediaRecorder = new MediaRecorder(stream, {
+                        mimeType: 'video/webm;codecs=vp9'
+                    });
+                    
+                    mediaRecorder.ondataavailable = function(event) {
+                        if (event.data.size > 0) {
+                            recordedChunks.push(event.data);
+                        }
+                    };
+                    
+                    mediaRecorder.onstop = function() {
+                        downloadSection.style.display = 'block';
+                    };
+                    
+                    mediaRecorder.start();
+                } catch (e) {
+                    console.warn('MediaRecorder not supported:', e);
+                }
+            }
+            
+            function updateFps() {
+                frameCount++;
+                const now = performance.now();
+                
+                if (now >= lastFpsUpdate + 1000) {
+                    fps = Math.round((frameCount * 1000) / (now - lastFpsUpdate));
+                    frameCount = 0;
+                    lastFpsUpdate = now;
+                    fpsCounter.textContent = fps;
+                }
+            }
+            
+            function togglePlayPause() {
+                if (originalVideo.paused) {
+                    originalVideo.play();
+                    if (isProcessing) {
+                        processVideoFrame();
+                    }
+                } else {
+                    originalVideo.pause();
+                }
+            }
+            
+            function restartVideo() {
+                originalVideo.currentTime = 0;
+                if (isProcessing) {
+                    originalVideo.play();
+                    processVideoFrame();
+                }
+            }
+            
+            function downloadVideo() {
+                if (recordedChunks.length === 0) {
+                    showError('No video recorded yet. Please process the video first.');
+                    return;
+                }
+                
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `background-removed-${currentVideoFile.name.replace(/\.[^/.]+$/, "")}.webm`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.add('active');
+            }
+            
+            function hideError() {
+                errorMessage.classList.remove('active');
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' bytes';
+                else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                else return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+            
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+        });
     </script>
 </body>
 </html>
