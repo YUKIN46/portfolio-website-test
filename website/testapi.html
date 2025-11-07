@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWAJ AI | Ekghanti Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Reset */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* Fixed Logo */
+    .fixed-logo {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 9999;
+      padding: 5px;
+      border-radius: 10px;
+    }
+
+    .fixed-logo img {
+      height: 40px;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, #4a4a4a 0%, #f37353 50%, #ffa5df 100%);
+      width: 100%;
+      height: 80%;
+      overflow: hidden;
+    }
+
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .volume-control {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 8px 12px;
+      border-radius: 25px;
+      backdrop-filter: blur(5px);
+      transition: opacity 0.3s ease;
+    }
+
+    .control-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mute-btn, .play-pause-btn {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 5px;
+      font-size: 1.2rem;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .mute-btn:hover, .play-pause-btn:hover {
+      transform: scale(1.1);
+      color: #ffd700;
+    }
+
+    .volume-slider {
+      width: 0;
+      opacity: 0;
+      transition: all 0.3s ease;
+      accent-color: #6b21a8;
+    }
+
+    .volume-control:hover .volume-slider {
+      width: 100px;
+      opacity: 1;
+    }
+
+    video::-webkit-media-controls {
+      display: none !important;
+    }
+
+    video {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+
+    /* Play Button Overlay */
+    .play-button-overlay {
+      position: absolute;
+      z-index: 1000;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #6b21a8 0%, #7c3aed 100%);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: 0 4px 15px rgba(107, 33, 168, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .play-button-overlay:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 0 8px 25px rgba(107, 33, 168, 0.4);
+    }
+
+    .play-button-overlay:active {
+      transform: translate(-50%, -50%) scale(0.98);
+    }
+
+    .play-button-overlay.hidden {
+      display: none;
+    }
+
+    /* Hero 2 */
+    .hero2 {
+      position: relative;
+      background: linear-gradient(135deg, #6f98e4 0%, #f37353 50%, #ffa5df 100%);
+      width: 100%;
+      height: 20%;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: white;
+    }
+
+    .hero2 h1 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+      color: #49140c;
+      margin: 0;
+    }
+
+    .hero2 p {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 1.5rem;
+      color: #040000;
+      margin-top: 10px;
+    }
+
+    /* YouTube Videos Section */
+    .youtube-section {
+      padding: 4rem 0;
+      background: linear-gradient(135deg, #d4a5ff 0%, #ff9a9e 50%, #feb47b 100%);
+      min-height: 600px;
+    }
+
+    .youtube-section h2 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 2rem;
+      color: #49140c;
+      margin-bottom: 3rem;
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+
+    /* Enhanced YouTube Grid Layout */
+    .youtube-wrapper {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .youtube-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      justify-content: center;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .youtube-grid[data-count="1"] {
+      grid-template-columns: minmax(320px, 600px);
+      justify-content: center;
+    }
+
+    .youtube-grid[data-count="2"] {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .youtube-grid[data-count="4"] {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    @media (min-width: 1024px) {
+      .youtube-grid[data-count="5"],
+      .youtube-grid[data-count="6"],
+      .youtube-grid[data-count="7"],
+      .youtube-grid[data-count="8"],
+      .youtube-grid[data-count="9"] {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .youtube-grid.has-expanded {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .expanded-container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .videos-below {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      justify-content: center;
+    }
+
+    .videos-below[data-remaining="1"] {
+      grid-template-columns: minmax(280px, 400px);
+      justify-content: center;
+    }
+
+    .videos-below[data-remaining="2"] {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 400px));
+      justify-content: center;
+      max-width: 850px;
+    }
+
+    /* YouTube Card Styles */
+    .youtube-card {
+      background: white;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      width: 100%;
+      transform-origin: center center;
+      opacity: 1;
+      position: relative;
+    }
+
+    .youtube-card.expanding {
+      animation: expandAnimation 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .youtube-card.collapsing {
+      animation: collapseAnimation 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .youtube-card.sliding-down {
+      animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .youtube-card.sliding-up {
+      animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes expandAnimation {
+      0% {
+        transform: scale(1) translateY(0);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      50% {
+        transform: scale(1.03) translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+      100% {
+        transform: scale(1) translateY(0);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    @keyframes collapseAnimation {
+      0% {
+        transform: scale(1) translateY(0);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+      }
+      50% {
+        transform: scale(0.97) translateY(5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+      100% {
+        transform: scale(1) translateY(0);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    @keyframes slideDown {
+      0% {
+        opacity: 0.3;
+        transform: translateY(-20px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes slideUp {
+      0% {
+        opacity: 0.3;
+        transform: translateY(20px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .youtube-card:hover:not(.expanded):not(.expanding) {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .youtube-card.expanded {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      transform: scale(1) !important;
+      z-index: 10;
+    }
+
+    .youtube-card.expanded:hover {
+      transform: scale(1) !important;
+    }
+
+    /* Video wrapper */
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      background: #000;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+      transition: opacity 0.5s ease 0.3s;
+      opacity: 0;
+    }
+
+    .youtube-card.expanded .video-wrapper iframe {
+      pointer-events: auto;
+      opacity: 1;
+    }
+
+    /* Video thumbnail overlay */
+    .video-thumbnail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000 no-repeat center;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 1;
+      z-index: 2;
+    }
+
+    .youtube-card.expanded .video-thumbnail {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    /* Play button overlay */
+    .play-overlay {
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: pulse 2s infinite;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 0 rgba(107, 33, 168, 0.3);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 15px rgba(107, 33, 168, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 0 rgba(107, 33, 168, 0);
+      }
+    }
+
+    .youtube-card:hover .play-overlay {
+      transform: scale(1.15);
+      background: white;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      animation: none;
+    }
+
+    .play-overlay::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 25px solid #6b21a8;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      margin-left: 5px;
+      transition: border-left-color 0.3s ease;
+    }
+
+    .youtube-card:hover .play-overlay::after {
+      border-left-color: #7c3aed;
+    }
+
+    /* Video info section */
+    .video-info {
+      padding: 1.5rem;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .youtube-card.expanded .video-info {
+      padding: 2rem;
+      background: linear-gradient(to bottom, white 0%, #f8f9fa 100%);
+    }
+
+    .video-info h3 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #1e293b;
+      margin: 0 0 0.5rem 0;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .youtube-card.expanded .video-info h3 {
+      font-size: 1.5rem;
+    }
+
+    .video-info p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.5;
+      margin: 0;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .youtube-card.expanded .video-info p {
+      font-size: 1.1rem;
+    }
+
+    /* Close button */
+    .close-video-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #1e293b;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: scale(0.8);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .youtube-card.expanded .close-video-btn {
+      display: flex;
+      animation: fadeInScale 0.4s 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes fadeInScale {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .close-video-btn:hover {
+      background: white;
+      transform: rotate(90deg) scale(1.2);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Show More Button */
+    .show-more-container {
+      text-align: center;
+      margin-top: 3rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .show-more-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .show-more-btn {
+      background: linear-gradient(135deg, #6b21a8 0%, #7c3aed 100%);
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(107, 33, 168, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .show-more-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(107, 33, 168, 0.4);
+    }
+
+    .show-more-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .show-more-btn.loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .show-more-btn .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
+    }
+
+    .show-more-btn.loading .spinner {
+      display: block;
+    }
+
+    .show-more-btn.loading .btn-text {
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Loading State */
+    .loading-skeleton {
+      background: white;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .loading-skeleton .skeleton-thumbnail {
+      width: 100%;
+      padding-bottom: 56.25%;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    .loading-skeleton .skeleton-info {
+      padding: 1.5rem;
+    }
+
+    .skeleton-title {
+      height: 20px;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+
+    .skeleton-description {
+      height: 14px;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+      width: 80%;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    /* Use Case Section */
+    .use-case {
+      padding: 3rem 0;
+      background: #fff7f5;
+    }
+
+    .use-case h2 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 2rem;
+      color: rgb(37, 129, 129);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .use-case-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      justify-items: center;
+    }
+
+    .use-case-item {
+      background: #fff7f5;
+      text-align: center;
+      padding: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .use-case-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .use-case-item img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 1rem;
+    }
+
+    .use-case-item p {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+    }
+
+    /* Tailored Section */
+    .tailored {
+      padding: 3rem 0;
+      background: #fff7f5;
+    }
+
+    .tailored h2 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 2rem;
+      color: rgb(37, 129, 129);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .tailored-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      justify-items: center;
+    }
+
+    .tailored-item {
+      text-align: center;
+      padding: 1rem;
+      background: #fff7f5;
+      border-radius: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .tailored-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .tailored-item img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 0.75rem;
+    }
+
+    .tailored-item p {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+    }
+
+    /* Brands Section */
+    .brands {
+      padding: 3rem 0;
+      background: #fff7f5;
+    }
+
+    .brands h2 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 2rem;
+      color: rgb(37, 129, 129);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .brands-logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .brands-logos img {
+      max-height: 70px;
+      width: auto;
+      max-width: 185px;
+      transition: filter 0.3s ease;
+    }
+
+    .brands-logos img:hover {
+      filter: grayscale(0%);
+    }
+
+    /* Footer */
+    .footer {
+      font-family: 'Inter', sans-serif;
+      padding: 2rem 0;
+      background: linear-gradient(135deg, #5481d5 25%, #f37353 50%, #ffa5df 100%);
+      color: rgb(33, 26, 26);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.75rem;
+      margin-right: auto;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .footer-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .demo-button {
+      background: linear-gradient(135deg, #d4a5ff 0%, #ff9a9e 50%, #feb47b 100%);
+      color: rgb(57, 43, 43);
+      border: rgb(156, 102, 102) 5px solid;
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      margin-bottom: 0.5rem;
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: 0.8px;
+    }
+
+    .demo-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .highlight {
+      color: #feb47b;
+      font-weight: 500;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .youtube-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .youtube-grid[data-count="1"],
+      .youtube-grid[data-count="2"],
+      .youtube-grid[data-count="4"] {
+        grid-template-columns: 1fr;
+      }
+
+      .videos-below {
+        grid-template-columns: 1fr;
+      }
+
+      .videos-below[data-remaining="1"],
+      .videos-below[data-remaining="2"] {
+        grid-template-columns: 1fr;
+      }
+
+      .youtube-card.expanded {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero {
+        height: 40vh;
+      }
+
+      .hero2 {
+        width: 100%;
+        max-width: 480px;
+      }
+
+      .hero2 h1 {
+        margin-top: 100px;
+        font-size: 1rem;
+      }
+
+      .hero2 p {
+        font-size: 0.8rem;
+        margin: 5px auto 0;
+      }
+
+      .brands-logos img {
+        max-width: 70px;
+        max-height: 60px;
+      }
+
+      .demo-button {
+        padding: 0.5rem 1.5rem;
+        border-width: 3px;
+      }
+
+      .tailored-items {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      }
+
+      .volume-control {
+        bottom: 10px;
+        right: 10px;
+        padding: 6px 10px;
+      }
+
+      .mute-btn, .play-pause-btn {
+        font-size: 1rem;
+        padding: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="fixed-logo">
+    <img src="awaj logo.png" alt="Awaj Logo">
+  </div>
+
+  <section class="hero">
+    <video class="hero-video" playsinline preload="auto" id="heroVideo">
+      <source src="Awaj_Video2_004567.mp4" type="video/mp4">
+    </video>
+    <button class="play-button-overlay" id="playButtonOverlay">
+      <i class="fas fa-play"></i> Play Video
+    </button>
+    <div class="volume-control">
+      <div class="control-buttons">
+        <button class="play-pause-btn" id="playPauseBtn" title="Play/Pause">
+          <i class="fas fa-play"></i>
+        </button>
+        <button class="mute-btn" id="muteBtn" title="Mute/Unmute">
+          <i class="fas fa-volume-up"></i>
+        </button>
+      </div>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+    </div>
+  </section>
+
+  <section class="hero2">
+    <div class="hero-content">
+      <h1>Say hello to our AI agents that handle calls just like humans–sometimes even better.</h1>
+      <p>Let our AI Agents take care of the conversations while you focus on growing your business.</p>
+    </div>
+  </section>
+
+  <!-- YouTube Videos Section -->
+  <section class="youtube-section">
+    <div class="youtube-wrapper">
+      <h2>Watch Our AI in Action</h2>
+      <div class="youtube-grid" id="youtubeGrid">
+        <!-- Videos will be loaded here dynamically -->
+      </div>
+      <div class="show-more-container" id="showMoreContainer">
+        <button class="show-more-btn" id="showMoreBtn">
+          <span class="btn-text">Show More Videos</span>
+          <div class="spinner"></div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="use-case">
+    <div class="container">
+      <h2>Use Case</h2>
+      <div class="use-case-items">
+        <div class="use-case-item">
+          <img src="time.png" alt="Clock Icon">
+          <p>Serve your customer round the clock</p>
+        </div>
+        <div class="use-case-item">
+          <img src="ser.png" alt="Calendar Icon">
+          <p>Book appointments, process queries instantly</p>
+        </div>
+        <div class="use-case-item">
+          <img src="handshake.png" alt="Handshake Icon">
+          <p>Make every interaction personalized</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tailored">
+    <div class="container">
+      <h2>Tailored for any business</h2>
+      <div class="tailored-items">
+        <div class="tailored-item"><img src="Ecommerce.png" alt="E-commerce"><p>E-commerce</p></div>
+        <div class="tailored-item"><img src="SME.png" alt="SME"><p>SME</p></div>
+        <div class="tailored-item"><img src="telecom.png" alt="Telecom"><p>Telecom</p></div>
+        <div class="tailored-item"><img src="Isp.png" alt="ISP"><p>ISP</p></div>
+        <div class="tailored-item"><img src="Enterprise.png" alt="Enterprise"><p>Enterprise</p></div>
+        <div class="tailored-item"><img src="Hospital.png" alt="Hospital"><p>Hospital</p></div>
+        <div class="tailored-item"><img src="Fintech.png" alt="Fintech"><p>Fintech</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="brands">
+    <div class="container">
+      <h2>Brands that Support Us</h2>
+      <div class="brands-logos">
+        <img src="dishhome.png" alt="Dishhome">
+        <img src="NIC.png" alt="NIC">
+        <img src="Nabil.png" alt="Nabil">
+        <img src="KumariBankLogo-1.png" alt="Kumari Bank">
+        <img src="unilever.png" alt="Unilever">
+        <img src="global.png" alt="Global">
+        <img src="CG.png" alt="CG">
+        <img src="Adbl.png" alt="ADBL">
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content container">
+      <img src="awaj logo.png" alt="awajai" width="100">
+      <div class="footer-right">
+        <div class="footer-stack">
+          <button class="demo-button" onclick="window.open('https://ekghanti.com.np/contact-us/', '_blank')">Book a Demo</button>
+          <p>Available with <img src="orbit360.png" alt="Orbit360Logo" width="100"> - Get it Now.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION - REPLACE WITH YOUR DETAILS
+    // ==========================================
+    const CONFIG = {
+      // Replace with your YouTube Data API Key
+      API_KEY: 'AIzaSyDWv_QQsW3FSctsdllwYcBvFLMGvjPYOGg',
+      
+      // Replace with your YouTube Channel ID or Username
+      // To get Channel ID: Go to your channel -> About -> Share Channel -> Copy Channel ID
+      CHANNEL_ID: 'UCsfdYmvPexGHnP7yRF6g7SQ',
+      
+      
+      // Number of videos to load initially
+      INITIAL_LOAD: 6,
+      
+      // Number of videos to load when "Show More" is clicked
+      LOAD_MORE: 6
+    };
+
+    // ==========================================
+    // HERO VIDEO FUNCTIONALITY
+    // ==========================================
+    class HeroVideoController {
+      constructor() {
+        this.video = document.getElementById('heroVideo');
+        this.playButtonOverlay = document.getElementById('playButtonOverlay');
+        this.playPauseBtn = document.getElementById('playPauseBtn');
+        this.muteBtn = document.getElementById('muteBtn');
+        this.volumeSlider = document.getElementById('volumeSlider');
+        this.isPlaying = false;
+        
+        this.init();
+      }
+
+      init() {
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        // Play button overlay click
+        this.playButtonOverlay.addEventListener('click', () => this.togglePlay());
+        
+        // Play/Pause button click
+        this.playPauseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.togglePlay();
+        });
+        
+        // Mute button click
+        this.muteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.toggleMute();
+        });
+        
+        // Volume slider
+        this.volumeSlider.addEventListener('input', (e) => {
+          e.stopPropagation();
+          this.video.volume = e.target.value;
+          this.video.muted = false;
+          this.updateMuteIcon();
+        });
+
+        // Update play/pause icon when video state changes
+        this.video.addEventListener('play', () => this.updatePlayIcon());
+        this.video.addEventListener('pause', () => this.updatePlayIcon());
+        this.video.addEventListener('ended', () => {
+          this.isPlaying = false;
+          this.updatePlayIcon();
+        });
+
+        this.video.addEventListener('volumechange', () => {
+          if (!this.video.muted) this.volumeSlider.value = this.video.volume;
+          this.updateMuteIcon();
+        });
+
+        // Handle visibility change
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'hidden' && this.isPlaying) {
+            this.video.pause();
+          }
+        });
+      }
+
+      togglePlay() {
+        if (this.video.paused || this.video.ended) {
+          this.play();
+        } else {
+          this.pause();
+        }
+      }
+
+      play() {
+        this.video.play().then(() => {
+          this.isPlaying = true;
+          this.playButtonOverlay.classList.add('hidden');
+          this.updatePlayIcon();
+          YouTubeVideoLoader.instance?.pauseAllYouTubeVideos();
+        }).catch(error => {
+          console.error('Error playing video:', error);
+        });
+      }
+
+      pause() {
+        this.video.pause();
+        this.isPlaying = false;
+        this.playButtonOverlay.classList.remove('hidden');
+        this.updatePlayIcon();
+      }
+
+      toggleMute() {
+        this.video.muted = !this.video.muted;
+        if (this.video.muted) {
+          this.volumeSlider.value = 0;
+        } else {
+          this.volumeSlider.value = this.video.volume;
+        }
+        this.updateMuteIcon();
+      }
+
+      updatePlayIcon() {
+        const icon = this.playPauseBtn.querySelector('i');
+        if (this.video.paused || this.video.ended) {
+          icon.className = 'fas fa-play';
+        } else {
+          icon.className = 'fas fa-pause';
+        }
+      }
+
+      updateMuteIcon() {
+        const icon = this.muteBtn.querySelector('i');
+        if (this.video.muted || this.video.volume === 0) {
+          icon.className = 'fas fa-volume-mute';
+        } else if (this.video.volume < 0.5) {
+          icon.className = 'fas fa-volume-down';
+        } else {
+          icon.className = 'fas fa-volume-up';
+        }
+      }
+
+      pauseVideo() {
+        this.pause();
+      }
+    }
+
+    class YouTubeVideoLoader {
+      static instance = null;
+
+      constructor() {
+        this.videos = [];
+        this.displayedVideos = [];
+        this.nextPageToken = null;
+        this.isLoading = false;
+        this.hasMoreVideos = true;
+        this.youtubeGrid = document.getElementById('youtubeGrid');
+        this.showMoreContainer = document.getElementById('showMoreContainer');
+        this.showMoreBtn = document.getElementById('showMoreBtn');
+        this.expandedCard = null;
+        this.expandedContainer = null;
+        this.videosContainer = null;
+        YouTubeVideoLoader.instance = this;
+        
+        this.init();
+      }
+
+      async init() {
+        this.setupEventListeners();
+        await this.loadInitialVideos();
+      }
+
+      setupEventListeners() {
+        this.showMoreBtn.addEventListener('click', () => this.loadMoreVideos());
+        
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && this.expandedCard) {
+            this.collapseCard(this.expandedCard, true);
+          }
+        });
+      }
+
+      async loadInitialVideos() {
+        this.showLoadingSkeletons(CONFIG.INITIAL_LOAD);
+        await this.fetchVideos(CONFIG.INITIAL_LOAD);
+        this.renderVideos(this.videos.slice(0, CONFIG.INITIAL_LOAD));
+        this.updateShowMoreButton();
+      }
+
+      showLoadingSkeletons(count) {
+        this.youtubeGrid.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+          const skeleton = document.createElement('div');
+          skeleton.className = 'loading-skeleton';
+          skeleton.innerHTML = `
+            <div class="skeleton-thumbnail"></div>
+            <div class="skeleton-info">
+              <div class="skeleton-title"></div>
+              <div class="skeleton-description"></div>
+            </div>
+          `;
+          this.youtubeGrid.appendChild(skeleton);
+        }
+      }
+
+      async fetchVideos(maxResults = 50) {
+        if (this.isLoading) return;
+        this.isLoading = true;
+
+        try {
+          // First, get the channel's uploads playlist ID
+          let channelResponse;
+          
+          if (CONFIG.CHANNEL_USERNAME) {
+            channelResponse = await fetch(
+              `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=${CONFIG.CHANNEL_USERNAME}&key=${CONFIG.API_KEY}`
+            );
+          } else {
+            channelResponse = await fetch(
+              `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CONFIG.CHANNEL_ID}&key=${CONFIG.API_KEY}`
+            );
+          }
+
+          const channelData = await channelResponse.json();
+          
+          if (!channelData.items || channelData.items.length === 0) {
+            throw new Error('Channel not found. Please check your Channel ID or Username.');
+          }
+
+          const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+
+          // Fetch videos from uploads playlist
+          let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${maxResults}&key=${CONFIG.API_KEY}`;
+          
+          if (this.nextPageToken) {
+            url += `&pageToken=${this.nextPageToken}`;
+          }
+
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error.message);
+          }
+
+          // Process videos
+          const newVideos = data.items.map(item => ({
+            id: item.snippet.resourceId.videoId,
+            title: item.snippet.title,
+            description: item.snippet.description,
+            thumbnail: item.snippet.thumbnails.maxres?.url || 
+                       item.snippet.thumbnails.high?.url ||
+                       item.snippet.thumbnails.medium.url,
+            publishedAt: new Date(item.snippet.publishedAt)
+          }));
+
+          this.videos = [...this.videos, ...newVideos];
+          this.nextPageToken = data.nextPageToken || null;
+          this.hasMoreVideos = !!data.nextPageToken;
+
+        } catch (error) {
+          console.error('Error fetching YouTube videos:', error);
+          this.showError(error.message);
+        } finally {
+          this.isLoading = false;
+        }
+      }
+
+      renderVideos(videos) {
+        if (this.displayedVideos.length === 0) {
+          this.youtubeGrid.innerHTML = '';
+        }
+
+        videos.forEach((video, index) => {
+          if (this.displayedVideos.find(v => v.id === video.id)) return;
+          
+          const card = this.createVideoCard(video, this.displayedVideos.length);
+          this.youtubeGrid.appendChild(card);
+          this.displayedVideos.push(video);
+
+          // Animate card entrance
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, index * 50);
+        });
+
+        this.youtubeGrid.setAttribute('data-count', this.displayedVideos.length);
+        this.attachCardEventListeners();
+      }
+
+      createVideoCard(video, index) {
+        const card = document.createElement('div');
+        card.className = 'youtube-card';
+        card.dataset.videoId = video.id;
+        card.dataset.originalIndex = index;
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+
+        const truncatedDescription = video.description.length > 120 
+          ? video.description.substring(0, 120) + '...' 
+          : video.description;
+
+        card.innerHTML = `
+          <button class="close-video-btn">&times;</button>
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/${video.id}?rel=0&modestbranding=1" allowfullscreen></iframe>
+            <div class="video-thumbnail" style="background-image: url('${video.thumbnail}')">
+              <div class="play-overlay"></div>
+            </div>
+          </div>
+          <div class="video-info">
+            <h3>${video.title}</h3>
+            <p>${truncatedDescription}</p>
+          </div>
+        `;
+
+        return card;
+      }
+
+      attachCardEventListeners() {
+        const cards = Array.from(this.youtubeGrid.querySelectorAll('.youtube-card'));
+        
+        cards.forEach(card => {
+          const closeBtn = card.querySelector('.close-video-btn');
+
+          card.onclick = (e) => {
+            if (e.target === closeBtn || closeBtn.contains(e.target)) return;
+            if (!card.classList.contains('expanded') && !card.classList.contains('expanding')) {
+              this.expandCard(card);
+            }
+          };
+
+          closeBtn.onclick = (e) => {
+            e.stopPropagation();
+            this.collapseCard(card, true);
+          };
+        });
+      }
+
+      expandCard(card) {
+        if (this.expandedCard === card) return;
+
+        // Pause hero video when YouTube video is expanded
+        if (heroVideoController) {
+          heroVideoController.pauseVideo();
+        }
+
+        if (this.expandedCard) {
+          this.collapseCard(this.expandedCard, false);
+        }
+
+        this.expandedCard = card;
+        card.classList.add('expanding');
+        this.youtubeGrid.classList.add('has-expanded');
+
+        this.expandedContainer = document.createElement('div');
+        this.expandedContainer.className = 'expanded-container';
+        
+        this.videosContainer = document.createElement('div');
+        this.videosContainer.className = 'videos-below';
+        
+        const allCards = Array.from(this.youtubeGrid.querySelectorAll('.youtube-card'));
+        const otherCards = allCards.filter(c => c !== card);
+        this.videosContainer.setAttribute('data-remaining', otherCards.length);
+        
+        this.expandedContainer.appendChild(card);
+        
+        otherCards.forEach((otherCard, index) => {
+          const delay = Math.min(index, 4) * 50;
+          otherCard.classList.add('sliding-down');
+          setTimeout(() => {
+            this.videosContainer.appendChild(otherCard);
+            otherCard.classList.remove('sliding-down');
+          }, delay);
+        });
+
+        setTimeout(() => {
+          this.youtubeGrid.innerHTML = '';
+          this.youtubeGrid.appendChild(this.expandedContainer);
+          this.youtubeGrid.appendChild(this.videosContainer);
+        }, 100);
+
+        setTimeout(() => {
+          card.classList.remove('expanding');
+          card.classList.add('expanded');
+          const iframe = card.querySelector('iframe');
+          this.setAutoplay(iframe, true);
+          
+          setTimeout(() => {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 200);
+        }, 600);
+      }
+
+      collapseCard(card, animate = true) {
+        if (!card || !card.classList.contains('expanded')) return;
+
+        const iframe = card.querySelector('iframe');
+        this.setAutoplay(iframe, false);
+
+        if (animate) {
+          card.classList.add('collapsing');
+          card.classList.remove('expanded');
+
+          if (this.videosContainer) {
+            const allCards = Array.from(document.querySelectorAll('.youtube-card'));
+            
+            this.youtubeGrid.innerHTML = '';
+            
+            allCards.sort((a, b) => 
+              parseInt(a.dataset.originalIndex) - parseInt(b.dataset.originalIndex)
+            );
+            
+            allCards.forEach((sortedCard, index) => {
+              if (sortedCard !== card) {
+                sortedCard.classList.add('sliding-up');
+              }
+              const delay = Math.min(index, 4) * 50;
+              setTimeout(() => {
+                this.youtubeGrid.appendChild(sortedCard);
+                sortedCard.classList.remove('sliding-up', 'sliding-down');
+              }, delay);
+            });
+
+            setTimeout(() => {
+              this.youtubeGrid.classList.remove('has-expanded');
+              card.classList.remove('collapsing');
+              this.expandedCard = null;
+              this.expandedContainer = null;
+              this.videosContainer = null;
+              
+              this.youtubeGrid.setAttribute('data-count', allCards.length);
+            }, 400);
+          }
+        } else {
+          card.classList.remove('expanded', 'expanding', 'collapsing');
+          this.expandedCard = null;
+        }
+      }
+
+      setAutoplay(iframe, on = true) {
+        try {
+          const url = new URL(iframe.src);
+          url.searchParams.set('autoplay', on ? '1' : '0');
+          iframe.src = url.toString();
+        } catch {
+          if (on && !iframe.src.includes('autoplay=1')) {
+            iframe.src += (iframe.src.includes('?') ? '&' : '?') + 'autoplay=1';
+          }
+          if (!on) {
+            iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
+          }
+        }
+      }
+
+      pauseAllYouTubeVideos() {
+        const iframes = document.querySelectorAll('.youtube-card iframe');
+        iframes.forEach(iframe => {
+          const url = new URL(iframe.src);
+          url.searchParams.set('autoplay', '0');
+          iframe.src = url.toString();
+        });
+      }
+
+      async loadMoreVideos() {
+        if (this.isLoading || !this.hasMoreVideos) return;
+
+        this.showMoreBtn.classList.add('loading');
+
+        // Check if we need to fetch more from API
+        if (this.displayedVideos.length >= this.videos.length && this.hasMoreVideos) {
+          await this.fetchVideos(CONFIG.LOAD_MORE);
+        }
+
+        // Render next batch
+        const startIndex = this.displayedVideos.length;
+        const endIndex = startIndex + CONFIG.LOAD_MORE;
+        const videosToRender = this.videos.slice(startIndex, endIndex);
+
+        this.renderVideos(videosToRender);
+        this.showMoreBtn.classList.remove('loading');
+        this.updateShowMoreButton();
+
+        // Scroll to first new video
+        setTimeout(() => {
+          const firstNewCard = this.youtubeGrid.querySelector(`.youtube-card:nth-child(${startIndex + 1})`);
+          if (firstNewCard) {
+            firstNewCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }, 300);
+      }
+
+      updateShowMoreButton() {
+        if (this.displayedVideos.length < this.videos.length || this.hasMoreVideos) {
+          this.showMoreContainer.classList.add('visible');
+        } else {
+          this.showMoreContainer.classList.remove('visible');
+        }
+      }
+
+      showError(message) {
+        this.youtubeGrid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <h3 style="color: #ef4444; margin-bottom: 1rem;">Unable to Load Videos</h3>
+            <p style="color: #64748b; max-width: 500px; margin: 0 auto;">${message}</p>
+            <p style="color: #64748b; margin-top: 1rem; font-size: 0.9rem;">
+              Please check your API configuration in the code.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // ==========================================
+    // INITIALIZE ON DOCUMENT READY
+    // ==========================================
+    let heroVideoController;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      heroVideoController = new HeroVideoController();
+      new YouTubeVideoLoader();
+    });
+  </script>
+</body>
+</html>
