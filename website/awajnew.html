@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWAJ AI| Ekghanti Services</title>
+  <link rel="stylesheet" href="awajnew.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="fixed-logo">
+  <img src="awaj logo.png" alt="Awaj Logo">
+</div>
+ 
+    <section class="hero">
+        <video class="hero-video" autoplay loop playsinline preload="auto" id="heroVideo">
+            <source src="Awaj_Video2_004567.mp4" type="video/mp4">
+          </video>
+        <div class="volume-control">
+            <button class="mute-btn"><i class="fas fa-volume-up"></i></button>
+            <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="1">
+          </div>
+      </section>
+      <section class="hero2">
+        <div class="hero-content">
+          <h1>Say hello to our AI agents that handle calls just like humans—sometimes even better.</h1>
+          <p>Let our AI Agents take care of the conversations while you focus on growing your business.</p>
+        </div>
+      </section>
+  <section class="use-case">
+    <div class="container">
+        <h2>Use Case</h2>
+        <div class="use-case-items">
+            <div class="use-case-item">
+                <img src="time.png" alt="Clock Icon">
+                <p>Serve your customer round the clock</p>
+            </div>
+            <div class="use-case-item">
+                <img src="ser.png" alt="Calendar Icon">
+                <p>Book appointments, process queries instantly</p>
+            </div>
+            <div class="use-case-item">
+                <img src="handshake.png" alt="Handshake Icon">
+                <p>Make every interaction personalized</p>
+            </div>
+        </div>
+    </div>
+</section>
+ <!-- YouTube Videos Section -->
+  <section class="youtube-section">
+    <div class="youtube-wrapper">
+      <h2>Watch Our AI in Action</h2>
+      <div class="youtube-grid" id="youtubeGrid">
+        <!-- Videos will be loaded here dynamically -->
+      </div>
+      <div class="show-more-container" id="showMoreContainer">
+        <button class="show-more-btn" id="showMoreBtn">
+          <span class="btn-text">Show More Videos</span>
+          <div class="spinner"></div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+<section class="tailored">
+    <div class="container">
+        <h2>Tailored for any business</h2>
+        <div class="tailored-items">
+            <div class="tailored-item"><img src="Ecommerce.png" alt="E-commerce Icon"><p>E-commerce</p></div>
+            <div class="tailored-item"><img src="SME.png" alt="SME Icon"><p>SME</p></div>
+            <div class="tailored-item"><img src="telecom.png" alt="Telecom Icon"><p>Telecom</p></div>
+            <div class="tailored-item"><img src="Isp.png" alt="ISP Icon"><p>ISP</p></div>
+            <div class="tailored-item"><img src="Enterprise.png" alt="Enterprise Icon"><p>Enterprise</p></div>
+            <div class="tailored-item"><img src="Hospital.png" alt="Hospital Icon"><p>Hospital</p></div>
+            <div class="tailored-item"><img src="Fintech.png" alt="Fintech Icons"><p>Fintech</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="brands">
+    <div class="container">
+        <h2>Brands that Support Us</h2>
+        <div class="brands-logos">
+            <img src="dishhome.png" alt="Dishhome Logo">
+            <img src="NIC.png" alt="NIC Logo">
+            <img src="Nabil.png" alt="Nabil Logo">
+            <img src="KumariBankLogo-1.png" alt="Kumari Bank Logo">
+            <img src="unilever.png" alt="Unilever Logo">
+            <img src="global.png" alt="Global Logo">
+            <img src="CG.png" alt="CG Logo">
+            <img src="Adbl.png" alt="ADBL Logo">
+           
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-content container">
+        <img src="awaj logo.png" alt="awajai" width="100" ; >
+        <div class="footer-right">
+            <div class="footer-stack">
+                <button class="demo-button" onclick="window.open('https://ekghanti.com.np/contact-us/', '_blank')">Book a Demo</button>
+                <p>Available with  
+                    <img src="orbit360.png" alt="Orbit360Logo" width="100">
+                    - Get it Now.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+     const CONFIG = {
+      // Replace with your YouTube Data API Key
+      API_KEY: 'AIzaSyDWv_QQsW3FSctsdllwYcBvFLMGvjPYOGg',
+      
+      // Replace with your YouTube Channel ID or Username
+      // To get Channel ID: Go to your channel -> About -> Share Channel -> Copy Channel ID
+      CHANNEL_ID: 'UCsfdYmvPexGHnP7yRF6g7SQ',
+      
+      
+      // Number of videos to load initially
+      INITIAL_LOAD: 6,
+      
+      // Number of videos to load when "Show More" is clicked
+      LOAD_MORE: 6
+    };
+
+    // ==========================================
+    // YOUTUBE API INTEGRATION
+    // ==========================================
+    class YouTubeVideoLoader {
+      constructor() {
+        this.videos = [];
+        this.displayedVideos = [];
+        this.nextPageToken = null;
+        this.isLoading = false;
+        this.hasMoreVideos = true;
+        this.youtubeGrid = document.getElementById('youtubeGrid');
+        this.showMoreContainer = document.getElementById('showMoreContainer');
+        this.showMoreBtn = document.getElementById('showMoreBtn');
+        this.expandedCard = null;
+        this.expandedContainer = null;
+        this.videosContainer = null;
+        
+        this.init();
+      }
+
+      async init() {
+        this.setupEventListeners();
+        await this.loadInitialVideos();
+      }
+
+      setupEventListeners() {
+        this.showMoreBtn.addEventListener('click', () => this.loadMoreVideos());
+        
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && this.expandedCard) {
+            this.collapseCard(this.expandedCard, true);
+          }
+        });
+      }
+
+      async loadInitialVideos() {
+        this.showLoadingSkeletons(CONFIG.INITIAL_LOAD);
+        await this.fetchVideos(CONFIG.INITIAL_LOAD);
+        this.renderVideos(this.videos.slice(0, CONFIG.INITIAL_LOAD));
+        this.updateShowMoreButton();
+      }
+
+      showLoadingSkeletons(count) {
+        this.youtubeGrid.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+          const skeleton = document.createElement('div');
+          skeleton.className = 'loading-skeleton';
+          skeleton.innerHTML = `
+            <div class="skeleton-thumbnail"></div>
+            <div class="skeleton-info">
+              <div class="skeleton-title"></div>
+              <div class="skeleton-description"></div>
+            </div>
+          `;
+          this.youtubeGrid.appendChild(skeleton);
+        }
+      }
+
+      async fetchVideos(maxResults = 50) {
+        if (this.isLoading) return;
+        this.isLoading = true;
+
+        try {
+          // First, get the channel's uploads playlist ID
+          let channelResponse;
+          
+          if (CONFIG.CHANNEL_USERNAME) {
+            channelResponse = await fetch(
+              `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=${CONFIG.CHANNEL_USERNAME}&key=${CONFIG.API_KEY}`
+            );
+          } else {
+            channelResponse = await fetch(
+              `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CONFIG.CHANNEL_ID}&key=${CONFIG.API_KEY}`
+            );
+          }
+
+          const channelData = await channelResponse.json();
+          
+          if (!channelData.items || channelData.items.length === 0) {
+            throw new Error('Channel not found. Please check your Channel ID or Username.');
+          }
+
+          const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+
+          // Fetch videos from uploads playlist
+          let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${maxResults}&key=${CONFIG.API_KEY}`;
+          
+          if (this.nextPageToken) {
+            url += `&pageToken=${this.nextPageToken}`;
+          }
+
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error.message);
+          }
+
+          // Process videos
+          const newVideos = data.items.map(item => ({
+            id: item.snippet.resourceId.videoId,
+            title: item.snippet.title,
+            description: item.snippet.description,
+            thumbnail: item.snippet.thumbnails.maxres?.url || 
+                       item.snippet.thumbnails.high?.url ||
+                       item.snippet.thumbnails.medium.url,
+            publishedAt: new Date(item.snippet.publishedAt)
+          }));
+
+          this.videos = [...this.videos, ...newVideos];
+          this.nextPageToken = data.nextPageToken || null;
+          this.hasMoreVideos = !!data.nextPageToken;
+
+        } catch (error) {
+          console.error('Error fetching YouTube videos:', error);
+          this.showError(error.message);
+        } finally {
+          this.isLoading = false;
+        }
+      }
+
+      renderVideos(videos) {
+        if (this.displayedVideos.length === 0) {
+          this.youtubeGrid.innerHTML = '';
+        }
+
+        videos.forEach((video, index) => {
+          if (this.displayedVideos.find(v => v.id === video.id)) return;
+          
+          const card = this.createVideoCard(video, this.displayedVideos.length);
+          this.youtubeGrid.appendChild(card);
+          this.displayedVideos.push(video);
+
+          // Animate card entrance
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, index * 50);
+        });
+
+        this.youtubeGrid.setAttribute('data-count', this.displayedVideos.length);
+        this.attachCardEventListeners();
+      }
+
+      createVideoCard(video, index) {
+        const card = document.createElement('div');
+        card.className = 'youtube-card';
+        card.dataset.videoId = video.id;
+        card.dataset.originalIndex = index;
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+
+        const truncatedDescription = video.description.length > 120 
+          ? video.description.substring(0, 120) + '...' 
+          : video.description;
+
+        card.innerHTML = `
+          <button class="close-video-btn">&times;</button>
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/${video.id}?rel=0&modestbranding=1" allowfullscreen></iframe>
+            <div class="video-thumbnail" style="background-image: url('${video.thumbnail}')">
+              <div class="play-overlay"></div>
+            </div>
+          </div>
+          <div class="video-info">
+            <h3>${video.title}</h3>
+            <p>${truncatedDescription}</p>
+          </div>
+        `;
+
+        return card;
+      }
+
+      attachCardEventListeners() {
+        const cards = Array.from(this.youtubeGrid.querySelectorAll('.youtube-card'));
+        
+        cards.forEach(card => {
+          const closeBtn = card.querySelector('.close-video-btn');
+
+          card.onclick = (e) => {
+            if (e.target === closeBtn || closeBtn.contains(e.target)) return;
+            if (!card.classList.contains('expanded') && !card.classList.contains('expanding')) {
+              this.expandCard(card);
+            }
+          };
+
+          closeBtn.onclick = (e) => {
+            e.stopPropagation();
+            this.collapseCard(card, true);
+          };
+        });
+      }
+
+      expandCard(card) {
+        if (this.expandedCard === card) return;
+
+        if (this.expandedCard) {
+          this.collapseCard(this.expandedCard, false);
+        }
+
+        this.expandedCard = card;
+        card.classList.add('expanding');
+        this.youtubeGrid.classList.add('has-expanded');
+
+        this.expandedContainer = document.createElement('div');
+        this.expandedContainer.className = 'expanded-container';
+        
+        this.videosContainer = document.createElement('div');
+        this.videosContainer.className = 'videos-below';
+        
+        const allCards = Array.from(this.youtubeGrid.querySelectorAll('.youtube-card'));
+        const otherCards = allCards.filter(c => c !== card);
+        this.videosContainer.setAttribute('data-remaining', otherCards.length);
+        
+        this.expandedContainer.appendChild(card);
+        
+        otherCards.forEach((otherCard, index) => {
+          const delay = Math.min(index, 4) * 50;
+          otherCard.classList.add('sliding-down');
+          setTimeout(() => {
+            this.videosContainer.appendChild(otherCard);
+            otherCard.classList.remove('sliding-down');
+          }, delay);
+        });
+
+        setTimeout(() => {
+          this.youtubeGrid.innerHTML = '';
+          this.youtubeGrid.appendChild(this.expandedContainer);
+          this.youtubeGrid.appendChild(this.videosContainer);
+        }, 100);
+
+        setTimeout(() => {
+          card.classList.remove('expanding');
+          card.classList.add('expanded');
+          const iframe = card.querySelector('iframe');
+          this.setAutoplay(iframe, true);
+          
+          setTimeout(() => {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 200);
+        }, 600);
+      }
+
+      collapseCard(card, animate = true) {
+        if (!card || !card.classList.contains('expanded')) return;
+
+        const iframe = card.querySelector('iframe');
+        this.setAutoplay(iframe, false);
+
+        if (animate) {
+          card.classList.add('collapsing');
+          card.classList.remove('expanded');
+
+          if (this.videosContainer) {
+            const allCards = Array.from(document.querySelectorAll('.youtube-card'));
+            
+            this.youtubeGrid.innerHTML = '';
+            
+            allCards.sort((a, b) => 
+              parseInt(a.dataset.originalIndex) - parseInt(b.dataset.originalIndex)
+            );
+            
+            allCards.forEach((sortedCard, index) => {
+              if (sortedCard !== card) {
+                sortedCard.classList.add('sliding-up');
+              }
+              const delay = Math.min(index, 4) * 50;
+              setTimeout(() => {
+                this.youtubeGrid.appendChild(sortedCard);
+                sortedCard.classList.remove('sliding-up', 'sliding-down');
+              }, delay);
+            });
+
+            setTimeout(() => {
+              this.youtubeGrid.classList.remove('has-expanded');
+              card.classList.remove('collapsing');
+              this.expandedCard = null;
+              this.expandedContainer = null;
+              this.videosContainer = null;
+              
+              this.youtubeGrid.setAttribute('data-count', allCards.length);
+            }, 400);
+          }
+        } else {
+          card.classList.remove('expanded', 'expanding', 'collapsing');
+          this.expandedCard = null;
+        }
+      }
+
+      setAutoplay(iframe, on = true) {
+        try {
+          const url = new URL(iframe.src);
+          url.searchParams.set('autoplay', on ? '1' : '0');
+          iframe.src = url.toString();
+        } catch {
+          if (on && !iframe.src.includes('autoplay=1')) {
+            iframe.src += (iframe.src.includes('?') ? '&' : '?') + 'autoplay=1';
+          }
+          if (!on) {
+            iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
+          }
+        }
+      }
+
+      async loadMoreVideos() {
+        if (this.isLoading || !this.hasMoreVideos) return;
+
+        this.showMoreBtn.classList.add('loading');
+
+        // Check if we need to fetch more from API
+        if (this.displayedVideos.length >= this.videos.length && this.hasMoreVideos) {
+          await this.fetchVideos(CONFIG.LOAD_MORE);
+        }
+
+        // Render next batch
+        const startIndex = this.displayedVideos.length;
+        const endIndex = startIndex + CONFIG.LOAD_MORE;
+        const videosToRender = this.videos.slice(startIndex, endIndex);
+
+        this.renderVideos(videosToRender);
+        this.showMoreBtn.classList.remove('loading');
+        this.updateShowMoreButton();
+
+        // Scroll to first new video
+        setTimeout(() => {
+          const firstNewCard = this.youtubeGrid.querySelector(`.youtube-card:nth-child(${startIndex + 1})`);
+          if (firstNewCard) {
+            firstNewCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }, 300);
+      }
+
+      updateShowMoreButton() {
+        if (this.displayedVideos.length < this.videos.length || this.hasMoreVideos) {
+          this.showMoreContainer.classList.add('visible');
+        } else {
+          this.showMoreContainer.classList.remove('visible');
+        }
+      }
+
+      showError(message) {
+        this.youtubeGrid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <h3 style="color: #ef4444; margin-bottom: 1rem;">Unable to Load Videos</h3>
+            <p style="color: #64748b; max-width: 500px; margin: 0 auto;">${message}</p>
+            <p style="color: #64748b; margin-top: 1rem; font-size: 0.9rem;">
+              Please check your API configuration in the code.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // ==========================================
+    // HERO VIDEO FUNCTIONALITY
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      const video = document.getElementById('heroVideo');
+      const muteBtn = document.querySelector('.mute-btn');
+      const volumeSlider = document.querySelector('.volume-slider');
+      const volumeIcon = document.querySelector('.fa-volume-up');
+
+      const playVideo = () => {
+        video.play().then(() => {
+          video.muted = false;
+        }).catch(error => {
+          const playButton = document.createElement('button');
+          playButton.innerHTML = '▶ Play Video';
+          playButton.style.cssText = `
+            position: absolute;
+            z-index: 1000;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 12px 24px;
+            background: #6b21a8;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+          `;
+          playButton.onclick = () => {
+            video.play().then(() => {
+              video.muted = false;
+              playButton.remove();
+            });
+          };
+          document.querySelector('.hero').appendChild(playButton);
+        });
+      };
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          playVideo();
+        }
+      });
+
+      playVideo();
+
+      volumeSlider.addEventListener('input', (e) => {
+        video.volume = e.target.value;
+        video.muted = false;
+        volumeIcon.className = video.volume === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+      });
+
+      muteBtn.addEventListener('click', () => {
+        video.muted = !video.muted;
+        if(video.muted) {
+          volumeIcon.className = 'fas fa-volume-mute';
+          volumeSlider.value = 0;
+        } else {
+          volumeIcon.className = 'fas fa-volume-up';
+          volumeSlider.value = video.volume;
+        }
+      });
+
+      video.addEventListener('volumechange', () => {
+        if(!video.muted) volumeSlider.value = video.volume;
+      });
+
+      // Initialize YouTube Video Loader
+      new YouTubeVideoLoader();
+    });
+    </script>
+</body>
+</html>
