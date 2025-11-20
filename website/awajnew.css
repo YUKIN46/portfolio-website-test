@@ -164,7 +164,7 @@ h1, h2, h3 {
 
 /* Use Case Section */
 .use-case {
-    padding: 3rem 0;
+    padding: 1rem 0;
     background: #fff7f5; /* Light pinkish background to match the color scheme */
 }
 
@@ -212,7 +212,7 @@ h1, h2, h3 {
 
 /* Tailored Section */
 .tailored {
-    padding: 3rem 0;
+    padding: 1rem 0;
     background: #fff7f5;
 }
 
@@ -261,7 +261,7 @@ h1, h2, h3 {
 }
 /* Brands Section */
 .brands {
-    padding: 3rem 0;
+    padding: 1rem 0;
     background: #fff7f5;
 }
 
