@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandesh Chhetri - CV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            padding: 60px 80px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #1e5a3d;
+        }
+        
+        .name {
+            font-size: 44px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .title-line {
+            font-size: 15px;
+            color: #1e5a3d;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: #555;
+            margin-top: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .contact-label {
+            font-weight: 600;
+            color: #1e5a3d;
+            margin-right: 5px;
+        }
+        
+        .section {
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e5a3d;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #1e5a3d;
+        }
+        
+        .summary-text {
+            color: #333;
+            font-size: 14.5px;
+            line-height: 1.7;
+            text-align: justify;
+        }
+        
+        .job-header {
+            margin-bottom: 12px;
+        }
+        
+        .job-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-transform: uppercase;
+        }
+        
+        .company-name {
+            color: #1e5a3d;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+        
+        .location-date {
+            color: #666;
+            font-style: italic;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+        
+        .responsibilities {
+            list-style: none;
+            margin-left: 0;
+            margin-top: 10px;
+        }
+        
+        .responsibilities li {
+            padding-left: 20px;
+            margin-bottom: 7px;
+            position: relative;
+            color: #444;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .responsibilities li:before {
+            content: "▪";
+            position: absolute;
+            left: 0;
+            color: #1e5a3d;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .education-block {
+            margin-bottom: 18px;
+        }
+        
+        .degree {
+            font-weight: 700;
+            color: #1a1a1a;
+            font-size: 14.5px;
+        }
+        
+        .school-info {
+            color: #1e5a3d;
+            font-size: 13.5px;
+            margin-top: 3px;
+            font-weight: 500;
+        }
+        
+        .date-info {
+            color: #666;
+            font-size: 13px;
+            font-style: italic;
+        }
+        
+        .education-details {
+            font-size: 13.5px;
+            color: #444;
+            margin-top: 6px;
+            line-height: 1.6;
+        }
+        
+        .project-block {
+            margin-bottom: 15px;
+        }
+        
+        .project-title {
+            font-weight: 700;
+            color: #1a1a1a;
+            font-size: 14.5px;
+        }
+        
+        .project-role {
+            color: #1e5a3d;
+            font-size: 13.5px;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        
+        .project-details {
+            list-style: none;
+            margin-left: 0;
+            margin-top: 8px;
+        }
+        
+        .project-details li {
+            padding-left: 20px;
+            margin-bottom: 6px;
+            position: relative;
+            color: #444;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .project-details li:before {
+            content: "▪";
+            position: absolute;
+            left: 0;
+            color: #1e5a3d;
+            font-size: 16px;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+        
+        .skill-category {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .skill-category:before {
+            content: "▪";
+            position: absolute;
+            left: 0;
+            color: #1e5a3d;
+            font-size: 16px;
+        }
+        
+        .skill-label {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .interests-text {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 40px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 25px;
+            }
+            
+            .name {
+                font-size: 32px;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="name">SANDESH CHHETRI</h1>
+            <div class="title-line">IT Support Specialist | QA Analyst | Aspiring ICT Educator</div>
+        </div>
+        
+        <div class="contact-info">
+            <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <span>thesandeshchhetri@gmail.com</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Phone:</span>
+                <span>+977 9745654063</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Location:</span>
+                <span>Dakshinkali-2, Kathmandu, Nepal</span>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Professional Summary</h2>
+            <p class="summary-text">
+                Results-driven IT Support Specialist and QA Analyst with proven experience in delivering technical support for SaaS products and conducting comprehensive quality assurance testing. Demonstrated expertise in client relationship management, issue resolution, and cross-functional collaboration to enhance user satisfaction. Currently pursuing Bachelor's degree in ICT Education with strong foundation in software development, system analysis, and educational technology integration. Adept at leveraging analytical thinking and problem-solving skills to bridge the gap between technical solutions and user needs.
+            </p>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Professional Experience</h2>
+            <div class="job-header">
+                <div class="job-title">IT Support Specialist & QA Analyst</div>
+                <div class="company-name">ekGhanti Services Pvt. Ltd.</div>
+                <div class="location-date">Panipokari, Lazimpat, Kathmandu | January 2024 – Present</div>
+            </div>
+            <ul class="responsibilities">
+                <li>Provide tier-2 technical support for enterprise SaaS platform, resolving 95% of client-reported issues within defined SLA timeframes</li>
+                <li>Serve as primary technical liaison for 50+ active clients, maintaining consistent communication channels and ensuring timely issue escalation and resolution</li>
+                <li>Design and execute comprehensive manual test cases to identify software defects, UI inconsistencies, and functional gaps prior to production releases</li>
+                <li>Document and track bugs using industry-standard methodologies, providing detailed reproduction steps and severity assessments to development teams</li>
+                <li>Conduct user acceptance testing (UAT) and regression testing to validate bug fixes and feature implementations</li>
+                <li>Facilitate client onboarding sessions, delivering product training and creating user documentation to enhance adoption rates</li>
+                <li>Collaborate with product, development, and customer success teams to drive continuous improvement in software quality and user experience</li>
+                <li>Maintain detailed knowledge base articles and technical documentation for common issues and troubleshooting procedures</li>
+            </ul>
+
+            <div class="job-header" style="margin-top: 24px;">
+                <div class="job-title">Junior Business Development Officer</div>
+                <div class="company-name">ekGhanti Services Pvt. Ltd.</div>
+                <div class="location-date">Panipokari, Lazimpat, Kathmandu | January 2024 – Present</div>
+            </div>
+            <ul class="responsibilities">
+                <li>Identified and qualified potential clients through strategic market research, competitor analysis, and professional networking initiatives</li>
+                <li>Collaborated with senior business development team to develop compelling proposals, competitive quotations, and comprehensive service briefs tailored to client requirements</li>
+                <li>Facilitated product demonstrations and client presentations by configuring demo environments and providing technical expertise to address client inquiries</li>
+                <li>Managed CRM database with accurate lead tracking, opportunity pipeline updates, and systematic follow-up scheduling to optimize conversion rates</li>
+                <li>Served as liaison between sales and technical teams, gathering customer feedback and translating business requirements into actionable product enhancements</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Education</h2>
+            <div class="education-block">
+                <div class="degree">Bachelor of Information and Communication Technology Education</div>
+                <div class="school-info">Mahendra Ratna Campus, Tahachal, Kathmandu</div>
+                <div class="date-info">2020 – 2025 (Expected Graduation)</div>
+                <div class="education-details">
+                    <strong>Relevant Coursework:</strong> Software Engineering, Database Management Systems, Web Technologies, Educational Technology, System Analysis & Design, Data Structures & Algorithms
+                    <br><strong>Technical Skills Acquired:</strong> Programming (C, C++, Java, C#, Python, JavaScript), Web Development (HTML, CSS), Database Design (EER Diagrams, Data Flow Diagrams), Process Modeling
+                </div>
+            </div>
+            
+            <div class="education-block">
+                <div class="degree">Higher Secondary Certificate in Science (Physics)</div>
+                <div class="school-info">Greenland International College, Biratnagar</div>
+                <div class="date-info">2017 – 2020 | GPA: 3.21/4.0</div>
+            </div>
+            
+            <div class="education-block">
+                <div class="degree">Secondary Education Certificate (Optional Mathematics)</div>
+                <div class="school-info">Shree Khokana Jana Secondary School, Dakshinkali, Kathmandu</div>
+                <div class="date-info">2017 | GPA: 2.85/4.0</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Technical Projects</h2>
+            <div class="project-block">
+                <div class="project-title">Canteen Management System</div>
+                <div class="project-role">Lead Developer | Academic Project (7th Semester)</div>
+                <ul class="project-details">
+                    <li>Architected and developed full-stack web application for institutional canteen operations management</li>
+                    <li>Implemented secure authentication system with role-based access control for students and administrators</li>
+                    <li>Designed and built shopping cart functionality with real-time inventory tracking and order processing</li>
+                    <li>Created comprehensive admin dashboard for menu management, order fulfillment, and payment processing</li>
+                    <li>Utilized modern web technologies and database design principles to ensure scalability and data integrity</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Core Competencies</h2>
+            <div class="skills-grid">
+                <div class="skill-category"><span class="skill-label">Technical Support:</span> Issue Triaging, Root Cause Analysis, SLA Management</div>
+                <div class="skill-category"><span class="skill-label">Quality Assurance:</span> Manual Testing, Test Case Design, Bug Tracking</div>
+                <div class="skill-category"><span class="skill-label">Client Management:</span> Stakeholder Communication, Relationship Building, Onboarding</div>
+                <div class="skill-category"><span class="skill-label">Documentation:</span> Technical Writing, Knowledge Base Creation, Process Documentation</div>
+                <div class="skill-category"><span class="skill-label">Collaboration:</span> Cross-functional Teamwork, Agile Methodologies, Conflict Resolution</div>
+                <div class="skill-category"><span class="skill-label">Analytical Skills:</span> Problem Solving, Critical Thinking, Attention to Detail</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Professional Interests</h2>
+            <p class="interests-text">
+                <strong>Technology & Innovation:</strong> Educational technology integration, software quality assurance methodologies, emerging web technologies
+                <br><strong>Personal Development:</strong> Team sports (Football, Futsal), E-sports competition, Music (Guitar)
+            </p>
+        </div>
+    </div>
+</body>
+</html>
