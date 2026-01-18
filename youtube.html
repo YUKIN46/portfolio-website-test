@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Upload Manager</title>
+    <title>YouTube Video Uploader</title>
     <script src="https://apis.google.com/js/api.js"></script>
     <style>
         * {
@@ -13,29 +13,204 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, #1e3a8a, #7c3aed, #ec4899);
             min-height: 100vh;
-            padding: 20px;
-            display: flex;
+            padding: 30px 15px;
+        }
+
+        .wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .main-content {
+            padding: 40px 30px;
+        }
+
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .required {
+            color: #ef4444;
+            margin-left: 3px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .upload-area {
+            border: 3px dashed #d1d5db;
+            border-radius: 15px;
+            padding: 50px 20px;
+            text-align: center;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: #7c3aed;
+            background: #f5f3ff;
+        }
+
+        .upload-area.active {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .upload-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .upload-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .container {
-            max-width: 900px;
+            gap: 10px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            animation: slideUp 0.5s ease-out;
         }
 
-        @keyframes slideUp {
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #ec4899);
+            color: white;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+        }
+
+        .btn-primary:disabled {
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .btn-success:disabled {
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .notification {
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
@@ -43,276 +218,79 @@
             }
         }
 
-        .header {
-            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
-            padding: 40px;
-            color: white;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .header h1 {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            position: relative;
-            z-index: 1;
+        .notification.show {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
         }
 
-        .header p {
-            font-size: 16px;
-            opacity: 0.95;
-            position: relative;
-            z-index: 1;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .alert {
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .alert-success {
+        .notification-success {
             background: #d1fae5;
             color: #065f46;
             border: 2px solid #10b981;
         }
 
-        .alert-error {
+        .notification-error {
             background: #fee2e2;
             color: #991b1b;
             border: 2px solid #ef4444;
         }
 
-        .alert-info {
+        .notification-info {
             background: #dbeafe;
             color: #1e40af;
             border: 2px solid #3b82f6;
         }
 
-        .section {
-            margin-bottom: 32px;
-        }
-
-        .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 12px;
+        .account-container {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
-        .required {
-            color: #ef4444;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn:disabled {
-            background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .btn-upload {
-            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
-            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
-            margin-top: 8px;
-        }
-
-        .btn-upload:hover {
-            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
-        }
-
-        .account-card {
+        .account-item {
             border: 2px solid #e5e7eb;
             border-radius: 12px;
-            padding: 20px;
+            padding: 18px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .account-card:hover {
-            border-color: #667eea;
+        .account-item:hover {
+            border-color: #7c3aed;
             background: #f9fafb;
         }
 
-        .account-card.selected {
-            border-color: #FF0000;
+        .account-item.selected {
+            border-color: #ff0000;
             background: #fef2f2;
             box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
         }
 
-        .account-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
         .account-avatar {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             border: 3px solid white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .account-details h3 {
+        .account-info {
+            flex: 1;
+        }
+
+        .account-name {
             font-size: 16px;
-            color: #111827;
-            margin-bottom: 4px;
-        }
-
-        .account-details p {
-            font-size: 14px;
-            color: #6b7280;
-        }
-
-        .upload-zone {
-            border: 3px dashed #d1d5db;
-            border-radius: 16px;
-            padding: 48px 24px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: #f9fafb;
-        }
-
-        .upload-zone:hover {
-            border-color: #667eea;
-            background: #f3f4f6;
-        }
-
-        .upload-zone.has-file {
-            border-color: #10b981;
-            background: #ecfdf5;
-        }
-
-        .upload-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .upload-zone.has-file .upload-icon {
-            opacity: 1;
-        }
-
-        .upload-text {
-            font-size: 16px;
-            color: #374151;
             font-weight: 600;
-            margin-bottom: 8px;
+            color: #111827;
+            margin-bottom: 3px;
         }
 
-        .upload-subtext {
+        .account-email {
             font-size: 14px;
             color: #6b7280;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="time"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        input[type="text"]:focus,
-        input[type="date"]:focus,
-        input[type="time"]:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .char-count {
-            text-align: right;
-            font-size: 13px;
-            color: #9ca3af;
-            margin-top: 6px;
         }
 
         .grid-2 {
@@ -321,54 +299,79 @@
             gap: 20px;
         }
 
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            padding: 12px;
-            border-radius: 8px;
-            transition: background 0.2s ease;
-        }
-
-        .radio-option:hover {
-            background: #f3f4f6;
-        }
-
-        input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #FF0000;
-        }
-
-        .schedule-box {
+        .schedule-options {
             background: #f9fafb;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
-            padding: 24px;
-            margin-top: 16px;
+            padding: 25px;
         }
 
-        .info-box {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .radio-label:hover {
+            background: #f3f4f6;
+        }
+
+        .radio-input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .schedule-fields {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
             border: 2px solid #3b82f6;
             border-radius: 12px;
             padding: 20px;
             font-size: 14px;
             color: #1e40af;
-            line-height: 1.6;
+            line-height: 1.7;
+        }
+
+        .info-banner strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .info-banner code {
+            background: white;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            display: inline-block;
+            margin: 3px 0;
+        }
+
+        .hide {
+            display: none;
         }
 
         .spinner {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-top-color: white;
             border-radius: 50%;
@@ -379,529 +382,455 @@
             to { transform: rotate(360deg); }
         }
 
-        .add-account-link {
-            color: #FF0000;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            display: inline-block;
-            margin-top: 8px;
-            transition: color 0.2s ease;
-        }
-
-        .add-account-link:hover {
-            color: #CC0000;
-            text-decoration: underline;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        code {
-            background: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            margin: 4px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-        }
-
         @media (max-width: 768px) {
             .grid-2 {
                 grid-template-columns: 1fr;
             }
 
-            .header h1 {
-                font-size: 28px;
+            .hero h1 {
+                font-size: 32px;
             }
 
-            .content {
-                padding: 24px;
+            .main-content {
+                padding: 30px 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>
-                <span>📹</span>
-                YouTube Upload Manager
-            </h1>
-            <p>Upload videos with scheduling and custom thumbnails</p>
-        </div>
+    <div class="wrapper">
+        <div class="card">
+            <div class="hero">
+                <h1>🎥 YouTube Uploader</h1>
+                <p>Professional video upload manager with scheduling</p>
+            </div>
 
-        <div class="content">
-            <!-- Alert Messages -->
-            <div id="alertBox" class="hidden"></div>
+            <div class="main-content">
+                <!-- Notification -->
+                <div id="notification" class="notification"></div>
 
-            <!-- Account Selection -->
-            <div class="section">
-                <div class="section-title">
-                    <span>👤</span>
-                    YouTube Account
+                <!-- Account Section -->
+                <div class="form-section">
+                    <label class="form-label">Select YouTube Account</label>
+                    <div id="accountList" class="account-container"></div>
+                    <button class="btn btn-primary" id="btnConnect">
+                        🔗 Connect YouTube Account
+                    </button>
                 </div>
-                <div id="accountsList"></div>
-                <button class="btn" id="connectAccountBtn">
-                    <span>🔗</span>
-                    Connect YouTube Account
+
+                <!-- Video Upload -->
+                <div class="form-section">
+                    <label class="form-label">Video File <span class="required">*</span></label>
+                    <div class="upload-area" id="videoDropZone">
+                        <div class="upload-icon">🎬</div>
+                        <div class="upload-title" id="videoFileName">Select your video file</div>
+                        <div class="upload-subtitle">MP4, MOV, AVI, WebM (up to 256GB)</div>
+                    </div>
+                    <input type="file" id="videoFileInput" class="file-input" accept="video/*">
+                </div>
+
+                <!-- Thumbnail Upload -->
+                <div class="form-section">
+                    <label class="form-label">Custom Thumbnail (Optional)</label>
+                    <div class="upload-area" id="thumbDropZone">
+                        <div class="upload-icon">🖼️</div>
+                        <div class="upload-title" id="thumbFileName">Select thumbnail image</div>
+                        <div class="upload-subtitle">JPG, PNG (1280x720 recommended)</div>
+                    </div>
+                    <input type="file" id="thumbFileInput" class="file-input" accept="image/*">
+                </div>
+
+                <!-- Title -->
+                <div class="form-section">
+                    <label class="form-label">Video Title <span class="required">*</span></label>
+                    <input type="text" id="inputTitle" class="form-input" placeholder="Enter an engaging title for your video" maxlength="100">
+                    <div class="char-counter"><span id="titleCount">0</span>/100</div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-section">
+                    <label class="form-label">Description</label>
+                    <textarea id="inputDesc" class="form-textarea" placeholder="Describe what your video is about..."></textarea>
+                    <div class="char-counter"><span id="descCount">0</span>/5000</div>
+                </div>
+
+                <!-- Tags -->
+                <div class="form-section">
+                    <label class="form-label">Tags</label>
+                    <input type="text" id="inputTags" class="form-input" placeholder="vlog, tutorial, gaming (separate with commas)">
+                </div>
+
+                <!-- Category & Privacy -->
+                <div class="form-section">
+                    <div class="grid-2">
+                        <div>
+                            <label class="form-label">Category</label>
+                            <select id="selectCategory" class="form-select">
+                                <option value="1">Film & Animation</option>
+                                <option value="2">Autos & Vehicles</option>
+                                <option value="10">Music</option>
+                                <option value="15">Pets & Animals</option>
+                                <option value="17">Sports</option>
+                                <option value="19">Travel & Events</option>
+                                <option value="20">Gaming</option>
+                                <option value="22" selected>People & Blogs</option>
+                                <option value="23">Comedy</option>
+                                <option value="24">Entertainment</option>
+                                <option value="25">News & Politics</option>
+                                <option value="26">Howto & Style</option>
+                                <option value="27">Education</option>
+                                <option value="28">Science & Technology</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Privacy Status</label>
+                            <select id="selectPrivacy" class="form-select">
+                                <option value="private">Private</option>
+                                <option value="unlisted">Unlisted</option>
+                                <option value="public">Public</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule -->
+                <div class="form-section">
+                    <div class="schedule-options">
+                        <label class="form-label">⏰ Publishing Schedule</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="scheduleType" value="now" class="radio-input" checked>
+                                <span>Publish immediately after upload</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="scheduleType" value="later" class="radio-input">
+                                <span>Schedule for a specific date and time</span>
+                            </label>
+                        </div>
+                        <div id="scheduleDateTime" class="schedule-fields hide">
+                            <div class="grid-2">
+                                <div>
+                                    <label class="form-label">Date</label>
+                                    <input type="date" id="scheduleDate" class="form-input">
+                                </div>
+                                <div>
+                                    <label class="form-label">Time (UTC)</label>
+                                    <input type="time" id="scheduleTime" class="form-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Button -->
+                <button class="btn btn-success" id="btnUpload" disabled>
+                    <span id="uploadBtnContent">⬆️ Upload to YouTube</span>
                 </button>
             </div>
+        </div>
 
-            <!-- Video Upload -->
-            <div class="section">
-                <div class="section-title">
-                    <span>🎬</span>
-                    Video File <span class="required">*</span>
-                </div>
-                <div class="upload-zone" id="videoUploadZone">
-                    <div class="upload-icon">📹</div>
-                    <div class="upload-text" id="videoUploadText">Click to select video</div>
-                    <div class="upload-subtext">MP4, MOV, AVI, WebM (Max 256GB)</div>
-                </div>
-                <input type="file" id="videoInput" accept="video/*" class="hidden">
-            </div>
-
-            <!-- Thumbnail Upload -->
-            <div class="section">
-                <div class="section-title">
-                    <span>🖼️</span>
-                    Custom Thumbnail (Optional)
-                </div>
-                <div class="upload-zone" id="thumbnailUploadZone">
-                    <div class="upload-icon">🖼️</div>
-                    <div class="upload-text" id="thumbnailUploadText">Click to upload thumbnail</div>
-                    <div class="upload-subtext">JPG, PNG (Recommended: 1280x720)</div>
-                </div>
-                <input type="file" id="thumbnailInput" accept="image/*" class="hidden">
-            </div>
-
-            <!-- Title -->
-            <div class="section">
-                <div class="section-title">
-                    <span>✏️</span>
-                    Title <span class="required">*</span>
-                </div>
-                <input type="text" id="titleInput" placeholder="Enter your video title" maxlength="100">
-                <div class="char-count"><span id="titleCount">0</span>/100</div>
-            </div>
-
-            <!-- Description -->
-            <div class="section">
-                <div class="section-title">
-                    <span>📝</span>
-                    Description
-                </div>
-                <textarea id="descriptionInput" placeholder="Tell viewers about your video" maxlength="5000"></textarea>
-                <div class="char-count"><span id="descCount">0</span>/5000</div>
-            </div>
-
-            <!-- Tags -->
-            <div class="section">
-                <div class="section-title">
-                    <span>🏷️</span>
-                    Tags
-                </div>
-                <input type="text" id="tagsInput" placeholder="cooking, recipe, tutorial (separate with commas)">
-            </div>
-
-            <!-- Category & Privacy -->
-            <div class="section">
-                <div class="grid-2">
-                    <div>
-                        <div class="section-title">
-                            <span>📂</span>
-                            Category
-                        </div>
-                        <select id="categorySelect">
-                            <option value="1">Film & Animation</option>
-                            <option value="2">Autos & Vehicles</option>
-                            <option value="10">Music</option>
-                            <option value="15">Pets & Animals</option>
-                            <option value="17">Sports</option>
-                            <option value="19">Travel & Events</option>
-                            <option value="20">Gaming</option>
-                            <option value="22" selected>People & Blogs</option>
-                            <option value="23">Comedy</option>
-                            <option value="24">Entertainment</option>
-                            <option value="25">News & Politics</option>
-                            <option value="26">Howto & Style</option>
-                            <option value="27">Education</option>
-                            <option value="28">Science & Technology</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div class="section-title">
-                            <span>🔒</span>
-                            Privacy
-                        </div>
-                        <select id="privacySelect">
-                            <option value="private">Private</option>
-                            <option value="unlisted">Unlisted</option>
-                            <option value="public">Public</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Scheduling -->
-            <div class="section">
-                <div class="schedule-box">
-                    <div class="section-title">
-                        <span>📅</span>
-                        Scheduling
-                    </div>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="schedule" value="immediate" checked>
-                            <span>Upload immediately</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="schedule" value="scheduled">
-                            <span>Schedule for later</span>
-                        </label>
-                    </div>
-                    <div id="scheduleFields" class="hidden" style="margin-top: 20px;">
-                        <div class="grid-2">
-                            <div>
-                                <div class="section-title">Date</div>
-                                <input type="date" id="scheduleDate">
-                            </div>
-                            <div>
-                                <div class="section-title">Time (UTC)</div>
-                                <input type="time" id="scheduleTime">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Upload Button -->
-            <button class="btn btn-upload" id="uploadBtn" disabled>
-                <span id="uploadBtnText">⬆️ Upload to YouTube</span>
-            </button>
-
-            <!-- Info Box -->
-            <div class="info-box" style="margin-top: 24px;">
-                <strong>📌 OAuth Setup Instructions:</strong><br><br>
-                Go to <a href="https://console.cloud.google.com" target="_blank" style="color: #1e40af; font-weight: bold;">Google Cloud Console</a> → APIs & Services → Credentials<br><br>
-                
-                Add these to your OAuth 2.0 Client:<br><br>
-                
-                <strong>Authorized JavaScript origins:</strong><br>
-                <code>https://sandeshchhetri.info.np</code><br>
-                <code>https://www.sandeshchhetri.info.np</code><br><br>
-                
-                <strong>Authorized redirect URIs:</strong><br>
-                <code>https://sandeshchhetri.info.np</code><br>
-                <code>https://www.sandeshchhetri.info.np</code><br>
-                <code>https://sandeshchhetri.info.np/oauth2callback</code><br>
-                <code>https://www.sandeshchhetri.info.np/oauth2callback</code>
-            </div>
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <strong>🔧 Google Cloud Setup Instructions</strong>
+            Go to <a href="https://console.cloud.google.com" target="_blank" style="color: #1e40af; font-weight: bold;">Google Cloud Console</a> → APIs & Services → Credentials<br><br>
+            
+            Add these to your OAuth 2.0 Client settings:<br>
+            <strong>Authorized JavaScript origins:</strong><br>
+            <code>https://sandeshchhetri.info.np</code>
+            <code>https://www.sandeshchhetri.info.np</code><br>
+            
+            <strong>Authorized redirect URIs:</strong><br>
+            <code>https://sandeshchhetri.info.np</code>
+            <code>https://www.sandeshchhetri.info.np</code>
         </div>
     </div>
 
     <script>
         var CLIENT_ID = '1046120137054-csdhh5hlava3m30sr4cv72nk4n13cjkv.apps.googleusercontent.com';
-        var SCOPES = 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube';
-
-        var accounts = [];
-        var selectedAccount = null;
-        var videoFile = null;
-        var thumbnailFile = null;
+        var API_SCOPES = 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube';
+        
+        var connectedAccounts = [];
+        var currentAccountId = null;
+        var selectedVideoFile = null;
+        var selectedThumbnail = null;
         var isUploading = false;
 
-        // Initialize Google API
-        function initClient() {
+        function loadGoogleAPI() {
             gapi.load('client:auth2', function() {
                 gapi.client.init({
                     clientId: CLIENT_ID,
                     discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest'],
-                    scope: SCOPES
+                    scope: API_SCOPES
                 }).then(function() {
-                    console.log('Google API initialized successfully');
-                }).catch(function(error) {
-                    console.error('Error initializing Google API:', error);
-                    showAlert('error', 'Failed to initialize Google API. Check console for details.');
+                    console.log('YouTube API ready');
+                }, function(err) {
+                    displayNotification('error', 'Failed to initialize YouTube API');
                 });
             });
         }
 
-        // Show alert message
-        function showAlert(type, message) {
-            var alertBox = document.getElementById('alertBox');
-            alertBox.className = 'alert alert-' + type;
-            var icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
-            alertBox.innerHTML = '<span>' + icon + '</span><span>' + message + '</span>';
-            alertBox.classList.remove('hidden');
+        function displayNotification(type, message) {
+            var notif = document.getElementById('notification');
+            notif.className = 'notification notification-' + type + ' show';
+            notif.textContent = message;
             
             if (type === 'success') {
                 setTimeout(function() {
-                    alertBox.classList.add('hidden');
+                    notif.classList.remove('show');
                 }, 5000);
             }
         }
 
-        // Connect YouTube account
-        document.getElementById('connectAccountBtn').addEventListener('click', function() {
+        function handleConnectAccount() {
             var authInstance = gapi.auth2.getAuthInstance();
-            
             if (!authInstance) {
-                showAlert('error', 'Google API not initialized. Please refresh the page.');
+                displayNotification('error', 'API not ready. Please refresh the page.');
                 return;
             }
-            
+
             authInstance.signIn().then(function() {
-                var profile = authInstance.currentUser.get().getBasicProfile();
+                var user = authInstance.currentUser.get();
+                var profile = user.getBasicProfile();
+                
                 var newAccount = {
                     id: profile.getId(),
                     name: profile.getName(),
                     email: profile.getEmail(),
-                    image: profile.getImageUrl()
+                    picture: profile.getImageUrl()
                 };
 
-                if (!accounts.find(function(acc) { return acc.id === newAccount.id; })) {
-                    accounts.push(newAccount);
-                    selectedAccount = newAccount.id;
-                    renderAccounts();
-                    showAlert('success', 'Connected: ' + newAccount.email);
-                    updateUploadButton();
+                var alreadyExists = false;
+                for (var i = 0; i < connectedAccounts.length; i++) {
+                    if (connectedAccounts[i].id === newAccount.id) {
+                        alreadyExists = true;
+                        break;
+                    }
                 }
-            }).catch(function(error) {
-                console.error('Auth error:', error);
+
+                if (!alreadyExists) {
+                    connectedAccounts.push(newAccount);
+                    currentAccountId = newAccount.id;
+                    renderAccountList();
+                    displayNotification('success', 'Connected: ' + newAccount.email);
+                    checkUploadReady();
+                }
+            }, function(error) {
                 if (error.error === 'popup_closed_by_user') {
-                    showAlert('error', 'Sign-in popup was closed. Please try again.');
+                    displayNotification('error', 'Sign-in cancelled');
                 } else if (error.error === 'idpiframe_initialization_failed') {
-                    showAlert('error', 'OAuth configuration error. Make sure your domain is whitelisted in Google Cloud Console.');
+                    displayNotification('error', 'OAuth error: Check if your domain is whitelisted in Google Cloud Console');
                 } else {
-                    showAlert('error', 'Failed to authenticate: ' + (error.error || 'Unknown error'));
+                    displayNotification('error', 'Authentication failed');
                 }
             });
-        });
+        }
 
-        // Render accounts list
-        function renderAccounts() {
-            var accountsList = document.getElementById('accountsList');
-            
-            if (accounts.length === 0) {
-                accountsList.innerHTML = '';
-                return;
-            }
-
+        function renderAccountList() {
+            var container = document.getElementById('accountList');
             var html = '';
-            for (var i = 0; i < accounts.length; i++) {
-                var account = accounts[i];
-                var isSelected = selectedAccount === account.id ? 'selected' : '';
-                html += '<div class="account-card ' + isSelected + '" onclick="selectAccount(\'' + account.id + '\')">';
+            
+            for (var i = 0; i < connectedAccounts.length; i++) {
+                var acc = connectedAccounts[i];
+                var isSelected = currentAccountId === acc.id;
+                html += '<div class="account-item' + (isSelected ? ' selected' : '') + '" onclick="chooseAccount(\'' + acc.id + '\')">';
+                html += '<img src="' + acc.picture + '" class="account-avatar" alt="' + acc.name + '">';
                 html += '<div class="account-info">';
-                html += '<img src="' + account.image + '" alt="' + account.name + '" class="account-avatar">';
-                html += '<div class="account-details">';
-                html += '<h3>' + account.name + '</h3>';
-                html += '<p>' + account.email + '</p>';
-                html += '</div></div></div>';
+                html += '<div class="account-name">' + acc.name + '</div>';
+                html += '<div class="account-email">' + acc.email + '</div>';
+                html += '</div></div>';
             }
             
-            accountsList.innerHTML = html;
-            accountsList.innerHTML += '<div class="add-account-link" onclick="document.getElementById(\'connectAccountBtn\').click()">+ Add Another Account</div>';
+            container.innerHTML = html;
         }
 
-        // Select account
-        function selectAccount(accountId) {
-            selectedAccount = accountId;
-            renderAccounts();
-            updateUploadButton();
+        function chooseAccount(accountId) {
+            currentAccountId = accountId;
+            renderAccountList();
+            checkUploadReady();
         }
 
-        // Video upload zone
-        var videoUploadZone = document.getElementById('videoUploadZone');
-        var videoInput = document.getElementById('videoInput');
-
-        videoUploadZone.addEventListener('click', function() { 
-            videoInput.click(); 
-        });
-
-        videoInput.addEventListener('change', function(e) {
-            var file = e.target.files[0];
-            if (file && file.type.startsWith('video/')) {
-                videoFile = file;
-                videoUploadZone.classList.add('has-file');
-                document.getElementById('videoUploadText').textContent = file.name;
-                var sizeText = (file.size / 1024 / 1024).toFixed(2) + ' MB';
-                document.querySelector('#videoUploadZone .upload-subtext').textContent = sizeText;
-                updateUploadButton();
+        function handleVideoSelection(event) {
+            var file = event.target.files[0];
+            if (file && file.type.indexOf('video/') === 0) {
+                selectedVideoFile = file;
+                var zone = document.getElementById('videoDropZone');
+                zone.classList.add('active');
+                document.getElementById('videoFileName').textContent = file.name;
+                checkUploadReady();
             } else {
-                showAlert('error', 'Please select a valid video file');
+                displayNotification('error', 'Please select a valid video file');
             }
-        });
-
-        // Thumbnail upload zone
-        var thumbnailUploadZone = document.getElementById('thumbnailUploadZone');
-        var thumbnailInput = document.getElementById('thumbnailInput');
-
-        thumbnailUploadZone.addEventListener('click', function() { 
-            thumbnailInput.click(); 
-        });
-
-        thumbnailInput.addEventListener('change', function(e) {
-            var file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                thumbnailFile = file;
-                thumbnailUploadZone.classList.add('has-file');
-                document.getElementById('thumbnailUploadText').textContent = file.name;
-            } else {
-                showAlert('error', 'Please select a valid image file');
-            }
-        });
-
-        // Character counters
-        document.getElementById('titleInput').addEventListener('input', function(e) {
-            document.getElementById('titleCount').textContent = e.target.value.length;
-            updateUploadButton();
-        });
-
-        document.getElementById('descriptionInput').addEventListener('input', function(e) {
-            document.getElementById('descCount').textContent = e.target.value.length;
-        });
-
-        // Schedule radio buttons
-        document.querySelectorAll('input[name="schedule"]').forEach(function(radio) {
-            radio.addEventListener('change', function(e) {
-                var scheduleFields = document.getElementById('scheduleFields');
-                if (e.target.value === 'scheduled') {
-                    scheduleFields.classList.remove('hidden');
-                    
-                    // Set minimum date to today
-                    var today = new Date().toISOString().split('T')[0];
-                    document.getElementById('scheduleDate').min = today;
-                } else {
-                    scheduleFields.classList.add('hidden');
-                }
-            });
-        });
-
-        // Update upload button state
-        function updateUploadButton() {
-            var uploadBtn = document.getElementById('uploadBtn');
-            var hasAccount = selectedAccount !== null;
-            var hasVideo = videoFile !== null;
-            var hasTitle = document.getElementById('titleInput').value.trim().length > 0;
-
-            uploadBtn.disabled = !hasAccount || !hasVideo || !hasTitle || isUploading;
         }
 
-        // Upload video
-        document.getElementById('uploadBtn').addEventListener('click', function() {
+        function handleThumbnailSelection(event) {
+            var file = event.target.files[0];
+            if (file && file.type.indexOf('image/') === 0) {
+                selectedThumbnail = file;
+                var zone = document.getElementById('thumbDropZone');
+                zone.classList.add('active');
+                document.getElementById('thumbFileName').textContent = file.name;
+            } else {
+                displayNotification('error', 'Please select a valid image file');
+            }
+        }
+
+        function updateCharCount(inputId, countId, max) {
+            var input = document.getElementById(inputId);
+            var counter = document.getElementById(countId);
+            counter.textContent = input.value.length;
+        }
+
+        function checkUploadReady() {
+            var btn = document.getElementById('btnUpload');
+            var hasAccount = currentAccountId !== null;
+            var hasVideo = selectedVideoFile !== null;
+            var hasTitle = document.getElementById('inputTitle').value.trim().length > 0;
+            
+            btn.disabled = !hasAccount || !hasVideo || !hasTitle || isUploading;
+        }
+
+        function handleScheduleToggle(event) {
+            var scheduleFields = document.getElementById('scheduleDateTime');
+            if (event.target.value === 'later') {
+                scheduleFields.classList.remove('hide');
+                var today = new Date().toISOString().split('T')[0];
+                document.getElementById('scheduleDate').min = today;
+            } else {
+                scheduleFields.classList.add('hide');
+            }
+        }
+
+        function performUpload() {
             if (isUploading) return;
-
-            var title = document.getElementById('titleInput').value.trim();
-            var description = document.getElementById('descriptionInput').value.trim();
-            var tags = document.getElementById('tagsInput').value.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
-            var category = document.getElementById('categorySelect').value;
-            var privacy = document.getElementById('privacySelect').value;
-            var scheduleType = document.querySelector('input[name="schedule"]:checked').value;
-
-            isUploading = true;
-            var uploadBtn = document.getElementById('uploadBtn');
-            uploadBtn.disabled = true;
-            var uploadBtnText = document.getElementById('uploadBtnText');
-            uploadBtnText.innerHTML = '';
-            var spinner = document.createElement('div');
-            spinner.className = 'spinner';
-            uploadBtnText.appendChild(spinner);
-            uploadBtnText.appendChild(document.createTextNode(' Uploading...'));
             
-            showAlert('info', 'Uploading video to YouTube...');
+            isUploading = true;
+            var btn = document.getElementById('btnUpload');
+            var btnContent = document.getElementById('uploadBtnContent');
+            btn.disabled = true;
+            btnContent.innerHTML = '<div class="spinner"></div> Uploading...';
+            
+            displayNotification('info', 'Uploading your video to YouTube...');
 
-            // Prepare metadata
-            var metadata = {
+            var videoTitle = document.getElementById('inputTitle').value.trim();
+            var videoDesc = document.getElementById('inputDesc').value.trim();
+            var tagsInput = document.getElementById('inputTags').value;
+            var tagsArray = tagsInput.split(',');
+            var cleanTags = [];
+            for (var i = 0; i < tagsArray.length; i++) {
+                var tag = tagsArray[i].trim();
+                if (tag.length > 0) {
+                    cleanTags.push(tag);
+                }
+            }
+            var categoryId = document.getElementById('selectCategory').value;
+            var privacyStatus = document.getElementById('selectPrivacy').value;
+
+            var videoMetadata = {
                 snippet: {
-                    title: title,
-                    description: description,
-                    tags: tags,
-                    categoryId: category
+                    title: videoTitle,
+                    description: videoDesc,
+                    tags: cleanTags,
+                    categoryId: categoryId
                 },
                 status: {
-                    privacyStatus: privacy
+                    privacyStatus: privacyStatus
                 }
             };
 
-            // Add scheduling
-            if (scheduleType === 'scheduled') {
-                var scheduleDate = document.getElementById('scheduleDate').value;
-                var scheduleTime = document.getElementById('scheduleTime').value;
-                
-                if (scheduleDate && scheduleTime) {
-                    metadata.status.publishAt = scheduleDate + 'T' + scheduleTime + ':00Z';
-                    metadata.status.privacyStatus = 'private';
+            var scheduleType = document.querySelector('input[name="scheduleType"]:checked').value;
+            if (scheduleType === 'later') {
+                var schedDate = document.getElementById('scheduleDate').value;
+                var schedTime = document.getElementById('scheduleTime').value;
+                if (schedDate && schedTime) {
+                    videoMetadata.status.publishAt = schedDate + 'T' + schedTime + ':00Z';
+                    videoMetadata.status.privacyStatus = 'private';
                 }
             }
 
-            // Use promises instead of async/await
             gapi.client.youtube.videos.insert({
                 part: 'snippet,status',
-                resource: metadata,
+                resource: videoMetadata,
                 media: {
-                    body: videoFile
+                    body: selectedVideoFile
                 }
             }).then(function(response) {
                 var videoId = response.result.id;
-
-                // Upload thumbnail if provided
-                if (thumbnailFile) {
+                
+                if (selectedThumbnail) {
                     return gapi.client.youtube.thumbnails.set({
                         videoId: videoId,
                         media: {
-                            body: thumbnailFile
+                            body: selectedThumbnail
                         }
                     }).then(function() {
+                        return videoId;
+                    }, function() {
                         return videoId;
                     });
                 }
                 return videoId;
             }).then(function(videoId) {
-                showAlert('success', 'Video uploaded successfully! Video ID: ' + videoId);
-                resetForm();
-            }).catch(function(error) {
+                displayNotification('success', 'Video uploaded successfully! Video ID: ' + videoId);
+                resetUploadForm();
+            }, function(error) {
                 console.error('Upload error:', error);
-                showAlert('error', 'Upload failed: ' + (error.message || 'Unknown error'));
-            }).finally(function() {
+                displayNotification('error', 'Upload failed. Please try again.');
+            }).then(function() {
                 isUploading = false;
-                var btnText = document.getElementById('uploadBtnText');
-                btnText.innerHTML = '⬆️ Upload to YouTube';
-                updateUploadButton();
+                btnContent.textContent = '⬆️ Upload to YouTube';
+                checkUploadReady();
             });
-        });
+        }
 
-        // Reset form
-        function resetForm() {
-            videoFile = null;
-            thumbnailFile = null;
-            document.getElementById('videoInput').value = '';
-            document.getElementById('thumbnailInput').value = '';
-            document.getElementById('titleInput').value = '';
-            document.getElementById('descriptionInput').value = '';
-            document.getElementById('tagsInput').value = '';
-            document.getElementById('categorySelect').value = '22';
-            document.getElementById('privacySelect').value = 'private';
-            document.querySelector('input[name="schedule"][value="immediate"]').checked = true;
-            document.getElementById('scheduleFields').classList.add('hidden');
+        function resetUploadForm() {
+            selectedVideoFile = null;
+            selectedThumbnail = null;
             
-            videoUploadZone.classList.remove('has-file');
-            thumbnailUploadZone.classList.remove('has-file');
-            document.getElementById('videoUploadText').textContent = 'Click to select video';
-            document.querySelector('#videoUploadZone .upload-subtext').textContent = 'MP4, MOV, AVI, WebM (Max 256GB)';
-            document.getElementById('thumbnailUploadText').textContent = 'Click to upload thumbnail';
+            document.getElementById('videoFileInput').value = '';
+            document.getElementById('thumbFileInput').value = '';
+            document.getElementById('inputTitle').value = '';
+            document.getElementById('inputDesc').value = '';
+            document.getElementById('inputTags').value = '';
+            document.getElementById('selectCategory').value = '22';
+            document.getElementById('selectPrivacy').value = 'private';
+            document.querySelector('input[name="scheduleType"][value="now"]').checked = true;
+            document.getElementById('scheduleDateTime').classList.add('hide');
+            
+            document.getElementById('videoDropZone').classList.remove('active');
+            document.getElementById('thumbDropZone').classList.remove('active');
+            document.getElementById('videoFileName').textContent = 'Select your video file';
+            document.getElementById('thumbFileName').textContent = 'Select thumbnail image';
             
             document.getElementById('titleCount').textContent = '0';
             document.getElementById('descCount').textContent = '0';
             
-            updateUploadButton();
+            checkUploadReady();
         }
 
-        // Initialize on load
-        window.onload = initClient;
+        document.getElementById('btnConnect').onclick = handleConnectAccount;
+        document.getElementById('videoDropZone').onclick = function() {
+            document.getElementById('videoFileInput').click();
+        };
+        document.getElementById('videoFileInput').onchange = handleVideoSelection;
+        document.getElementById('thumbDropZone').onclick = function() {
+            document.getElementById('thumbFileInput').click();
+        };
+        document.getElementById('thumbFileInput').onchange = handleThumbnailSelection;
+        document.getElementById('inputTitle').oninput = function() {
+            updateCharCount('inputTitle', 'titleCount', 100);
+            checkUploadReady();
+        };
+        document.getElementById('inputDesc').oninput = function() {
+            updateCharCount('inputDesc', 'descCount', 5000);
+        };
+        document.getElementById('btnUpload').onclick = performUpload;
+
+        var scheduleRadios = document.querySelectorAll('input[name="scheduleType"]');
+        for (var i = 0; i < scheduleRadios.length; i++) {
+            scheduleRadios[i].onchange = handleScheduleToggle;
+        }
+
+        window.onload = loadGoogleAPI;
     </script>
 </body>
 </html>
