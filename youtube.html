@@ -398,6 +398,16 @@
             display: none;
         }
 
+        code {
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 4px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
         @media (max-width: 768px) {
             .grid-2 {
                 grid-template-columns: 1fr;
@@ -570,39 +580,51 @@
 
             <!-- Upload Button -->
             <button class="btn btn-upload" id="uploadBtn" disabled>
-                <span>⬆️</span>
-                <span id="uploadBtnText">Upload to YouTube</span>
+                <span id="uploadBtnText">⬆️ Upload to YouTube</span>
             </button>
 
             <!-- Info Box -->
             <div class="info-box" style="margin-top: 24px;">
-                <strong>📌 Setup Required:</strong> Make sure to add your domain to authorized redirect URIs in Google Cloud Console. Currently configured: http://localhost:3001/oauth2callback
+                <strong>📌 OAuth Setup Instructions:</strong><br><br>
+                Go to <a href="https://console.cloud.google.com" target="_blank" style="color: #1e40af; font-weight: bold;">Google Cloud Console</a> → APIs & Services → Credentials<br><br>
+                
+                Add these to your OAuth 2.0 Client:<br><br>
+                
+                <strong>Authorized JavaScript origins:</strong><br>
+                <code>https://sandeshchhetri.info.np</code><br>
+                <code>https://www.sandeshchhetri.info.np</code><br><br>
+                
+                <strong>Authorized redirect URIs:</strong><br>
+                <code>https://sandeshchhetri.info.np</code><br>
+                <code>https://www.sandeshchhetri.info.np</code><br>
+                <code>https://sandeshchhetri.info.np/oauth2callback</code><br>
+                <code>https://www.sandeshchhetri.info.np/oauth2callback</code>
             </div>
         </div>
     </div>
 
     <script>
-        const CLIENT_ID = '1046120137054-csdhh5hlava3m30sr4cv72nk4n13cjkv.apps.googleusercontent.com';
-        const SCOPES = 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube';
+        var CLIENT_ID = '1046120137054-csdhh5hlava3m30sr4cv72nk4n13cjkv.apps.googleusercontent.com';
+        var SCOPES = 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube';
 
-        let accounts = [];
-        let selectedAccount = null;
-        let videoFile = null;
-        let thumbnailFile = null;
-        let isUploading = false;
+        var accounts = [];
+        var selectedAccount = null;
+        var videoFile = null;
+        var thumbnailFile = null;
+        var isUploading = false;
 
         // Initialize Google API
         function initClient() {
-            gapi.load('client:auth2', () => {
+            gapi.load('client:auth2', function() {
                 gapi.client.init({
                     clientId: CLIENT_ID,
                     discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest'],
                     scope: SCOPES
-                }).then(() => {
-                    console.log('Google API initialized');
-                }).catch((error) => {
+                }).then(function() {
+                    console.log('Google API initialized successfully');
+                }).catch(function(error) {
                     console.error('Error initializing Google API:', error);
-                    showAlert('error', 'Failed to initialize Google API');
+                    showAlert('error', 'Failed to initialize Google API. Check console for details.');
                 });
             });
         }
@@ -616,60 +638,72 @@
             alertBox.classList.remove('hidden');
             
             if (type === 'success') {
-                setTimeout(() => {
+                setTimeout(function() {
                     alertBox.classList.add('hidden');
                 }, 5000);
             }
         }
 
         // Connect YouTube account
-        document.getElementById('connectAccountBtn').addEventListener('click', async () => {
-            try {
-                const authInstance = gapi.auth2.getAuthInstance();
-                await authInstance.signIn();
-                
-                const profile = authInstance.currentUser.get().getBasicProfile();
-                const newAccount = {
+        document.getElementById('connectAccountBtn').addEventListener('click', function() {
+            var authInstance = gapi.auth2.getAuthInstance();
+            
+            if (!authInstance) {
+                showAlert('error', 'Google API not initialized. Please refresh the page.');
+                return;
+            }
+            
+            authInstance.signIn().then(function() {
+                var profile = authInstance.currentUser.get().getBasicProfile();
+                var newAccount = {
                     id: profile.getId(),
                     name: profile.getName(),
                     email: profile.getEmail(),
                     image: profile.getImageUrl()
                 };
 
-                if (!accounts.find(acc => acc.id === newAccount.id)) {
+                if (!accounts.find(function(acc) { return acc.id === newAccount.id; })) {
                     accounts.push(newAccount);
                     selectedAccount = newAccount.id;
                     renderAccounts();
                     showAlert('success', 'Connected: ' + newAccount.email);
                     updateUploadButton();
                 }
-            } catch (error) {
+            }).catch(function(error) {
                 console.error('Auth error:', error);
-                showAlert('error', 'Failed to authenticate. Please try again.');
-            }
+                if (error.error === 'popup_closed_by_user') {
+                    showAlert('error', 'Sign-in popup was closed. Please try again.');
+                } else if (error.error === 'idpiframe_initialization_failed') {
+                    showAlert('error', 'OAuth configuration error. Make sure your domain is whitelisted in Google Cloud Console.');
+                } else {
+                    showAlert('error', 'Failed to authenticate: ' + (error.error || 'Unknown error'));
+                }
+            });
         });
 
         // Render accounts list
         function renderAccounts() {
-            const accountsList = document.getElementById('accountsList');
+            var accountsList = document.getElementById('accountsList');
             
             if (accounts.length === 0) {
                 accountsList.innerHTML = '';
                 return;
             }
 
-            accountsList.innerHTML = accounts.map(function(account) {
-                return '<div class="account-card ' + (selectedAccount === account.id ? 'selected' : '') + '" onclick="selectAccount(\'' + account.id + '\')">' +
-                    '<div class="account-info">' +
-                        '<img src="' + account.image + '" alt="' + account.name + '" class="account-avatar">' +
-                        '<div class="account-details">' +
-                            '<h3>' + account.name + '</h3>' +
-                            '<p>' + account.email + '</p>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>';
-            }).join('');
-
+            var html = '';
+            for (var i = 0; i < accounts.length; i++) {
+                var account = accounts[i];
+                var isSelected = selectedAccount === account.id ? 'selected' : '';
+                html += '<div class="account-card ' + isSelected + '" onclick="selectAccount(\'' + account.id + '\')">';
+                html += '<div class="account-info">';
+                html += '<img src="' + account.image + '" alt="' + account.name + '" class="account-avatar">';
+                html += '<div class="account-details">';
+                html += '<h3>' + account.name + '</h3>';
+                html += '<p>' + account.email + '</p>';
+                html += '</div></div></div>';
+            }
+            
+            accountsList.innerHTML = html;
             accountsList.innerHTML += '<div class="add-account-link" onclick="document.getElementById(\'connectAccountBtn\').click()">+ Add Another Account</div>';
         }
 
@@ -681,13 +715,15 @@
         }
 
         // Video upload zone
-        const videoUploadZone = document.getElementById('videoUploadZone');
-        const videoInput = document.getElementById('videoInput');
+        var videoUploadZone = document.getElementById('videoUploadZone');
+        var videoInput = document.getElementById('videoInput');
 
-        videoUploadZone.addEventListener('click', () => videoInput.click());
+        videoUploadZone.addEventListener('click', function() { 
+            videoInput.click(); 
+        });
 
-        videoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
+        videoInput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
             if (file && file.type.startsWith('video/')) {
                 videoFile = file;
                 videoUploadZone.classList.add('has-file');
@@ -701,13 +737,15 @@
         });
 
         // Thumbnail upload zone
-        const thumbnailUploadZone = document.getElementById('thumbnailUploadZone');
-        const thumbnailInput = document.getElementById('thumbnailInput');
+        var thumbnailUploadZone = document.getElementById('thumbnailUploadZone');
+        var thumbnailInput = document.getElementById('thumbnailInput');
 
-        thumbnailUploadZone.addEventListener('click', () => thumbnailInput.click());
+        thumbnailUploadZone.addEventListener('click', function() { 
+            thumbnailInput.click(); 
+        });
 
-        thumbnailInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
+        thumbnailInput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
             if (file && file.type.startsWith('image/')) {
                 thumbnailFile = file;
                 thumbnailUploadZone.classList.add('has-file');
@@ -718,24 +756,24 @@
         });
 
         // Character counters
-        document.getElementById('titleInput').addEventListener('input', (e) => {
+        document.getElementById('titleInput').addEventListener('input', function(e) {
             document.getElementById('titleCount').textContent = e.target.value.length;
             updateUploadButton();
         });
 
-        document.getElementById('descriptionInput').addEventListener('input', (e) => {
+        document.getElementById('descriptionInput').addEventListener('input', function(e) {
             document.getElementById('descCount').textContent = e.target.value.length;
         });
 
         // Schedule radio buttons
-        document.querySelectorAll('input[name="schedule"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                const scheduleFields = document.getElementById('scheduleFields');
+        document.querySelectorAll('input[name="schedule"]').forEach(function(radio) {
+            radio.addEventListener('change', function(e) {
+                var scheduleFields = document.getElementById('scheduleFields');
                 if (e.target.value === 'scheduled') {
                     scheduleFields.classList.remove('hidden');
                     
                     // Set minimum date to today
-                    const today = new Date().toISOString().split('T')[0];
+                    var today = new Date().toISOString().split('T')[0];
                     document.getElementById('scheduleDate').min = today;
                 } else {
                     scheduleFields.classList.add('hidden');
@@ -745,27 +783,27 @@
 
         // Update upload button state
         function updateUploadButton() {
-            const uploadBtn = document.getElementById('uploadBtn');
-            const hasAccount = selectedAccount !== null;
-            const hasVideo = videoFile !== null;
-            const hasTitle = document.getElementById('titleInput').value.trim().length > 0;
+            var uploadBtn = document.getElementById('uploadBtn');
+            var hasAccount = selectedAccount !== null;
+            var hasVideo = videoFile !== null;
+            var hasTitle = document.getElementById('titleInput').value.trim().length > 0;
 
             uploadBtn.disabled = !hasAccount || !hasVideo || !hasTitle || isUploading;
         }
 
         // Upload video
-        document.getElementById('uploadBtn').addEventListener('click', async () => {
+        document.getElementById('uploadBtn').addEventListener('click', function() {
             if (isUploading) return;
 
-            const title = document.getElementById('titleInput').value.trim();
-            const description = document.getElementById('descriptionInput').value.trim();
-            const tags = document.getElementById('tagsInput').value.split(',').map(t => t.trim()).filter(Boolean);
-            const category = document.getElementById('categorySelect').value;
-            const privacy = document.getElementById('privacySelect').value;
-            const scheduleType = document.querySelector('input[name="schedule"]:checked').value;
+            var title = document.getElementById('titleInput').value.trim();
+            var description = document.getElementById('descriptionInput').value.trim();
+            var tags = document.getElementById('tagsInput').value.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+            var category = document.getElementById('categorySelect').value;
+            var privacy = document.getElementById('privacySelect').value;
+            var scheduleType = document.querySelector('input[name="schedule"]:checked').value;
 
             isUploading = true;
-            const uploadBtn = document.getElementById('uploadBtn');
+            var uploadBtn = document.getElementById('uploadBtn');
             uploadBtn.disabled = true;
             var uploadBtnText = document.getElementById('uploadBtnText');
             uploadBtnText.innerHTML = '';
@@ -776,66 +814,64 @@
             
             showAlert('info', 'Uploading video to YouTube...');
 
-            try {
-                // Prepare metadata
-                const metadata = {
-                    snippet: {
-                        title: title,
-                        description: description,
-                        tags: tags,
-                        categoryId: category
-                    },
-                    status: {
-                        privacyStatus: privacy
-                    }
-                };
-
-                // Add scheduling
-                if (scheduleType === 'scheduled') {
-                    var scheduleDate = document.getElementById('scheduleDate').value;
-                    var scheduleTime = document.getElementById('scheduleTime').value;
-                    
-                    if (scheduleDate && scheduleTime) {
-                        metadata.status.publishAt = scheduleDate + 'T' + scheduleTime + ':00Z';
-                        metadata.status.privacyStatus = 'private';
-                    }
+            // Prepare metadata
+            var metadata = {
+                snippet: {
+                    title: title,
+                    description: description,
+                    tags: tags,
+                    categoryId: category
+                },
+                status: {
+                    privacyStatus: privacy
                 }
+            };
 
-                // Upload video using resumable upload
-                const response = await gapi.client.youtube.videos.insert({
-                    part: 'snippet,status',
-                    resource: metadata,
-                    media: {
-                        body: videoFile
-                    }
-                });
+            // Add scheduling
+            if (scheduleType === 'scheduled') {
+                var scheduleDate = document.getElementById('scheduleDate').value;
+                var scheduleTime = document.getElementById('scheduleTime').value;
+                
+                if (scheduleDate && scheduleTime) {
+                    metadata.status.publishAt = scheduleDate + 'T' + scheduleTime + ':00Z';
+                    metadata.status.privacyStatus = 'private';
+                }
+            }
 
-                const videoId = response.result.id;
+            // Use promises instead of async/await
+            gapi.client.youtube.videos.insert({
+                part: 'snippet,status',
+                resource: metadata,
+                media: {
+                    body: videoFile
+                }
+            }).then(function(response) {
+                var videoId = response.result.id;
 
                 // Upload thumbnail if provided
                 if (thumbnailFile) {
-                    await gapi.client.youtube.thumbnails.set({
+                    return gapi.client.youtube.thumbnails.set({
                         videoId: videoId,
                         media: {
                             body: thumbnailFile
                         }
+                    }).then(function() {
+                        return videoId;
                     });
                 }
-
+                return videoId;
+            }).then(function(videoId) {
                 showAlert('success', 'Video uploaded successfully! Video ID: ' + videoId);
-                
-                // Reset form
                 resetForm();
-            } catch (error) {
+            }).catch(function(error) {
                 console.error('Upload error:', error);
                 showAlert('error', 'Upload failed: ' + (error.message || 'Unknown error'));
-            } finally {
+            }).finally(function() {
                 isUploading = false;
                 var btnText = document.getElementById('uploadBtnText');
-                btnText.innerHTML = '';
-                btnText.appendChild(document.createTextNode('⬆️ Upload to YouTube'));
+                btnText.innerHTML = '⬆️ Upload to YouTube';
                 updateUploadButton();
-            }
+            });
         });
 
         // Reset form
