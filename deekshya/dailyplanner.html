@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Focus Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+<style>
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#1f2937,#111827);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.container{
+  width:900px;
+  max-width:95%;
+  background:#0f172a;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+
+h1{
+  font-family:'Playfair Display',serif;
+  text-align:center;
+  font-size:40px;
+  margin-bottom:10px;
+}
+
+.quote{
+  text-align:center;
+  opacity:0.8;
+  margin-bottom:30px;
+}
+
+.schedule{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:12px;
+}
+
+.time{
+  background:#1e293b;
+  padding:14px;
+  border-radius:10px;
+  font-weight:600;
+}
+
+.task{
+  background:#334155;
+  padding:14px;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.task.completed{
+  text-decoration:line-through;
+  opacity:0.5;
+}
+
+button{
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+  background:#22c55e;
+  color:white;
+}
+
+button:hover{
+  opacity:0.8;
+}
+
+.footer{
+  margin-top:30px;
+  text-align:center;
+  opacity:0.7;
+  font-size:14px;
+}
+
+.progress{
+  margin-top:20px;
+  height:10px;
+  background:#1e293b;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:#22c55e;
+  transition:0.3s;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>Daily Focus Planner</h1>
+<p class="quote">"Win the morning, win the day."</p>
+
+<div class="schedule" id="schedule"></div>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+<p class="footer">Discipline today. Success tomorrow.</p>
+
+</div>
+
+<script>
+
+const schedule=[
+["6:00 - 6:30","Wake up and freshen up"],
+["6:30 - 7:00","Positive mindset / affirmations"],
+["7:00 - 8:00","Morning walk"],
+["8:00 - 8:15","Short break"],
+["8:15 - 10:00","Deep study"],
+["10:00 - 10:30","Breakfast"],
+["10:30 - 12:00","Study"],
+["12:00 - 12:30","Lunch"],
+["12:30 - 2:00","Content boosting / posting"],
+["2:30 - 3:00","Peace / meditation"],
+["3:00 - 5:00","Study"],
+["5:00 - 5:30","Tea / snacks"],
+["5:30 - 6:00","Evening walk"],
+["6:30 - 8:00","Study"],
+["8:00 - 8:30","Dinner"],
+["8:30 - 9:30","Relax"],
+["9:30 - 10:00","Prepare for tomorrow"]
+];
+
+const container=document.getElementById("schedule");
+
+schedule.forEach((item,index)=>{
+
+let time=document.createElement("div");
+time.className="time";
+time.innerText=item[0];
+
+let task=document.createElement("div");
+task.className="task";
+
+let text=document.createElement("span");
+text.innerText=item[1];
+
+let btn=document.createElement("button");
+btn.innerText="Done";
+
+btn.onclick=()=>{
+ task.classList.toggle("completed");
+ updateProgress();
+}
+
+ task.appendChild(text);
+ task.appendChild(btn);
+
+ container.appendChild(time);
+ container.appendChild(task);
+
+});
+
+function updateProgress(){
+
+let tasks=document.querySelectorAll(".task");
+let done=document.querySelectorAll(".task.completed");
+
+let percent=(done.length/tasks.length)*100;
+
+document.getElementById("progressBar").style.width=percent+"%";
+
+}
+
+</script>
+
+</body>
+</html>
